@@ -1,0 +1,36 @@
+.dict-entry(*ngIf='entry')
+  .ui.header.entry-header
+    .ui.right.floated.sub.header
+    .entry-word {{entry.word}}
+    .phonetics(*ngIf='entry.phonetics')
+      label.ui.small.label 英
+      span {{entry.phonetics['UK']}}
+      label.ui.small.label 美
+      span {{entry.phonetics['US']}}
+    .categories
+      label.ui.small.label(*ngFor='let cat of categoryTags') {{cat}}
+  .clearing
+
+  .ui.horizontal.list.base-forms(*ngIf='refWords||entryStack.length > 0')
+    a.ui.item(*ngIf='entryStack.length > 0', (click)='goback()', href='javascript:')
+      i.left.arrow.icon
+      | {{entryStack[entryStack.length-1].word}}
+    a.ui.item(*ngFor='let word of refWords||[]', (click)='goto(word)', href='javascript:')
+      | {{word}}
+
+  .ui.clearing.divider
+  sui-tabset
+    .ui.top.attached.tabular.menu
+      a.item(suiTabHeader='co') 释义
+    .ui.bottom.attached.segment(suiTabContent='co')
+      sui-accordion([closeOthers]='false')
+        sui-accordion-panel.pos-meanings(*ngFor='let pm of entry.complete||[]', [isOpen]='true')
+          .pos-header(title='')
+            i.dropdown.icon
+            | {{pm.pos}}
+          .ui.ordered.selection.divided.list.meaning-items(content='')
+            .ui.item(*ngFor='let item of pm.items',
+            [ngClass]='{"selected-item":item.id===selectedItemId}')
+              span.meaning-item
+                span.ui.small.label(*ngFor='let tag of item.tags') {{tagLabelMap[tag]}}
+                | {{item.exp}}

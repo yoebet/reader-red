@@ -1,0 +1,13 @@
+h4.ui.gray.header(*ngIf='book')
+  .book-name {{book.name}}
+  .book-zhname(*ngIf='book.zhName') {{book.zhName}}
+div(*ngIf='chap')
+  h5.ui.blue.header
+    .chap-name.pre-wrap {{chap.name}}
+    .chap-zhname.pre-wrap(*ngIf='chap.zhName') {{chap.zhName}}
+
+  //.ui.hidden.divider
+  chap-paras([chap]='chap')
+
+.ui.hidden.clearing.divider
+button.ui.tiny.button((click)='goBack()') 返回

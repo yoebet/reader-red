@@ -1,0 +1,7 @@
+div(*ngIf='book')
+  .ui.header
+    | Chapters
+  book-chaps([book]='book')
+
+.ui.hidden.clearing.divider
+button.ui.tiny.button((click)='goBack()') 返回

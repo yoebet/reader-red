@@ -1,0 +1,7 @@
+.ui.header
+  | Book List
+.ui.celled.list
+  .item(*ngFor='let book of books; trackBy: bookTracker')
+    a((click)='gotoDetail(book)', [routerLink]="['/books', book._id]")
+      .enname {{book.name}}
+      .zhname(*ngIf='book.zhName') {{book.zhName}}

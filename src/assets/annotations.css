@@ -1,0 +1,86 @@
+/* *** 词类 Parts of Speech *** */
+
+y-o, .yo {
+  border-bottom: 1px dashed grey;
+  /*border-bottom-width: 1px;*/
+  /*border-bottom-color: grey;*/
+  /*border-bottom-style: dashed;*/
+}
+
+.pos {
+  border-bottom-color: dimgrey;
+}
+
+/*.pos:before {
+}*/
+
+/*.pos:after {
+}*/
+
+/* *** 名词 Noun *** */
+
+.noun {
+  border-bottom-color: cadetblue;
+}
+
+/* *** 动词 Verb *** */
+
+.verb {
+  border-bottom-color: darkgreen;
+}
+
+/* *** 成分 Members of the Sentence *** */
+
+.memb {
+  border-bottom-color: darkolivegreen;
+  border-bottom-style: solid;
+}
+
+.memb[data-memb=ms], .memb[data-memb=mp], .memb[data-memb=mo] {
+  border-bottom-color: darkgreen;
+  border-bottom-style: double;
+}
+
+/* *** 从句 Clauses *** */
+
+.clau {
+  border-bottom-color: silver;
+}
+
+.clau[data-clau=cc], .clau[data-clau=cr] {
+  border-bottom-color: palevioletred;
+  border-bottom-style: solid;
+}
+
+/* *** 时态 Tense *** */
+
+.tens {
+  border-bottom-color: olive;
+  border-bottom-style: solid;
+}
+
+/* *** 短语 Phrases *** */
+
+.phra {
+  border-bottom-color: lightskyblue;
+  border-bottom-style: solid;
+}
+
+.phra[data-phra=g1] {
+  border-bottom-color: deepskyblue;
+}
+
+.phra[data-phra=g2] {
+  border-bottom-color: lightsalmon;
+}
+
+.phra[data-phra=g3] {
+  border-bottom-color: darkgreen;
+}
+
+/* *** 其他 Misc *** */
+
+.misc {
+  border-bottom-color: cornflowerblue;
+  border-bottom-style: solid;
+}
