@@ -1,7 +1,11 @@
 div(*ngIf='book')
   .ui.header
     | Chapters
-  book-chaps([book]='book')
+  .ui.celled.list
+    .item(*ngFor='let chap of book.chaps; trackBy: chapTracker; first as first; last as last')
+      a([routerLink]="['/chaps', chap._id]")
+        .pre-wrap {{chap.name}}
+        .zhname.pre-wrap(*ngIf="chap.zhName") {{chap.zhName}}
 
 .ui.hidden.clearing.divider
 button.ui.tiny.button((click)='goBack()') 返回

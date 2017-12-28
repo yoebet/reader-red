@@ -1,4 +1,3 @@
-/* You can add global styles to this file, and also import other style files */
 @import url('assets/semantic/reset.css');
 @import url('assets/semantic/site.css');
 @import url('assets/semantic/button.css');
@@ -30,9 +29,6 @@
 /*@import url('assets/semantic/message.css');*/
 /*@import url('assets/semantic/sidebar.css');*/
 @import url('assets/annos-popup.css');
-@import url('assets/para-split.css');
-@import url('assets/sentence-align.css');
-@import url('assets/dict-popup.css');
 @import url('assets/annotations.css');
 @import url('assets/para-text.css');
 
@@ -61,8 +57,8 @@
 }
 
 sui-multi-select i.list.icon {
-  margin: 0em 0.25rem 0em 0em !important;
-  padding: 0.55em 0em 0em 0.5em !important;
+  margin: 0 0.25rem 0 0 !important;
+  padding: 0.55em 0 0 0.5em !important;
 }
 
 /*sui-select.user-role, sui-select.book-role {*/

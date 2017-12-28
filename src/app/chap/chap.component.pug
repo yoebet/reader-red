@@ -7,7 +7,21 @@ div(*ngIf='chap')
     .chap-zhname.pre-wrap(*ngIf='chap.zhName') {{chap.zhName}}
 
   //.ui.hidden.divider
-  chap-paras([chap]='chap')
+  //sticky.sticky.ui.right.floated.header([sticky-offset-top]="10")
+  .sticky.ui.right.floated.header
+    .operations
+      sui-checkbox([(ngModel)]='showTrans') 中文
+      sui-checkbox([(ngModel)]='highlightSentence') 句子高亮
+      sui-checkbox([(ngModel)]='annotatedWordsHover', (ngModelChange)='onAnnotatedWordsHoverChange()') 鼠标悬停
+
+  .ui.list.items
+    .item.paragraph(*ngFor='let para of chap.paras; trackBy: paraTracker; index as index')
+      .ui.left.floated.mini.statistic.para-no((click)='selectPara2(para)')
+        .value {{index+1}}
+      para-content.para-content([content]='para.content', [trans]='para.trans', [showTrans]='showTrans',
+      [gotFocus]='para===selectedPara', [highlightSentence]='para===selectedPara && highlightSentence',
+      [annotatedWordsHover]='annotatedWordsHover', [ngClass]='{"selected": para===selectedPara}', (click)='selectPara(para)')
+
 
 .ui.hidden.clearing.divider
 button.ui.tiny.button((click)='goBack()') 返回

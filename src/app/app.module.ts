@@ -18,9 +18,7 @@ import {CreatedDateStringPipe} from './pipes/created-date-string.pipe';
 import {AppComponent} from './app.component';
 import {BooksComponent} from './book/books.component';
 import {BookComponent} from './book/book.component';
-import {BookChapsComponent} from './book/book-chaps.component';
 import {ChapComponent} from './chap/chap.component';
-import {ChapParasComponent} from './chap/chap-paras.component';
 import {ParaContentComponent} from './content/para-content.component';
 import {WordAnnosComponent} from './content/word-annos.component';
 import {DictComponent} from './dict/dict.component';
@@ -39,9 +37,7 @@ import {DictEntrySmiComponent} from './dict/dict-entry-smi.component';
     AppComponent,
     BooksComponent,
     BookComponent,
-    BookChapsComponent,
     ChapComponent,
-    ChapParasComponent,
     ParaContentComponent,
     WordAnnosComponent,
     DictComponent,

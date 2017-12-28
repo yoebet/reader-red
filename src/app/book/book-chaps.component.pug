@@ -1,5 +1,0 @@
-.ui.celled.list(*ngIf='book')
-  .item(*ngFor='let chap of book.chaps; trackBy: chapTracker; first as first; last as last')
-    a([routerLink]="['/chaps', chap._id]")
-      .pre-wrap {{chap.name}}
-      .zhname.pre-wrap(*ngIf="chap.zhName") {{chap.zhName}}

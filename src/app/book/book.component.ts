@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {ActivatedRoute, Router, ParamMap} from '@angular/router';
 import {Location} from '@angular/common';
 import 'rxjs/add/operator/switchMap';
 
 import {Book} from '../models/book';
+import {Chap} from '../models/chap';
 import {BookService} from '../services/book.service';
-import {OpResult} from '../models/op-result';
 
 @Component({
   selector: 'book-detail',
@@ -17,6 +17,7 @@ export class BookComponent implements OnInit {
 
   constructor(private bookService: BookService,
               private route: ActivatedRoute,
+              private router: Router,
               private location: Location) {
   }
 
@@ -24,17 +25,19 @@ export class BookComponent implements OnInit {
     this.route.paramMap.switchMap((params: ParamMap) =>
       this.bookService.getDetail(params.get('id'))
     ).subscribe(book => {
-      if (book.author == null) {
-        book.author = '';
-      }
-      if (book.zhName == null) {
-        book.zhName = '';
-      }
-      if (book.zhAuthor == null) {
-        book.zhAuthor = '';
+      if (!book.chaps) {
+        book.chaps = [];
       }
       this.book = book;
     });
+  }
+
+  gotoDetail(chap: Chap): void {
+    this.router.navigate(['/chaps', chap._id]);
+  }
+
+  chapTracker(index, chap) {
+    return chap._id;
   }
 
   goBack(): void {
