@@ -32,6 +32,9 @@ export class ChapComponent implements OnInit {
     this.route.paramMap.switchMap((params: ParamMap) =>
       this.chapService.getDetail(params.get('id'))
     ).subscribe(chap => {
+      if (!chap) {
+        return;
+      }
       if (!chap.paras) {
         chap.paras = [];
       }

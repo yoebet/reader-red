@@ -1,7 +1,10 @@
 .ui.header
+  .ui.right.floated.header
+    sui-checkbox([(ngModel)]='listAllBooks', (click)='changeList()') 全部
   | Book List
 .ui.celled.list
   .item(*ngFor='let book of books; trackBy: bookTracker')
+    i.ui.right.floated.checkmark.icon(*ngIf='book.userBook')
     a((click)='gotoDetail(book)', [routerLink]="['/books', book._id]")
       .enname {{book.name}}
       .zhname(*ngIf='book.zhName') {{book.zhName}}

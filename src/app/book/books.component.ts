@@ -11,6 +11,9 @@ import {BookService} from '../services/book.service';
 })
 export class BooksComponent implements OnInit {
   books: Book[];
+  private allBooks: Book[];
+  private myBooks: Book[];
+  listAllBooks = false;
 
   constructor(private bookService: BookService,
               private router: Router) {
@@ -19,11 +22,23 @@ export class BooksComponent implements OnInit {
   getBooks(): void {
     this.bookService
       .list()
-      .subscribe(books => this.books = books);
+      .subscribe(books => {
+        this.allBooks = books;
+        this.myBooks = books.filter(book => !!book.userBook);
+        this.books = this.myBooks;
+      });
   }
 
   ngOnInit(): void {
     this.getBooks();
+  }
+
+  changeList() {
+    if (this.listAllBooks) {
+      this.books = this.allBooks;
+    } else {
+      this.books = this.myBooks;
+    }
   }
 
   gotoDetail(book: Book): void {

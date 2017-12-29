@@ -7,23 +7,52 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
 import {User} from '../models/user';
-import {UserBook} from '../models/user_book';
-import {BaseService} from './base.service';
+import {OpResult} from '../models/op-result';
+
 
 @Injectable()
-export class UserService extends BaseService<User> {
+export class UserService {
 
-  constructor(protected http: HttpClient) {
-    super(http);
+  private httpOptions = {
+    withCredentials: true
+  };
+
+  private loginUrl: string;
+
+   currentUser: User;
+
+  constructor(private http: HttpClient) {
     let apiBase = environment.apiBase || '';
-    this.baseUrl = `${apiBase}users`;
+    this.loginUrl = `${apiBase}/login`;
   }
 
-
-  userBooks(userId: string): Observable<UserBook[]> {
-    let url = `${this.baseUrl}/${userId}/books`;
-    return this.http.get<UserBook[]>(url, this.httpOptions)
+  login(name, pass): Observable<OpResult> {
+    let obs = this.http.post(this.loginUrl, {name, pass}, this.httpOptions)
       .catch(this.handleError);
+    obs = obs.share();
+    obs.subscribe((opr: OpResult) => {
+      if (opr && opr.ok === 1) {
+        this.currentUser = new User();
+        this.currentUser.name = name;
+      }
+    });
+    return obs;
   }
 
+  logout(): Observable<OpResult> {
+    let obs = this.http.delete(this.loginUrl, this.httpOptions)
+      .catch(this.handleError);
+    obs = obs.share();
+    obs.subscribe((opr: OpResult) => {
+      if (opr && opr.ok === 1) {
+        this.currentUser = null;
+      }
+    });
+    return obs;
+  }
+
+  private handleError(error: any): Observable<any> {
+    console.error(error);
+    return Observable.throw(error);
+  }
 }

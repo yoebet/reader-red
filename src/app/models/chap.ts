@@ -7,4 +7,6 @@ export class Chap extends Model {
   bookId: string;
   no: number;
   paras: Para[];
+
+  isMyChap = false;
 }
