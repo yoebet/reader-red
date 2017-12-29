@@ -2,12 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Location} from '@angular/common';
 import 'rxjs/add/operator/switchMap';
+import Tether from 'tether';
 
 import {Book} from '../models/book';
 import {Chap} from '../models/chap';
 import {Para} from '../models/para';
 import {BookService} from '../services/book.service';
 import {ChapService} from '../services/chap.service';
+import {DictRequest} from './dict-request';
 
 @Component({
   selector: 'chap-detail',
@@ -21,6 +23,11 @@ export class ChapComponent implements OnInit {
   showTrans = false;
   highlightSentence = false;
   annotatedWordsHover = true;
+  lookupDict = false;
+
+  dictRequest: DictRequest = null;
+  dictTether = null;
+  private tetherClassPrefix = 'dp';
 
   constructor(private bookService: BookService,
               private chapService: ChapService,
@@ -42,6 +49,22 @@ export class ChapComponent implements OnInit {
       this.bookService.getOne(chap.bookId)
         .subscribe((book) => this.book = book);
     });
+
+    document.addEventListener('click', (event) => {
+      if (this.dictRequest && this.dictTether) {
+        let dictPopup = document.getElementById('dictPopup');
+        if (event.target) {
+          let node = event.target as Node;
+          if (this.dictRequest.wordElement === node) {
+            return;
+          }
+          if (dictPopup.contains(node)) {
+            return;
+          }
+        }
+        this.closeDictPopup();
+      }
+    }, true)
   }
 
   selectPara(para): void {
@@ -66,6 +89,63 @@ export class ChapComponent implements OnInit {
       bodyClasses.remove(className);
     } else {
       bodyClasses.add(className);
+    }
+  }
+
+  private removeTetherClass(el) {
+    el.className = el.className.split(' ')
+      .filter(n => !n.startsWith(this.tetherClassPrefix + '-')).join(' ');
+    if (el.className === '') {
+      el.removeAttribute('class');
+    }
+  }
+
+  private closeDictPopup() {
+    if (this.dictRequest) {
+      this.dictRequest.onClose();
+      if (this.dictTether) {
+        this.dictTether.destroy();
+        this.dictTether = null;
+      }
+      let el = this.dictRequest.wordElement;
+      this.removeTetherClass(el);
+      this.dictRequest = null;
+    }
+  }
+
+  onDictRequest(dictRequest) {
+    if (this.dictRequest) {
+      if (this.dictRequest.wordElement === dictRequest.wordElement) {
+        this.closeDictPopup();
+        return;
+      } else {
+        this.closeDictPopup();
+      }
+    }
+    this.dictRequest = dictRequest;
+  }
+
+  onDictPopupReady() {
+    if (!this.dictRequest) {
+      return;
+    }
+    if (this.dictTether) {
+      this.dictTether.position();
+    } else {
+      let dictPopup = document.getElementById('dictPopup');
+      this.dictTether = new Tether({
+        element: dictPopup,
+        target: this.dictRequest.wordElement,
+        attachment: 'top center',
+        targetAttachment: 'bottom center',
+        constraints: [
+          {
+            to: 'window',
+            attachment: 'together'
+          }
+        ],
+        classPrefix: this.tetherClassPrefix
+      });
     }
   }
 

@@ -1,13 +1,19 @@
 import {
-  OnChanges, Input, SimpleChanges,
+  OnChanges, Input, SimpleChanges, Output, EventEmitter,
   Component, ViewChild, ViewContainerRef,
   ComponentFactoryResolver, ComponentFactory, ComponentRef
 } from '@angular/core';
 
 import Drop from 'tether-drop'
 
+import {Annotator} from '../anno/annotator';
+import {AnnotateResult} from '../anno/annotate-result'
 import {HighlightGroups} from '../anno/annotations';
+import {wordMeaningAnnotation} from '../anno/annotation';
 
+import {DictEntry} from '../models/dict-entry';
+import {DictService} from '../services/dict.service';
+import {DictRequest} from '../chap/dict-request';
 import {WordAnnosComponent} from './word-annos.component'
 
 @Component({
@@ -23,12 +29,16 @@ export class ParaContentComponent implements OnChanges {
   @Input() trans: string;
   @Input() showTrans: boolean;
   @Input() gotFocus: boolean;
+  @Input() lookupDict: boolean;
   @Input() highlightSentence: boolean;
   @Input() annotatedWordsHover: boolean;
+  @Output() dictRequest = new EventEmitter<DictRequest>();
+
   transRendered = false;
   sentenceHoverSetup = false;
   associatedWordsHoverSetup = false;
   annotatedWordsHoverSetup = false;
+
   highlightedSentences: Element[];
   highlightedWords: Element[];
   wordsPopupMap = new Map<Element, Drop>();
@@ -38,9 +48,113 @@ export class ParaContentComponent implements OnChanges {
   static sentenceTagName = 's-st';
   static highlightClass = 'highlight';
   static dropClassPrefix = 'drop-';
+  static tetherClassPrefix = 'dp-';
   static highlightWordsSelector = HighlightGroups.highlightAnnotationSelectors;
+  annotator: Annotator;
 
-  constructor(private resolver: ComponentFactoryResolver) {
+  constructor(private dictService: DictService, private resolver: ComponentFactoryResolver) {
+  }
+
+  private currentPhrase(wordEl) {
+    let stEl = this.findSentence(wordEl);
+    if (!stEl) {
+      stEl = this.contentText.element.nativeElement;
+    }
+    let ds = wordEl.dataset;
+    let group = ds.phra;
+    if (!group) {
+      return null;
+    }
+    if (!/^g\d$/.test(group)) {
+      return null;
+    }
+    let groupSelector = `[data-phra=${group}]`;
+    let groupEls = stEl.querySelectorAll(groupSelector);
+    let els = Array.from(groupEls);
+    return els.map((el: Element) => el.textContent).join(' ');
+  }
+
+  private removeTagIfDummy(el) {
+    let result = {changed: false, removed: false};
+    if (el.tagName !== Annotator.annotationTagName.toUpperCase()) {
+      return result;
+    }
+    if (el.className === '') {
+      el.removeAttribute('class');
+      result.changed = true;
+    } else if (el.attributes.length === 1 && el.hasAttributes('class')) {
+      let cns = el.className.split(' ')
+        .filter(n => !n.startsWith(ParaContentComponent.dropClassPrefix)
+          && n !== ParaContentComponent.tetherClassPrefix
+          && n !== ParaContentComponent.highlightClass);
+      if (cns.length === 0) {
+        el.removeAttribute('class');
+        result.changed = true;
+      }
+    }
+    if (!el.hasAttributes()) {
+      //remove tag
+      let pp = el.parentNode;
+      if (!pp) {
+        return result;
+      }
+      while (el.firstChild) {
+        pp.insertBefore(el.firstChild, el);
+      }
+      pp.removeChild(el);
+      pp.normalize();
+      result.changed = true;
+      result.removed = true;
+    }
+    return result;
+  }
+
+  lookupWordsMeanig() {
+    this.annotator.switchAnnotation(wordMeaningAnnotation);
+    let ar: AnnotateResult = this.annotator.annotate();
+    if (!ar || !ar.wordEl) {
+      return;
+    }
+    let element: any = ar.wordEl;
+    let word = element.textContent;
+
+    let oriMid = null;
+    let dataName = 'mid';
+    if (element.dataset[dataName]) {
+      let mid = parseInt(element.dataset[dataName]);
+      if (!isNaN(mid)) {
+        oriMid = mid;
+      }
+    }
+    let oriForWord = element.dataset.word || word;
+
+    this.dictService.getEntry(oriForWord, {base: true, stem: true})
+      .subscribe((entry: DictEntry) => {
+        if (entry == null) {
+          this.removeTagIfDummy(element);
+          return;
+        }
+        let dr = new DictRequest();
+        dr.wordElement = element;
+        dr.dictEntry = entry;
+        dr.meaningItemId = oriMid;
+        dr.relatedWords = null;
+        dr.onClose = () => {
+          this.removeTagIfDummy(element);
+        };
+        if (oriForWord !== word) {
+          dr.relatedWords = [word];
+        }
+        let phrase = this.currentPhrase(element);
+        if (phrase && phrase !== word && phrase !== oriForWord) {
+          if (dr.relatedWords === null) {
+            dr.relatedWords = [phrase];
+          } else {
+            dr.relatedWords.push(phrase);
+          }
+        }
+        this.dictRequest.emit(dr);
+      });
   }
 
   onMouseup($event) {
@@ -48,7 +162,13 @@ export class ParaContentComponent implements OnChanges {
       return;
     }
     $event.stopPropagation();
-    // TODO:
+    if (this.lookupDict) {
+      if (!this.annotator) {
+        let contentEl = this.contentText.element.nativeElement;
+        this.annotator = new Annotator(contentEl);
+      }
+      this.lookupWordsMeanig();
+    }
   }
 
 

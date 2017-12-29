@@ -18,3 +18,12 @@ export class Annotation {
     return this.group.dataName;
   }
 }
+
+
+export const wordMeaningAnnotation = new Annotation();
+
+wordMeaningAnnotation.name = '查词';
+wordMeaningAnnotation.nameEn = 'LookupDict';
+let groupWm = new AnnotationGroup();
+groupWm.dataName = 'mid';
+wordMeaningAnnotation.group = groupWm;
