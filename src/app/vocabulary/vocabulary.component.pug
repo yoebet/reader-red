@@ -1,0 +1,6 @@
+.ui.horizontal.list(*ngIf='userWords')
+  a.item(*ngFor='let uw of userWords', (click)='selectWord(uw)', href='javascript:') {{uw.word}}
+
+.ui.clearing.hidden.divider
+//user-word(*ngIf='selectedWord', [userWord]='selectedWord', (onWordRemoved)='onWordRemoved($event)')
+dict-entry(*ngIf='entry', [entry]='entry', (onUserWordRemoved)='onUserWordRemoved($event)')

@@ -1,4 +1,5 @@
 import {Model} from './model';
+import {Book} from './book';
 import {Para} from './para';
 
 export class Chap extends Model {
@@ -7,6 +8,8 @@ export class Chap extends Model {
   bookId: string;
   no: number;
   paras: Para[];
+
+  book: Book;
 
   isMyChap = false;
 }

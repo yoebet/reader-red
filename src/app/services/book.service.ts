@@ -3,38 +3,68 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 
 import {Observable} from 'rxjs/Observable';
-// import 'rxjs/add/operator/share';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/throw';
+import 'rxjs/add/operator/catch';
 
 import {Book} from '../models/book';
-import {UserBook} from '../models/user_book';
 import {BaseService} from './base.service';
-import {UserService} from './user.service';
+import {ChapService} from './chap.service';
 
 @Injectable()
 export class BookService extends BaseService<Book> {
 
-  constructor(protected http: HttpClient) {
+  allBooks: Book[];
+  booksDetailMap = new Map<string, Book>();
+
+  constructor(protected http: HttpClient, private chapService: ChapService) {
     super(http);
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/books`;
   }
 
-  // myBooks(): Observable<Book[]> {
-  //   let url = `${this.baseUrl}/my_books`;
-  //   return this.http.get<Book[]>(url, this.httpOptions)
-  //     .catch(this.handleError);
-  // }
-  //
-  // myBookConfigs(): Observable<UserBook[]> {
-  //   let url = `${this.baseUrl}/my_book_configs`;
-  //   return this.http.get<UserBook[]>(url, this.httpOptions)
-  //     .catch(this.handleError);
-  // }
-  //
-  // myBookConfig(bookId): Observable<UserBook> {
-  //   let url = `${this.baseUrl}/${bookId}/my_book_config`;
-  //   return this.http.get<UserBook>(url, this.httpOptions)
-  //     .catch(this.handleError);
-  // }
+  clearCache() {
+    this.allBooks = null;
+    this.booksDetailMap.clear();
+  }
+
+  getDetail(id: string): Observable<Book> {
+    let book = this.booksDetailMap.get(id);
+    if (book) {
+      return Observable.of(book);
+    }
+    let obs = super.getDetail(id) as Observable<Book>;
+    obs = obs.share();
+    obs.subscribe((book: Book) => {
+      this.booksDetailMap.set(book._id, book);
+      this.chapService.cacheBookChaps(book);
+    });
+    return obs;
+  }
+
+
+  getOne(id: string): Observable<Book> {
+    let book = this.booksDetailMap.get(id);
+    if (book) {
+      return Observable.of(book);
+    }
+    if (this.allBooks) {
+      let book = this.allBooks.find(b => b._id === id);
+      if (book) {
+        return Observable.of(book);
+      }
+    }
+    return super.getOne(id) as Observable<Book>;
+  }
+
+  list(): Observable<Book[]> {
+    let obs = super.list() as Observable<Book[]>;
+    obs = obs.share();
+    obs.subscribe((books: Book[]) => {
+      this.allBooks = books;
+    });
+    return obs;
+  }
+
 
 }

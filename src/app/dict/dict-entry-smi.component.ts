@@ -5,6 +5,7 @@ import {
 
 import {DictService} from '../services/dict.service';
 import {DictEntryComponent} from './dict-entry.component';
+import {VocabularyService} from '../services/vocabulary.service';
 
 @Component({
   selector: 'dict-entry-smi',
@@ -15,9 +16,9 @@ export class DictEntrySmiComponent extends DictEntryComponent implements AfterVi
   @Output() viewReady = new EventEmitter();
   viewReadyEntry = null;
 
-  constructor(cdr: ChangeDetectorRef, dictService: DictService) {
-    super(cdr, dictService);
-    this.selectMeaningItem = true;
+  constructor(cdr: ChangeDetectorRef, dictService: DictService, vocaService: VocabularyService) {
+    super(cdr, dictService, vocaService);
+    // this.selectMeaningItem = true;
   }
 
   ngAfterViewChecked() {

@@ -5,5 +5,6 @@ export class DictRequest {
   dictEntry: DictEntry;
   meaningItemId: number;
   relatedWords?: string[];
+  context?:any;
   onClose: () => void;
 }

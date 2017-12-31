@@ -1,5 +1,4 @@
 import {Model} from './model';
-import {Book} from './book';
 
 export class UserBook extends Model {
   userId: string;

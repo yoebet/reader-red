@@ -2,6 +2,7 @@ import * as moment from 'moment';
 
 export class Model {
   _id: string;
+  createdAt?: string;
   updatedAt?: string;
 
 
@@ -26,6 +27,9 @@ export class Model {
       return '';
     }
     let createdAt = Model.timestampOfObjectId(model._id);
+    if (!createdAt && model.createdAt) {
+      createdAt = new Date(model.createdAt);
+    }
     return Model.timeString(createdAt, precise);
   }
 

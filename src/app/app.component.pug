@@ -1,7 +1,7 @@
 .ui.container
   .ui.secondary.pointing.menu
     a.item(routerLink='/books', routerLinkActive='active') Books
-    a.item(routerLink='/dict', routerLinkActive='active') Dict
+    a.item(routerLink='/vocabulary', routerLinkActive='active') Vocabulary
     .right.menu
       a.item(*ngIf='!currentUser', href='javascript:', (click)='gotoLogin()') Login
       .item(*ngIf='currentUser')

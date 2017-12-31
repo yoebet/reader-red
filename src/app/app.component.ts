@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
-import {UserService} from './services/user.service'
+import {AppService} from './services/app.service'
 import {OpResult} from './models/op-result';
 
 @Component({
@@ -8,16 +8,20 @@ import {OpResult} from './models/op-result';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   loginForm = false;
   loginMessage: string;
 
   get currentUser() {
-    return this.userService.currentUser;
+    return this.appService.currentUser;
   }
 
-  constructor(private userService: UserService) {
+  constructor(private appService: AppService) {
+  }
+
+  ngOnInit() {
+    this.appService.checkLogin();
   }
 
   gotoLogin() {
@@ -31,7 +35,7 @@ export class AppComponent {
   }
 
   login(name, pass) {
-    this.userService.login(name, pass).subscribe((opr: OpResult) => {
+    this.appService.login(name, pass).subscribe((opr: OpResult) => {
       if (opr && opr.ok === 1) {
         this.loginMessage = null;
         this.loginForm = false;
@@ -42,6 +46,6 @@ export class AppComponent {
   }
 
   logout() {
-    this.userService.logout();
+    this.appService.logout();
   }
 }

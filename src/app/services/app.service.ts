@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 
@@ -9,9 +9,8 @@ import 'rxjs/add/operator/catch';
 import {User} from '../models/user';
 import {OpResult} from '../models/op-result';
 
-
 @Injectable()
-export class UserService {
+export class AppService {
 
   private httpOptions = {
     withCredentials: true
@@ -19,7 +18,9 @@ export class UserService {
 
   private loginUrl: string;
 
-   currentUser: User;
+  currentUser: User;
+
+  onCurrentUserChanged = new EventEmitter<{ from, to }>();
 
   constructor(private http: HttpClient) {
     let apiBase = environment.apiBase || '';
@@ -32,8 +33,12 @@ export class UserService {
     obs = obs.share();
     obs.subscribe((opr: OpResult) => {
       if (opr && opr.ok === 1) {
+        let from = this.currentUser ? this.currentUser.name : null;
         this.currentUser = new User();
         this.currentUser.name = name;
+        if (from !== name) {
+          this.onCurrentUserChanged.emit({from, to: name});
+        }
       }
     });
     return obs;
@@ -45,7 +50,32 @@ export class UserService {
     obs = obs.share();
     obs.subscribe((opr: OpResult) => {
       if (opr && opr.ok === 1) {
+        let from = this.currentUser ? this.currentUser.name : null;
         this.currentUser = null;
+        if (from !== null) {
+          this.onCurrentUserChanged.emit({from, to: null});
+        }
+      }
+    });
+    return obs;
+  }
+
+  checkLogin(): Observable<any> {
+    let url = `${this.loginUrl}/userinfo`;
+    let obs = this.http.get<any>(url, this.httpOptions)
+      .catch(this.handleError);
+    obs = obs.share();
+    obs.subscribe(userinfo => {
+      let from = this.currentUser ? this.currentUser.name : null;
+      if (userinfo && userinfo.login) {
+        this.currentUser = new User();
+        this.currentUser.name = userinfo.name;
+      } else {
+        this.currentUser = null;
+      }
+      let to = this.currentUser ? this.currentUser.name : null;
+      if (from !== to) {
+        this.onCurrentUserChanged.emit({from, to});
       }
     });
     return obs;

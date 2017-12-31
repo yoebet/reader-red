@@ -11,6 +11,7 @@ import {AnnotateResult} from '../anno/annotate-result'
 import {HighlightGroups} from '../anno/annotations';
 import {wordMeaningAnnotation} from '../anno/annotation';
 
+import {Para} from '../models/para';
 import {DictEntry} from '../models/dict-entry';
 import {DictService} from '../services/dict.service';
 import {DictRequest} from '../chap/dict-request';
@@ -25,8 +26,7 @@ export class ParaContentComponent implements OnChanges {
   @ViewChild('contentText', {read: ViewContainerRef}) contentText: ViewContainerRef;
   @ViewChild('paraTrans', {read: ViewContainerRef}) paraTrans: ViewContainerRef;
   @ViewChild('wordAnnos', {read: ViewContainerRef}) wordAnnos: ViewContainerRef;
-  @Input() content: string;
-  @Input() trans: string;
+  @Input() para: Para;
   @Input() showTrans: boolean;
   @Input() gotFocus: boolean;
   @Input() lookupDict: boolean;
@@ -139,6 +139,11 @@ export class ParaContentComponent implements OnChanges {
         dr.dictEntry = entry;
         dr.meaningItemId = oriMid;
         dr.relatedWords = null;
+        let paraId = this.para._id;
+        let chap = this.para.chap;
+        let chapId = chap._id;
+        let bookId = chap.book._id;
+        dr.context = {bookId, chapId, paraId};
         dr.onClose = () => {
           this.removeTagIfDummy(element);
         };
@@ -378,31 +383,29 @@ export class ParaContentComponent implements OnChanges {
   }
 
   refreshContent() {
-    let html = this.content || ' ';
+    let html = this.para.content || ' ';
     html = `<div class="part">${html}</div>`;
     this.contentText.element.nativeElement.innerHTML = html;
   }
 
   refreshTrans() {
-    let html = this.trans || ' ';
+    let html = this.para.trans || ' ';
     html = `<div class="part">${html}</div>`;
     this.paraTrans.element.nativeElement.innerHTML = html;
     this.transRendered = true;
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.trans) {
+    if (changes.para) {
+      this.refreshContent();
+      this.sentenceHoverSetup = false;
+      this.associatedWordsHoverSetup = false;
+      this.annotatedWordsHoverSetup = false;
       this.transRendered = false;
     }
     if (this.showTrans && !this.transRendered) {
       this.refreshTrans();
       this.sentenceHoverSetup = false;
-    }
-    if (changes.content) {
-      this.refreshContent();
-      this.sentenceHoverSetup = false;
-      this.associatedWordsHoverSetup = false;
-      this.annotatedWordsHoverSetup = false;
     }
 
     if (this.highlightedSentences && (!this.gotFocus || !this.sentenceHoverSetup || !this.highlightSentence)) {

@@ -44,10 +44,17 @@ export class ChapComponent implements OnInit {
       }
       if (!chap.paras) {
         chap.paras = [];
+      } else {
+        for (let para of chap.paras) {
+          para.chap = chap;
+        }
       }
       this.chap = chap;
       this.bookService.getOne(chap.bookId)
-        .subscribe((book) => this.book = book);
+        .subscribe(book => {
+          chap.book = book;
+          this.book = book;
+        });
     });
 
     document.addEventListener('click', (event) => {
