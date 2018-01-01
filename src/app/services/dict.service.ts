@@ -23,6 +23,10 @@ export class DictService extends BaseService<DictEntry> {
 
   clearCache() {
     this.entryCache.clear();
+    this.clearHistory();
+  }
+
+  clearHistory() {
     this._entryHistory = [];
   }
 
@@ -63,7 +67,7 @@ export class DictService extends BaseService<DictEntry> {
     if (!inHistory) {
       eh.push(entry);
     }
-    if (eh.length > 10) {
+    if (eh.length > 20) {
       eh.shift();
     }
   }

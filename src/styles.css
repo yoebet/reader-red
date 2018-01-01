@@ -54,6 +54,10 @@
   padding-left: 1.4em
 }
 
+.ui.radio.checkbox label {
+  padding-left: 1.3em;
+}
+
 .ui.form textarea {
   line-height: 1.4;
 }

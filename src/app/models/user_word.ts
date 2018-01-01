@@ -6,8 +6,8 @@ export class UserWord extends Model {
   chapId: string;
   paraId: string;
   familiarity: number = 1;
-  bookName?: string;
-  chapName?: string;
+  createdDateParts?: any;
+  createdMoment?: any;
 
   static familiarities = [
     {value: 1, label: '很陌生'},

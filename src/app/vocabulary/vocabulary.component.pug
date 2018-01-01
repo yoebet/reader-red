@@ -1,6 +1,45 @@
-.ui.horizontal.list(*ngIf='userWords')
-  a.item(*ngFor='let uw of userWords', (click)='selectWord(uw)', href='javascript:') {{uw.word}}
+.ui.grid
+  .three.wide.column
+    //h5.ui.header By Books
+    //h5.ui.header By Add Date
+    label History
+    .ui.link.list.words-history
+      a.item(*ngFor='let entry of entryHistory', (click)='selectHistoryEntry(entry)')
+        | {{entry.word}}
+      .item
+        a.right.floated.operation(*ngIf='entryHistory.length>0', (click)='clearHistory()') 清空
+  .thirteen.wide.column
+    .ui.segment.small.form.filter-group
+      .field
+        label.title 筛选
+        .grouped.fields
+          span.label.field-name 熟悉度
+          sui-checkbox([(ngModel)]="filter.familiarityAll") 全部
+          sui-checkbox(*ngFor='let fam of familiarities', [(ngModel)]='filter["familiarity"+fam.value]', [isDisabled]='filter.familiarityAll') {{fam.label}}
+        .grouped.fields
+          span.label.field-name 加入日期
+          sui-radio-button(name="filterAddOn", value="All", [(ngModel)]="filter.addOn") 全部
+          sui-radio-button(name="filterAddOn", value="3.days", [(ngModel)]="filter.addOn") 最近3天
+          sui-radio-button(name="filterAddOn", value="1.weeks", [(ngModel)]="filter.addOn") 最近1周
+          sui-radio-button(name="filterAddOn", value="1.months", [(ngModel)]="filter.addOn") 最近1月
+          //| Last Touch 最近..
+      .field
+        label.title 分组
+        sui-radio-button(name="groupBy", value="", [(ngModel)]="grouping.groupBy") 不分组
+        sui-radio-button(name="groupBy", value="AddOn", [(ngModel)]="grouping.groupBy") 按加入日期
+        sui-radio-button(name="groupBy", value="Source", [(ngModel)]="grouping.groupBy") 按章节
 
-.ui.clearing.hidden.divider
-//user-word(*ngIf='selectedWord', [userWord]='selectedWord', (onWordRemoved)='onWordRemoved($event)')
-dict-entry(*ngIf='entry', [entry]='entry', (onUserWordRemoved)='onUserWordRemoved($event)')
+        .ui.mini.primary.button((click)='refreshWordList()') 确定
+
+    .clearing
+
+    .ui.list(*ngIf='groupedUserWords')
+      .item(*ngFor='let group of groupedUserWords')
+        div
+          | {{group.title}} &nbsp;
+          span.ui.mini.circular.label {{group.userWords.length}}
+        .ui.horizontal.list
+          a.item(*ngFor='let uw of group.userWords', (click)='selectWord(uw)') {{uw.word}}
+
+    .ui.clearing.hidden.divider
+    dict-entry(*ngIf='entry', [entry]='entry', (onUserWordRemoved)='onUserWordRemoved($event)')
