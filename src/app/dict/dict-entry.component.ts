@@ -1,48 +1,62 @@
 import {
   Component, Input, Output, OnInit, EventEmitter, OnChanges,
-  SimpleChanges, ChangeDetectorRef
+  SimpleChanges, ChangeDetectorRef, AfterViewChecked
 } from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
 import {union, last} from 'lodash';
 
 import {DictEntry, TagLabelMap} from '../models/dict-entry';
 import {UserWord} from '../models/user_word';
+import {Para} from '../models/para';
 import {OpResult} from '../models/op-result';
 import {DictService} from '../services/dict.service';
 import {VocabularyService} from '../services/vocabulary.service';
+import {ParaService} from '../services/para.service';
 
 @Component({
   selector: 'dict-entry',
   templateUrl: './dict-entry.component.html',
   styleUrls: ['./dict-entry.component.css']
 })
-export class DictEntryComponent implements OnInit, OnChanges {
+export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() entry: DictEntry;
   @Input() initialSelectedItemId: number;
   @Input() relatedWords: string[];
   @Input() context: any;
   @Output() onUserWordRemoved = new EventEmitter<UserWord>();
+  @Output() viewReady = new EventEmitter();
+  viewReadyEntry = null;
 
-  cdr: ChangeDetectorRef;
-  dictService: DictService;
-  vocaService: VocabularyService;
   categoryTags: string[];
   refWords: string[];
   userWord: UserWord;
+  userWordSource: any;
 
   entryStack = [];
   initialWord: string;
   selectedItemId: number;
   selectMeaningItem = true;
+  textTrans = false;
+  textTabActive = false;
 
-  constructor(cdr: ChangeDetectorRef, dictService: DictService, vocaService: VocabularyService) {
-    this.cdr = cdr;
-    this.dictService = dictService;
-    this.vocaService = vocaService;
+  constructor(private cdr: ChangeDetectorRef,
+              private dictService: DictService,
+              private vocaService: VocabularyService,
+              private paraService: ParaService,
+              private sanitizer: DomSanitizer) {
   }
 
   ngOnInit() {
     this.initialWord = this.entry.word;
     this.selectedItemId = this.initialSelectedItemId;
+  }
+
+  ngAfterViewChecked() {
+    if (this.viewReadyEntry === this.entry) {
+      return;
+    }
+    this.viewReady.emit();
+    this.viewReadyEntry = this.entry;
   }
 
   goto(word: string) {
@@ -65,6 +79,34 @@ export class DictEntryComponent implements OnInit, OnChanges {
     }
   }
 
+  textTabActivated() {
+    this.setUserWordSource();
+  }
+
+  setUserWordSource() {
+    if (this.userWordSource) {
+      return;
+    }
+    if (!this.userWord || !this.userWord.paraId) {
+      return;
+    }
+    if (this.context && this.context.paraId === this.userWord.paraId) {
+      this.userWordSource = {isCurrentPara: true};
+      return;
+    }
+    this.paraService.loadPara(this.userWord.paraId)
+      .subscribe((para: Para) => {
+        let uws: any = {};
+        uws.para = para;
+        uws.chap = para.chap;
+        uws.book = para.book;
+
+        uws.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(para.content);
+        uws.sanitizedTrans = this.sanitizer.bypassSecurityTrustHtml(para.trans);
+        this.userWordSource = uws;
+      });
+  }
+
   private onEntryChanged() {
     let entry = this.entry;
     this.categoryTags = DictEntry.EvaluateCategoryTags(entry.categories);
@@ -85,8 +127,14 @@ export class DictEntryComponent implements OnInit, OnChanges {
       this.selectedItemId = null;
     }
     this.userWord = null;
+    this.userWordSource = null;
     this.vocaService.getOne(entry.word)
-      .subscribe(userWord => this.userWord = userWord);
+      .subscribe(userWord => {
+        this.userWord = userWord;
+        if (this.textTabActive) {
+          this.setUserWordSource();
+        }
+      });
     this.cdr.detectChanges();
   }
 

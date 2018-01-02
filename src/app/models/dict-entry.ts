@@ -22,6 +22,7 @@ export class DictEntry extends Model {
   categories: any = {};
   phonetics?: any;
   baseForms?: any;
+  forms?: any;
 
 
   static EvaluateCategoryTags(categories): string[] {

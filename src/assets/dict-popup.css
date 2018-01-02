@@ -25,3 +25,8 @@
   min-width: 300px;
   max-width: 550px;
 }
+
+#dictPopup .word-source-text {
+  max-height: 300px;
+  overflow: auto;
+}

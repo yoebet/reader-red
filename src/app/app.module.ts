@@ -10,6 +10,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppService} from './services/app.service';
 import {BookService} from './services/book.service';
 import {ChapService} from './services/chap.service';
+import {ParaService} from './services/para.service';
 import {DictService} from './services/dict.service';
 import {VocabularyService} from './services/vocabulary.service';
 
@@ -25,7 +26,6 @@ import {ParaContentComponent} from './content/para-content.component';
 import {WordAnnosComponent} from './content/word-annos.component';
 import {DictComponent} from './dict/dict.component';
 import {DictEntryComponent} from './dict/dict-entry.component';
-import {DictEntrySmiComponent} from './dict/dict-entry-smi.component';
 import {VocabularyComponent} from './vocabulary/vocabulary.component';
 
 @NgModule({
@@ -45,7 +45,6 @@ import {VocabularyComponent} from './vocabulary/vocabulary.component';
     WordAnnosComponent,
     DictComponent,
     DictEntryComponent,
-    DictEntrySmiComponent,
     CreatedDatePipe,
     CreatedDateStringPipe,
     WordFamiliarityPipe,
@@ -55,6 +54,7 @@ import {VocabularyComponent} from './vocabulary/vocabulary.component';
     AppService,
     BookService,
     ChapService,
+    ParaService,
     DictService,
     VocabularyService
   ],

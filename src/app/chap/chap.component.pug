@@ -31,7 +31,7 @@ div(*ngIf='chap')
       (dictRequest)="onDictRequest($event)")
 
   #dictPopup.ui.basic.popup
-    dict-entry-smi(*ngIf='dictRequest',
+    dict-entry(*ngIf='dictRequest',
     [entry]='dictRequest.dictEntry',
     [initialSelectedItemId]='dictRequest.meaningItemId',
     [relatedWords]='dictRequest.relatedWords',

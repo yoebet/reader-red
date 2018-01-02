@@ -55,10 +55,6 @@
   font-weight: bold;
 }
 
-.clearing {
-  clear: both;
-}
-
 .pos-meanings .pos-header .header .ui.mini.button {
   margin-top: -0.4em;
 }
@@ -81,4 +77,10 @@ input.ui.mini.input {
 
 .meaning-items > .selected-item.item {
   color: #bf4040 !important;
+}
+
+.word-source-book {
+  /* font-size: 0.9em; */
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 0.5rem;
 }

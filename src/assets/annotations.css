@@ -1,13 +1,13 @@
 /* *** 词类 Parts of Speech *** */
 
-y-o, .yo {
+.para-content y-o, .yo {
   border-bottom: 1px dashed grey;
   /*border-bottom-width: 1px;*/
   /*border-bottom-color: grey;*/
   /*border-bottom-style: dashed;*/
 }
 
-.pos {
+.para-content .pos {
   border-bottom-color: dimgrey;
 }
 
@@ -19,68 +19,71 @@ y-o, .yo {
 
 /* *** 名词 Noun *** */
 
-.noun {
+.para-content .noun {
   border-bottom-color: cadetblue;
 }
 
 /* *** 动词 Verb *** */
 
-.verb {
+.para-content .verb {
   border-bottom-color: darkgreen;
 }
 
 /* *** 成分 Members of the Sentence *** */
 
-.memb {
+.para-content .memb {
   border-bottom-color: darkolivegreen;
   border-bottom-style: solid;
 }
 
-.memb[data-memb=ms], .memb[data-memb=mp], .memb[data-memb=mo] {
+.para-content .memb[data-memb=ms],
+.para-content .memb[data-memb=mp],
+.para-content .memb[data-memb=mo] {
   border-bottom-color: darkgreen;
   border-bottom-style: double;
 }
 
 /* *** 从句 Clauses *** */
 
-.clau {
+.para-content .clau {
   border-bottom-color: silver;
 }
 
-.clau[data-clau=cc], .clau[data-clau=cr] {
+.para-content .clau[data-clau=cc],
+.para-content .clau[data-clau=cr] {
   border-bottom-color: palevioletred;
   border-bottom-style: solid;
 }
 
 /* *** 时态 Tense *** */
 
-.tens {
+.para-content .tens {
   border-bottom-color: olive;
   border-bottom-style: solid;
 }
 
 /* *** 短语 Phrases *** */
 
-.phra {
+.para-content .phra {
   border-bottom-color: lightskyblue;
   border-bottom-style: solid;
 }
 
-.phra[data-phra=g1] {
+.para-content .phra[data-phra=g1] {
   border-bottom-color: deepskyblue;
 }
 
-.phra[data-phra=g2] {
+.para-content .phra[data-phra=g2] {
   border-bottom-color: lightsalmon;
 }
 
-.phra[data-phra=g3] {
+.para-content .phra[data-phra=g3] {
   border-bottom-color: darkgreen;
 }
 
 /* *** 其他 Misc *** */
 
-.misc {
+.para-content .misc {
   border-bottom-color: cornflowerblue;
   border-bottom-style: solid;
 }

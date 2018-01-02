@@ -109,7 +109,7 @@ export class ParaContentComponent implements OnChanges {
     return result;
   }
 
-  lookupWordsMeanig() {
+  lookupWordsMeaning() {
     this.annotator.switchAnnotation(wordMeaningAnnotation);
     let ar: AnnotateResult = this.annotator.annotate();
     if (!ar || !ar.wordEl) {
@@ -172,7 +172,7 @@ export class ParaContentComponent implements OnChanges {
         let contentEl = this.contentText.element.nativeElement;
         this.annotator = new Annotator(contentEl);
       }
-      this.lookupWordsMeanig();
+      this.lookupWordsMeaning();
     }
   }
 
