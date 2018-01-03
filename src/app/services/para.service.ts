@@ -5,7 +5,10 @@ import {environment} from '../../environments/environment';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/catch';
+import {uniq} from 'lodash';
 
+import {Book} from '../models/book';
+import {Chap} from '../models/chap';
 import {Para} from '../models/para';
 import {BaseService} from './base.service';
 import {ChapService} from './chap.service';
@@ -35,12 +38,8 @@ export class ParaService extends BaseService<Para> {
           this.bookService.getOne(bookId),
           this.chapService.getOne(chapId))
           .subscribe(([book, chap]) => {
-            if (book) {
-              para.book = book;
-            }
-            if (chap) {
-              para.chap = chap;
-            }
+            para.book = book;
+            para.chap = chap;
             observer.next(para);
             observer.complete();
           });
@@ -54,7 +53,31 @@ export class ParaService extends BaseService<Para> {
       limit = 8;
     }
     let url = `${this.baseUrl}/search/${word}?limit=${limit}`;
-    return this.list(url);
+
+    return Observable.create(observer => {
+      this.list(url).subscribe(paras => {
+        if (!paras || paras.length === 0) {
+          observer.next([]);
+          observer.complete();
+        }
+        let bookIds = uniq(paras.map(p => p.bookId).filter(bookId => bookId != null));
+        let chapIds = uniq(paras.map(p => p.chapId).filter(chapId => chapId != null));
+        let booksObs: Observable<any>[] = bookIds.map(bookId => this.bookService.getOne(bookId));
+        let chapsObs: Observable<any>[] = chapIds.map(chapId => this.chapService.getOne(chapId));
+        Observable.combineLatest(booksObs.concat(chapsObs)).subscribe(bookOrChaps => {
+          let bookOrChapMap = new Map();
+          for (let boc of bookOrChaps) {
+            bookOrChapMap.set(boc._id, boc);
+          }
+          for (let para of paras) {
+            para.book = bookOrChapMap.get(para.bookId);
+            para.chap = bookOrChapMap.get(para.chapId);
+          }
+          observer.next(paras);
+          observer.complete();
+        });
+      });
+    });
   }
 
 }

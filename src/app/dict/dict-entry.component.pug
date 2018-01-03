@@ -54,16 +54,46 @@
                 span.ui.small.label(*ngFor='let tag of item.tags') {{tagLabelMap[tag]}}
                 | {{item.exp}}
     .ui.bottom.attached.segment(suiTabContent='te')
-      div(*ngIf='userWordSource&&userWordSource.isCurrentPara')
-        | 来源：当前段落
-      div(*ngIf='userWordSource&&userWordSource.chap')
-        .ui.right.floated.header
-          sui-checkbox([(ngModel)]='textTrans') 中文
-        .word-source-book(*ngIf='userWordSource.book') {{userWordSource.book.name}}
-        .pre-wrap {{userWordSource.chap.name}}
-        .pre-wrap([suiCollapse]='!textTrans') {{userWordSource.chap.zhName}}
-        .ui.segment.word-source-text
-          .content-text([innerHTML]='userWordSource.sanitizedContent')
-          div([suiCollapse]='!textTrans')
-            .ui.small.clearing.hidden.divider
-            .trans-text([innerHTML]='userWordSource.sanitizedTrans')
+      .ui.right.floated.header
+        sui-checkbox([(ngModel)]='textTrans') 中文
+      ng-template([ngIf]='!userWordSource')
+        .ui.clearing.divider
+        .ui.right.floated.mini.button((click)='loadMoreParas()') 加载文本...
+        .ui.clearing.hidden.divider
+
+      .word-sources(*ngIf='userWordSource')
+        div(*ngIf='userWordSource.isCurrentPara')
+          | 来源：当前段落
+        .word-source(*ngIf='userWordSource.para')
+          .book-title(*ngIf='userWordSource.book') {{userWordSource.book.name}}
+          ng-template([ngIf]='userWordSource.chap')
+            .chap-title.pre-wrap {{userWordSource.chap.name}}
+            .chap-title-zh.pre-wrap([suiCollapse]='!textTrans') {{userWordSource.chap.zhName}}
+          .ui.segment.word-source-text
+            .content-text([innerHTML]='userWordSource.sanitizedContent')
+            div([suiCollapse]='!textTrans')
+              .ui.small.clearing.hidden.divider
+              .trans-text([innerHTML]='userWordSource.sanitizedTrans')
+
+        .ui.clearing.divider
+
+        ng-template([ngIf]='!userWordSource.moreParas')
+          .ui.right.floated.mini.button((click)='loadMoreParas()') 更多文本...
+          .ui.clearing.hidden.divider
+
+        ng-template([ngIf]='userWordSource.moreParas')
+          ng-template(ngFor='', let-paraText='', [ngForOf]="userWordSource.moreParas", let-first="first", let-last="last")
+            .word-source
+              .book-title(*ngIf='paraText.book') {{paraText.book.name}}
+              ng-template([ngIf]='paraText.chap')
+                .chap-title.pre-wrap {{paraText.chap.name}}
+                .chap-title-zh.pre-wrap([suiCollapse]='!textTrans') {{paraText.chap.zhName}}
+              .ui.segment.word-source-text
+                .content-text([innerHTML]='paraText.sanitizedContent')
+                div([suiCollapse]='!textTrans')
+                  .ui.small.clearing.hidden.divider
+                  .trans-text([innerHTML]='paraText.sanitizedTrans')
+            .ui.clearing.divider(*ngIf='!first&&!last')
+
+          ng-template([ngIf]='userWordSource.moreParas.length===0')
+            | No More.

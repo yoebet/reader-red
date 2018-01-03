@@ -85,7 +85,6 @@ sui-multi-select i.list.icon {
 
 .dict-entry .ui.accordion .pos-meanings:not(:first-child) .title {
   border-top: 1px dashed silver;
-  /*background: whitesmoke;*/
 }
 
 .dict-entry .ui.multiple.dropdown {
@@ -99,3 +98,17 @@ sui-multi-select i.list.icon {
 .ui.small.divider {
   margin: 0.5rem 0;
 }
+
+
+.word-source-text s-st.highlight {
+  background: rgba(173, 216, 230, 0.4)
+}
+
+.word-source-text .content-text .highlight-word {
+  background: #ffffc0;
+}
+
+/*.word-source-text .content-text, .word-source-text .trans-text {*/
+  /*line-height: 1.5rem;*/
+  /*font-size: 1.1rem;*/
+/*}*/

@@ -79,8 +79,16 @@ input.ui.mini.input {
   color: #bf4040 !important;
 }
 
-.word-source-book {
+.book-title {
   /* font-size: 0.9em; */
   color: rgba(0, 0, 0, 0.6);
   margin-bottom: 0.5rem;
+}
+
+.chap-title, .chap-title-zh {
+  margin-bottom: 0.5rem;
+}
+
+.ui.segment.word-source-text {
+  margin-top: 0;
 }

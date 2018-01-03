@@ -129,25 +129,6 @@ export class VocabularyComponent implements OnInit {
       return;
     }
     if (gb === 'Source') {
-      // let grouped = groupBy(this.filteredUserWords, 'bookId');
-      // for (let bookId in grouped) {
-      //   let userWords = grouped[bookId];
-      //   let group: any = {key: bookId, userWords};
-      //   if (bookId && bookId !== 'null') {
-      //     this.bookService.getOne(bookId)
-      //       .subscribe(book => {
-      //         if (!book) {
-      //           group.title = '-';
-      //           return;
-      //         }
-      //         group.title = book.name;
-      //         group.book = book;
-      //       });
-      //   } else {
-      //     group.title = '-';
-      //   }
-      //   this.groupedUserWords.push(group);
-      // }
       let grouped = groupBy(this.filteredUserWords, 'chapId');
       for (let chapId in grouped) {
         let userWords = grouped[chapId];
@@ -167,7 +148,7 @@ export class VocabularyComponent implements OnInit {
               }
             });
         } else {
-          group.title = '-';
+          group.title = '- Other';
         }
         this.groupedUserWords.push(group);
       }
