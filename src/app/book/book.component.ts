@@ -5,7 +5,7 @@ import 'rxjs/add/operator/switchMap';
 
 import {Book} from '../models/book';
 import {Chap} from '../models/chap';
-import {UserBook} from '../models/user_book';
+import {UserBook} from '../models/user-book';
 import {BookService} from '../services/book.service';
 
 @Component({

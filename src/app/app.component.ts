@@ -2,6 +2,9 @@ import {Component, OnInit} from '@angular/core';
 
 import {AppService} from './services/app.service'
 import {OpResult} from './models/op-result';
+import {BookService} from "./services/book.service";
+import {ChapService} from "./services/chap.service";
+import {DictService} from "./services/dict.service";
 
 @Component({
   selector: 'app-root',
@@ -17,10 +20,19 @@ export class AppComponent implements OnInit {
     return this.appService.currentUser;
   }
 
-  constructor(private appService: AppService) {
+  constructor(private appService: AppService,
+              private bookService: BookService,
+              private chapService: ChapService,
+              private dictService: DictService) {
   }
 
   ngOnInit() {
+    this.appService.onCurrentUserChanged.subscribe(change => {
+      console.log('User Changed: ' + change.from + ' -> ' + change.to);
+      this.bookService.clearBookList();
+      // this.chapService.clearCache();
+      this.dictService.clearHistory();
+    });
     this.appService.checkLogin();
   }
 

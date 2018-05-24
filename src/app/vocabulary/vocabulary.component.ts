@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import {groupBy, sortBy} from 'lodash';
 
 import {Model} from '../models/model';
-import {UserWord} from '../models/user_word';
+import {UserWord} from '../models/user-word';
 import {DictEntry} from '../models/dict-entry';
 import {VocabularyService} from '../services/vocabulary.service';
 import {DictService} from '../services/dict.service';
@@ -25,7 +25,7 @@ export class VocabularyComponent implements OnInit {
   filteredUserWords: UserWord[];
   groupedUserWords: any[];
 
-  familiarities = UserWord.familiarities;
+  familiarities = UserWord.Familiarities;
 
   filter: any = {
     familiarityAll: true,

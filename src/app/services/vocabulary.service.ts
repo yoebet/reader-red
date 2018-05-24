@@ -7,7 +7,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
-import {UserWord} from '../models/user_word';
+import {UserWord} from '../models/user-word';
 import {OpResult} from '../models/op-result';
 import {BaseService} from './base.service';
 import {AppService} from './app.service';

@@ -6,14 +6,15 @@ import {BookService} from '../services/book.service';
 
 @Component({
   selector: 'book-list',
-  templateUrl: './books.component.html',
-  styleUrls: ['./books.component.css']
+  templateUrl: './book-list.component.html',
+  styleUrls: ['./book-list.component.css']
 })
-export class BooksComponent implements OnInit {
+export class BookListComponent implements OnInit {
   books: Book[];
   private allBooks: Book[];
   private myBooks: Book[];
   listAllBooks = false;
+  showZh = false;
 
   constructor(private bookService: BookService,
               private router: Router) {

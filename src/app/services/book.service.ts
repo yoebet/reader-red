@@ -6,10 +6,12 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
 
 import {Book} from '../models/book';
 import {BaseService} from './base.service';
 import {ChapService} from './chap.service';
+import {UserBookService} from "./user-book.service";
 
 @Injectable()
 export class BookService extends BaseService<Book> {
@@ -17,7 +19,7 @@ export class BookService extends BaseService<Book> {
   allBooks: Book[];
   booksDetailMap = new Map<string, Book>();
 
-  constructor(protected http: HttpClient, private chapService: ChapService) {
+  constructor(protected http: HttpClient, private chapService: ChapService, private userBookService: UserBookService) {
     super(http);
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/books`;
@@ -28,12 +30,26 @@ export class BookService extends BaseService<Book> {
     this.booksDetailMap.clear();
   }
 
+  clearBookList() {
+    this.allBooks = null;
+  }
+
   getDetail(id: string): Observable<Book> {
     let book = this.booksDetailMap.get(id);
     if (book) {
       return Observable.of(book);
     }
-    let obs = super.getDetail(id) as Observable<Book>;
+
+    let obs = Observable.combineLatest(
+      super.getDetail(id) as Observable<Book>,
+      this.userBookService.getOne(id))
+      .map(([book, userBook]) => {
+        if (book) {
+          book.userBook = userBook;
+        }
+        return book;
+      }) as Observable<Book>;
+
     obs = obs.share();
     obs.subscribe((book: Book) => {
       this.booksDetailMap.set(book._id, book);
@@ -58,7 +74,18 @@ export class BookService extends BaseService<Book> {
   }
 
   list(): Observable<Book[]> {
-    let obs = super.list() as Observable<Book[]>;
+    let obs = Observable.combineLatest(
+      super.list() as Observable<Book[]>,
+      this.userBookService.list())
+      .map(([books, userBooks]) => {
+        if (userBooks && userBooks.length > 0) {
+          for (let book of books) {
+            book.userBook = userBooks.find(ub => ub.bookId === book._id);
+          }
+        }
+        return books;
+      }) as Observable<Book[]>;
+
     obs = obs.share();
     obs.subscribe((books: Book[]) => {
       this.allBooks = books;

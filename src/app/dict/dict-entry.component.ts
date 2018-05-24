@@ -6,7 +6,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {union, last} from 'lodash';
 
 import {DictEntry, TagLabelMap} from '../models/dict-entry';
-import {UserWord} from '../models/user_word';
+import {UserWord} from '../models/user-word';
 import {Para} from '../models/para';
 import {OpResult} from '../models/op-result';
 import {DictService} from '../services/dict.service';

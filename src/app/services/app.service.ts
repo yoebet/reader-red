@@ -36,6 +36,7 @@ export class AppService {
         let from = this.currentUser ? this.currentUser.name : null;
         this.currentUser = new User();
         this.currentUser.name = name;
+        this.currentUser.role = (opr as any).role;
         if (from !== name) {
           this.onCurrentUserChanged.emit({from, to: name});
         }
@@ -70,6 +71,7 @@ export class AppService {
       if (userinfo && userinfo.login) {
         this.currentUser = new User();
         this.currentUser.name = userinfo.name;
+        this.currentUser.role = userinfo.role;
       } else {
         this.currentUser = null;
       }

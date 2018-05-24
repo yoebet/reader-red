@@ -12,6 +12,7 @@ import {BookService} from './services/book.service';
 import {ChapService} from './services/chap.service';
 import {ParaService} from './services/para.service';
 import {DictService} from './services/dict.service';
+import {UserBookService} from './services/user-book.service';
 import {VocabularyService} from './services/vocabulary.service';
 
 import {CreatedDatePipe} from './pipes/created-date.pipe';
@@ -19,7 +20,7 @@ import {CreatedDateStringPipe} from './pipes/created-date-string.pipe';
 import {WordFamiliarityPipe} from './pipes/word-familiarity.pipe';
 
 import {AppComponent} from './app.component';
-import {BooksComponent} from './book/books.component';
+import {BookListComponent} from './book/book-list.component';
 import {BookComponent} from './book/book.component';
 import {ChapComponent} from './chap/chap.component';
 import {ParaContentComponent} from './content/para-content.component';
@@ -38,7 +39,7 @@ import {VocabularyComponent} from './vocabulary/vocabulary.component';
   ],
   declarations: [
     AppComponent,
-    BooksComponent,
+    BookListComponent,
     BookComponent,
     ChapComponent,
     ParaContentComponent,
@@ -56,6 +57,7 @@ import {VocabularyComponent} from './vocabulary/vocabulary.component';
     ChapService,
     ParaService,
     DictService,
+    UserBookService,
     VocabularyService
   ],
   entryComponents: [

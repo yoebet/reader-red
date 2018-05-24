@@ -39,7 +39,7 @@ export class ParaService extends BaseService<Para> {
           this.chapService.getOne(chapId))
           .subscribe(([book, chap]) => {
             para.book = book;
-            para.chap = chap;
+            para.chap = chap as Chap;
             observer.next(para);
             observer.complete();
           });

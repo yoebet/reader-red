@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {UserWord} from '../models/user_word';
+import {UserWord} from '../models/user-word';
 
 @Pipe({name: 'wordFamiliarity'})
 export class WordFamiliarityPipe implements PipeTransform {
@@ -9,7 +9,7 @@ export class WordFamiliarityPipe implements PipeTransform {
     if (typeof wof !== 'number') {
       familiarity = wof.familiarity;
     }
-    let fam = UserWord.familiarities.find(f => f.value === familiarity);
+    let fam = UserWord.Familiarities.find(f => f.value === familiarity);
     if (fam) {
       return fam.label;
     }

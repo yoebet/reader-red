@@ -1,6 +1,6 @@
 .para-text.content-text((mouseup)='onMouseup($event)', spellcheck='false', #contentText='')
 .para-text.trans-text([hidden]='!showTrans', spellcheck='false', #paraTrans='')
-.ui.right.rail(*ngIf='beenChanged')
+//.ui.right.rail
   //.ui.list([hidden]='!gotFocus')
     .ui.item
       button.ui.mini.primary.basic.button((click)='notifySave()', [ngClass]='{disabled: !contentChanged&&!transChanged}')
