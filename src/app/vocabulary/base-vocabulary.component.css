@@ -1,0 +1,10 @@
+.base-voca .step {
+  cursor: pointer;
+}
+
+.selected-name {
+  width: 5em;
+  padding-left: 1em;
+  font-weight: bold;
+  display: inline-block;
+}

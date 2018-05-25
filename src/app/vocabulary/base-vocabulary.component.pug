@@ -1,0 +1,18 @@
+.ui.steps.base-voca
+  .step(*ngFor='let wc of [junior1,junior2,cet4,cet6]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
+    i.truck.icon
+    .content
+      .title {{wc.name}}
+      .description
+        ng-template([ngIf]='wc !== junior1') + {{wc.wordCount}} =
+        | {{wc.extendedWordCount}}
+
+.ui
+  | Selected:
+  .selected-name
+    ng-template([ngIf]='selected') {{selected.name}}
+  .ui.small.basic.button([ngClass]='{disabled: !changed}', (click)='save()') Save
+
+  .ui
+    sui-checkbox([(ngModel)]='showSamples') Show Samples
+    //.ui.small.basic.button([ngClass]='{disabled: !selected}') Show

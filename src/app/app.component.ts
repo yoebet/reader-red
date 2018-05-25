@@ -5,6 +5,7 @@ import {OpResult} from './models/op-result';
 import {BookService} from "./services/book.service";
 import {ChapService} from "./services/chap.service";
 import {DictService} from "./services/dict.service";
+import {VocabularyService} from "./services/vocabulary.service";
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ export class AppComponent implements OnInit {
   constructor(private appService: AppService,
               private bookService: BookService,
               private chapService: ChapService,
-              private dictService: DictService) {
+              private dictService: DictService,
+              private vocabularyService: VocabularyService) {
   }
 
   ngOnInit() {
@@ -32,6 +34,7 @@ export class AppComponent implements OnInit {
       this.bookService.clearBookList();
       // this.chapService.clearCache();
       this.dictService.clearHistory();
+      this.vocabularyService.clearCache();
     });
     this.appService.checkLogin();
   }

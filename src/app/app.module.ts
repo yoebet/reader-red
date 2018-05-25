@@ -14,6 +14,8 @@ import {ParaService} from './services/para.service';
 import {DictService} from './services/dict.service';
 import {UserBookService} from './services/user-book.service';
 import {VocabularyService} from './services/vocabulary.service';
+import {WordCategoryService} from './services/word-category.service';
+import {BaseVocabularyService} from './services/base-vocabulary.service';
 
 import {CreatedDatePipe} from './pipes/created-date.pipe';
 import {CreatedDateStringPipe} from './pipes/created-date-string.pipe';
@@ -28,6 +30,7 @@ import {WordAnnosComponent} from './content/word-annos.component';
 import {DictComponent} from './dict/dict.component';
 import {DictEntryComponent} from './dict/dict-entry.component';
 import {VocabularyComponent} from './vocabulary/vocabulary.component';
+import {BaseVocabularyComponent} from './vocabulary/base-vocabulary.component';
 
 @NgModule({
   imports: [
@@ -49,7 +52,8 @@ import {VocabularyComponent} from './vocabulary/vocabulary.component';
     CreatedDatePipe,
     CreatedDateStringPipe,
     WordFamiliarityPipe,
-    VocabularyComponent
+    VocabularyComponent,
+    BaseVocabularyComponent
   ],
   providers: [
     AppService,
@@ -58,7 +62,9 @@ import {VocabularyComponent} from './vocabulary/vocabulary.component';
     ParaService,
     DictService,
     UserBookService,
-    VocabularyService
+    VocabularyService,
+    WordCategoryService,
+    BaseVocabularyService
   ],
   entryComponents: [
     WordAnnosComponent

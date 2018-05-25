@@ -10,7 +10,6 @@ import {VocabularyService} from '../services/vocabulary.service';
 import {DictService} from '../services/dict.service';
 import {BookService} from '../services/book.service';
 import {ChapService} from '../services/chap.service';
-import {ParaService} from '../services/para.service';
 
 @Component({
   selector: 'vocabulary-main',
@@ -37,8 +36,7 @@ export class VocabularyComponent implements OnInit {
   constructor(private vocaService: VocabularyService,
               private dictService: DictService,
               private bookService: BookService,
-              private chapService: ChapService,
-              private paraService: ParaService) {
+              private chapService: ChapService) {
   }
 
   ngOnInit() {

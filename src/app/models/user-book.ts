@@ -1,7 +1,7 @@
 import {Model} from './model';
 
 export class UserBook extends Model {
-  userId: string;
+  // userId: string;
   bookId: string;
   role: string;
   isAllChaps: boolean;

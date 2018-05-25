@@ -10,7 +10,6 @@ import 'rxjs/add/operator/catch';
 import {UserWord} from '../models/user-word';
 import {OpResult} from '../models/op-result';
 import {BaseService} from './base.service';
-import {AppService} from './app.service';
 
 @Injectable()
 export class VocabularyService extends BaseService<UserWord> {
@@ -18,14 +17,10 @@ export class VocabularyService extends BaseService<UserWord> {
   allWords: UserWord[];
   userWordsMap = new Map<string, UserWord>();
 
-  constructor(protected http: HttpClient, appService: AppService) {
+  constructor(protected http: HttpClient) {
     super(http);
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/voca`;
-
-    appService.onCurrentUserChanged.subscribe(change => {
-      this.clearCache();
-    });
   }
 
   clearCache() {
