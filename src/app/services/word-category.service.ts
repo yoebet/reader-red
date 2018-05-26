@@ -38,7 +38,7 @@ export class WordCategoryService extends BaseService<WordCategory> {
     if (limit) {
       url = url + '?limit=' + limit;
     }
-    return this.http.get<string[]>(url, this.httpOptions)
+    return this.http.post<string[]>(url, null, this.httpOptions)
       .catch(this.handleError);
   }
 

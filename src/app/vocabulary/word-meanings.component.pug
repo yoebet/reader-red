@@ -1,0 +1,4 @@
+.ui.small.header {{word}}
+.ui.list(*ngIf='entry')
+  .ui.item(*ngFor='let item of entry.simple')
+    | {{item.pos}} {{item.exp}}

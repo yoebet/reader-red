@@ -31,6 +31,7 @@ import {DictComponent} from './dict/dict.component';
 import {DictEntryComponent} from './dict/dict-entry.component';
 import {VocabularyComponent} from './vocabulary/vocabulary.component';
 import {BaseVocabularyComponent} from './vocabulary/base-vocabulary.component';
+import {WordMeaningsComponent} from './vocabulary/word-meanings.component';
 
 @NgModule({
   imports: [
@@ -53,7 +54,8 @@ import {BaseVocabularyComponent} from './vocabulary/base-vocabulary.component';
     CreatedDateStringPipe,
     WordFamiliarityPipe,
     VocabularyComponent,
-    BaseVocabularyComponent
+    BaseVocabularyComponent,
+    WordMeaningsComponent
   ],
   providers: [
     AppService,
@@ -67,7 +69,8 @@ import {BaseVocabularyComponent} from './vocabulary/base-vocabulary.component';
     BaseVocabularyService
   ],
   entryComponents: [
-    WordAnnosComponent
+    WordAnnosComponent,
+    WordMeaningsComponent
   ],
   bootstrap: [AppComponent]
 })

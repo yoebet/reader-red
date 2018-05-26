@@ -2,6 +2,7 @@ import {Model} from './model';
 
 export class DictEntry extends Model {
   word: string;
+  simple: SimpleMeaning[];
   // complete: [
   //   {
   //     pos: 'n.',
@@ -81,6 +82,11 @@ export class DictEntry extends Model {
     {abbr: 'other', name: 'Other'},
   ];
 
+}
+
+export class SimpleMeaning {
+  pos: string;
+  exp: string;
 }
 
 export class PosMeanings {

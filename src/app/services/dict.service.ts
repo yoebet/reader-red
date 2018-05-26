@@ -72,11 +72,13 @@ export class DictService extends BaseService<DictEntry> {
     }
   }
 
-  private cacheOne(obs: Observable<DictEntry>): Observable<DictEntry> {
+  private cacheOne(obs: Observable<DictEntry>, putInHistory = true): Observable<DictEntry> {
     obs = obs.share();
     obs.subscribe(entry => {
       if (entry) {
-        this.pushHistory(entry);
+        if (putInHistory) {
+          this.pushHistory(entry);
+        }
         this.entryCache.set(entry.word, entry);
       }
     });
@@ -97,16 +99,20 @@ export class DictService extends BaseService<DictEntry> {
   getEntry(idOrWord: string, options: any = {}): Observable<DictEntry> {
     let cachedEntry = this.entryCache.get(idOrWord);
     if (cachedEntry) {
-      return Observable.of(cachedEntry);
+      console.log(options.simple)
+      console.log(cachedEntry.complete)
+      if (options.simple || typeof cachedEntry.complete !== 'undefined') {
+        return Observable.of(cachedEntry);
+      }
     }
     let url = `${this.baseUrl}/${idOrWord}`;
-    let switches = ['base', 'stem'].filter(name => options[name]);
+    let switches = ['base', 'stem', 'simple'].filter(name => options[name]);
     if (switches.length > 0) {
       url += '?';
       url += switches.join('&');
     }
 
-    return this.cacheOne(this.getOneByUrl(url));
+    return this.cacheOne(this.getOneByUrl(url), !options.simple);
   }
 
 }

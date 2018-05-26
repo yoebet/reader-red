@@ -1,18 +1,49 @@
-.ui.steps.base-voca
-  .step(*ngFor='let wc of [junior1,junior2,cet4,cet6]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
+.ui.stackable.steps.base-voca
+  .step(*ngFor='let wc of [junior1, junior2, cet4, cet6]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
     i.truck.icon
     .content
       .title {{wc.name}}
       .description
-        ng-template([ngIf]='wc !== junior1') + {{wc.wordCount}} =
+        ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount}} = &nbsp;
+        | {{wc.extendedWordCount}}
+.clearing
+.ui.steps.base-voca
+  .step(*ngFor='let wc of [gre]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
+    i.truck.icon
+    .content
+      .title {{wc.name}}
+      .description
+        ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount}} = &nbsp;
+        | {{wc.extendedWordCount}}
+.ui.steps.base-voca
+  .step(*ngFor='let wc of [yasi]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
+    i.truck.icon
+    .content
+      .title {{wc.name}}
+      .description
+        ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount}} = &nbsp;
+        | {{wc.extendedWordCount}}
+.ui.steps.base-voca
+  .step(*ngFor='let wc of [pro]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
+    i.truck.icon
+    .content
+      .title {{wc.name}}
+      .description
+        ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount}} = &nbsp;
         | {{wc.extendedWordCount}}
 
+.clearing
 .ui
   | Selected:
   .selected-name
     ng-template([ngIf]='selected') {{selected.name}}
   .ui.small.basic.button([ngClass]='{disabled: !changed}', (click)='save()') Save
+  .clearing
+  .ui.segment
+    .ui
+      sui-checkbox([(ngModel)]='showSamples', (click)='processSamples()') Show Samples
+      .ui.right.floated.tiny.basic.button([ngClass]='{disabled: !showSamples || !sampleWords}', (click)='processSamples()') Change
+    .ui.horizontal.list
+      a.item(*ngFor='let word of sampleWords', (click)='onClickAWord(word,$event)') {{word}}
 
-  .ui
-    sui-checkbox([(ngModel)]='showSamples') Show Samples
-    //.ui.small.basic.button([ngClass]='{disabled: !selected}') Show
+ng-template(#wordMeanings='')

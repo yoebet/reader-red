@@ -9,4 +9,6 @@ export class WordCategory extends Model {
   wordCount: number;
   extendTo: string;
   extendedWordCount: number;
+
+  extend: WordCategory;
 }
