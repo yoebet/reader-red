@@ -8,7 +8,7 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
 import {BaseService} from './base.service';
-import {WordCategory} from "../models/word_category";
+import {WordCategory} from "../models/word-category";
 
 @Injectable()
 export class WordCategoryService extends BaseService<WordCategory> {

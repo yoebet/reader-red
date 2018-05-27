@@ -2,7 +2,7 @@
   .ui.secondary.pointing.menu
     a.item(routerLink='/books', routerLinkActive='active') Books
     a.item(routerLink='/vocabulary', routerLinkActive='active') Vocabulary
-    a.item(routerLink='/base_vocabulary', routerLinkActive='active') Base Vocabulary
+    a.item(routerLink='/base-vocabulary', routerLinkActive='active') Base Vocabulary
     .right.menu
       a.item(*ngIf='!currentUser', href='javascript:', (click)='gotoLogin()') Login
       .item(*ngIf='currentUser')

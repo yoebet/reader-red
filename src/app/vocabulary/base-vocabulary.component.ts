@@ -11,8 +11,8 @@ import Drop from 'tether-drop'
 
 import {WordCategoryService} from "../services/word-category.service";
 import {BaseVocabularyService} from "../services/base-vocabulary.service";
-import {BaseVocabulary} from "../models/base_vocabulary";
-import {WordCategory} from "../models/word_category";
+import {BaseVocabulary} from "../models/base-vocabulary";
+import {WordCategory} from "../models/word-category";
 import {WordMeaningsComponent} from "./word-meanings.component";
 
 @Component({

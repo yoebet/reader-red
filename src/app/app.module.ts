@@ -27,7 +27,6 @@ import {BookComponent} from './book/book.component';
 import {ChapComponent} from './chap/chap.component';
 import {ParaContentComponent} from './content/para-content.component';
 import {WordAnnosComponent} from './content/word-annos.component';
-import {DictComponent} from './dict/dict.component';
 import {DictEntryComponent} from './dict/dict-entry.component';
 import {VocabularyComponent} from './vocabulary/vocabulary.component';
 import {BaseVocabularyComponent} from './vocabulary/base-vocabulary.component';
@@ -49,7 +48,6 @@ import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
     ChapComponent,
     ParaContentComponent,
     WordAnnosComponent,
-    DictComponent,
     DictEntryComponent,
     CreatedDatePipe,
     CreatedDateStringPipe,

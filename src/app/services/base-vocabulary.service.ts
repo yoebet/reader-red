@@ -5,7 +5,7 @@ import {environment} from '../../environments/environment';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 
-import {BaseVocabulary} from '../models/base_vocabulary';
+import {BaseVocabulary} from '../models/base-vocabulary';
 import {OpResult} from '../models/op-result';
 import {BaseService} from './base.service';
 

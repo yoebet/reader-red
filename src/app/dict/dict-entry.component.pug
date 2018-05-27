@@ -42,6 +42,9 @@
       a.item(suiTabHeader='co') 释义
       a.item(suiTabHeader='te', [(isActive)]='textTabActive', (activate)='textTabActivated()') 文本
     .ui.bottom.attached.segment(suiTabContent='co')
+      .ui.list
+        .ui.item(*ngFor='let item of entry.simple')
+          | {{item.pos}} {{item.exp}}
       sui-accordion([closeOthers]='false')
         sui-accordion-panel.pos-meanings(*ngFor='let pm of entry.complete||[]', [isOpen]='false')
           .pos-header(title='')

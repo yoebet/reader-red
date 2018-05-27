@@ -30,33 +30,6 @@ export class DictService extends BaseService<DictEntry> {
     this._entryHistory = [];
   }
 
-  search(key: string, options?): Observable<DictEntry[]> {
-    let {limit, previous, next, allFields} = options;
-    if (next === true) {
-      key = key + '_';
-    } else if (previous === true) {
-      key = '_' + key;
-    }
-    if (!limit) {
-      limit = 8;
-    }
-    let url = `${this.baseUrl}/search/${key}?limit=${limit}`;
-
-    let switches = ['phrase', 'phraseOnly', 'cet', 'junior', 'allFields']
-      .filter(name => options[name]);
-    if (switches.length > 0) {
-      url += '&';
-      url += switches.join('&');
-    }
-
-    let obs = this.list(url);
-    if (allFields !== true) {
-      return obs;
-    }
-
-    return this.cacheList(obs);
-  }
-
   get entryHistory(): DictEntry[] {
     return this._entryHistory;
   }
@@ -79,17 +52,6 @@ export class DictService extends BaseService<DictEntry> {
         if (putInHistory) {
           this.pushHistory(entry);
         }
-        this.entryCache.set(entry.word, entry);
-      }
-    });
-    return obs;
-  }
-
-  private cacheList(obs: Observable<DictEntry[]>): Observable<DictEntry[]> {
-    obs = obs.share();
-    obs.subscribe(entries => {
-      for (let entry of entries) {
-        this.pushHistory(entry);
         this.entryCache.set(entry.word, entry);
       }
     });

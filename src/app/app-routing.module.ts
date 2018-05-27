@@ -12,7 +12,7 @@ const routes: Routes = [
   {path: 'books/:id', component: BookComponent},
   {path: 'chaps/:id', component: ChapComponent},
   {path: 'vocabulary', component: VocabularyComponent},
-  {path: 'base_vocabulary', component: BaseVocabularyComponent}
+  {path: 'base-vocabulary', component: BaseVocabularyComponent}
 ];
 
 @NgModule({
