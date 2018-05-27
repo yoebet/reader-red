@@ -99,8 +99,6 @@ export class DictService extends BaseService<DictEntry> {
   getEntry(idOrWord: string, options: any = {}): Observable<DictEntry> {
     let cachedEntry = this.entryCache.get(idOrWord);
     if (cachedEntry) {
-      console.log(options.simple)
-      console.log(cachedEntry.complete)
       if (options.simple || typeof cachedEntry.complete !== 'undefined') {
         return Observable.of(cachedEntry);
       }

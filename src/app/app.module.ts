@@ -32,6 +32,7 @@ import {DictEntryComponent} from './dict/dict-entry.component';
 import {VocabularyComponent} from './vocabulary/vocabulary.component';
 import {BaseVocabularyComponent} from './vocabulary/base-vocabulary.component';
 import {WordMeaningsComponent} from './vocabulary/word-meanings.component';
+import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
 
 @NgModule({
   imports: [
@@ -53,6 +54,7 @@ import {WordMeaningsComponent} from './vocabulary/word-meanings.component';
     CreatedDatePipe,
     CreatedDateStringPipe,
     WordFamiliarityPipe,
+    ApproximateNumberPipe,
     VocabularyComponent,
     BaseVocabularyComponent,
     WordMeaningsComponent

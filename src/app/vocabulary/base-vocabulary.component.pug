@@ -1,36 +1,23 @@
-.ui.stackable.steps.base-voca
-  .step(*ngFor='let wc of [junior1, junior2, cet4, cet6]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
-    i.truck.icon
-    .content
-      .title {{wc.name}}
-      .description
-        ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount}} = &nbsp;
-        | {{wc.extendedWordCount}}
-.clearing
-.ui.steps.base-voca
-  .step(*ngFor='let wc of [gre]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
-    i.truck.icon
-    .content
-      .title {{wc.name}}
-      .description
-        ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount}} = &nbsp;
-        | {{wc.extendedWordCount}}
-.ui.steps.base-voca
-  .step(*ngFor='let wc of [yasi]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
-    i.truck.icon
-    .content
-      .title {{wc.name}}
-      .description
-        ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount}} = &nbsp;
-        | {{wc.extendedWordCount}}
-.ui.steps.base-voca
-  .step(*ngFor='let wc of [pro]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
-    i.truck.icon
-    .content
-      .title {{wc.name}}
-      .description
-        ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount}} = &nbsp;
-        | {{wc.extendedWordCount}}
+.ui
+  .ui.stackable.steps.base-voca
+    .step(*ngFor='let wc of [junior1, junior2, cet4, cet6]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
+      i.truck.icon
+      .content
+        .title {{wc.name}}
+        .description
+          ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount | approximate}} = &nbsp;
+          | {{wc.extendedWordCount | approximate}}
+
+.ui
+  ng-template(ngFor='', let-wc='', [ngForOf]="[gre,yasi,pro]")
+    .ui.steps.base-voca
+      .step([ngClass]='{active:wc===selected}', (click)='select(wc)')
+        i.truck.icon
+        .content
+          .title {{wc.name}}
+          .description
+            ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount | approximate}} = &nbsp;
+            | {{wc.extendedWordCount | approximate}}
 
 .clearing
 .ui
@@ -38,7 +25,9 @@
   .selected-name
     ng-template([ngIf]='selected') {{selected.name}}
   .ui.small.basic.button([ngClass]='{disabled: !changed}', (click)='save()') Save
+
   .clearing
+
   .ui.segment
     .ui
       sui-checkbox([(ngModel)]='showSamples', (click)='processSamples()') Show Samples

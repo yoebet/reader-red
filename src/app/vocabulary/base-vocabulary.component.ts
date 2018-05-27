@@ -13,9 +13,6 @@ import {WordCategoryService} from "../services/word-category.service";
 import {BaseVocabularyService} from "../services/base-vocabulary.service";
 import {BaseVocabulary} from "../models/base_vocabulary";
 import {WordCategory} from "../models/word_category";
-import {DictEntry} from "../models/dict-entry";
-import {DictService} from "../services/dict.service";
-import {WordAnnosComponent} from "../content/word-annos.component";
 import {WordMeaningsComponent} from "./word-meanings.component";
 
 @Component({
@@ -124,31 +121,32 @@ export class BaseVocabularyComponent implements OnInit {
 
   onClickAWord(word, $event) {
     let drop = this.wordDrops.get(word);
-    if (!drop) {
-      if (!this.wordMeaningsComponentRef) {
-        let factory: ComponentFactory<WordMeaningsComponent> = this.resolver.resolveComponentFactory(WordMeaningsComponent);
-        this.wordMeanings.clear();
-        this.wordMeaningsComponentRef = this.wordMeanings.createComponent(factory);
-      }
-      let wmcr = this.wordMeaningsComponentRef;
-
-      let content = function () {
-        wmcr.instance.word = word;
-        return wmcr.location.nativeElement;
-      };
-
-      drop = new Drop({
-        target: $event.target,
-        content: content,
-        classes: `drop-word`,
-        position: 'bottom center',
-        constrainToScrollParent: false,
-        remove: true,
-        hoverOpenDelay: 100,
-        openOn: 'click'//click,hover,always
-      });
-      drop.open();
-      this.wordDrops.set(word, drop);
+    if (drop) {
+      return;
     }
+    if (!this.wordMeaningsComponentRef) {
+      let factory: ComponentFactory<WordMeaningsComponent> = this.resolver.resolveComponentFactory(WordMeaningsComponent);
+      this.wordMeanings.clear();
+      this.wordMeaningsComponentRef = this.wordMeanings.createComponent(factory);
+    }
+    let wmcr = this.wordMeaningsComponentRef;
+
+    let content = function () {
+      wmcr.instance.word = word;
+      return wmcr.location.nativeElement;
+    };
+
+    drop = new Drop({
+      target: $event.target,
+      content: content,
+      classes: `drop-word`,
+      position: 'bottom center',
+      constrainToScrollParent: false,
+      remove: true,
+      hoverOpenDelay: 100,
+      openOn: 'click'//click,hover,always
+    });
+    drop.open();
+    this.wordDrops.set(word, drop);
   }
 }
