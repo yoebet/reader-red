@@ -1,3 +1,25 @@
+.para-text {
+  /*white-space: pre-wrap;*/
+  flex: 1;
+}
+
+.para-content.left-right {
+  /*flex-direction: row;*/
+}
+
+.para-content.up-down {
+  flex-direction: column;
+}
+
+.para-content.up-down .para-text.trans-text {
+  margin-left: 0;
+  margin-top: 0.6em;
+}
+
+.para-content.left-right .para-text.trans-text {
+  margin-left: 1em;
+}
+
 
 .para-text.content-text [data-mid] {
   border-bottom: 1px dashed cadetblue;

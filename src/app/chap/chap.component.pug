@@ -12,6 +12,7 @@ div(*ngIf='chap')
     .operations
       sui-checkbox([(ngModel)]='lookupDict') 查词
       sui-checkbox([(ngModel)]='showTrans') 中文
+      sui-checkbox([(ngModel)]='leftRight', [isDisabled]='!showTrans') 左右对照
       sui-checkbox([(ngModel)]='highlightSentence') 句子高亮
       sui-checkbox([(ngModel)]='annotatedWordsHover', (ngModelChange)='onAnnotatedWordsHoverChange()') 鼠标悬停
 
@@ -26,7 +27,8 @@ div(*ngIf='chap')
       [lookupDict]='para===selectedPara && lookupDict',
       [highlightSentence]='para===selectedPara && highlightSentence',
       [annotatedWordsHover]='annotatedWordsHover',
-      [ngClass]='{"selected": para===selectedPara}',
+      [annotationSet]='annotationSet',
+      [ngClass]='{"selected": para===selectedPara, "left-right": leftRight, "up-down": !leftRight}',
       (click)='selectPara(para)',
       (dictRequest)="onDictRequest($event)")
 

@@ -7,8 +7,10 @@ import Tether from 'tether';
 import {Book} from '../models/book';
 import {Chap} from '../models/chap';
 import {Para} from '../models/para';
+import {AnnotationSet} from '../anno/annotation-set';
 import {BookService} from '../services/book.service';
 import {ChapService} from '../services/chap.service';
+import {AnnotationFamilyService} from "../services/annotation-family.service";
 import {DictRequest} from './dict-request';
 
 @Component({
@@ -21,9 +23,12 @@ export class ChapComponent implements OnInit {
   chap: Chap;
   selectedPara: Para;
   showTrans = false;
+  leftRight = false;
   highlightSentence = false;
   annotatedWordsHover = true;
   lookupDict = false;
+
+  annotationSet: AnnotationSet;
 
   dictRequest: DictRequest = null;
   dictTether = null;
@@ -31,6 +36,7 @@ export class ChapComponent implements OnInit {
 
   constructor(private bookService: BookService,
               private chapService: ChapService,
+              private annoService: AnnotationFamilyService,
               private route: ActivatedRoute,
               private location: Location) {
   }
@@ -54,6 +60,7 @@ export class ChapComponent implements OnInit {
         .subscribe(book => {
           chap.book = book;
           this.book = book;
+          this.loadAnnotations();
         });
     });
 
@@ -72,6 +79,20 @@ export class ChapComponent implements OnInit {
         this.closeDictPopup();
       }
     }, true)
+  }
+
+  private loadAnnotations() {
+    let afId = this.book.annotationFamilyId;
+    if (!afId) {
+      return;
+    }
+    this.annoService.getAnnotationSet(afId)
+      .subscribe((annotationSet: AnnotationSet) => {
+        if (!annotationSet) {
+          return;
+        }
+        this.annotationSet = annotationSet;
+      });
   }
 
   selectPara(para): void {

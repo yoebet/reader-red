@@ -16,6 +16,7 @@ import {UserBookService} from './services/user-book.service';
 import {VocabularyService} from './services/vocabulary.service';
 import {WordCategoryService} from './services/word-category.service';
 import {BaseVocabularyService} from './services/base-vocabulary.service';
+import {AnnotationFamilyService} from './services/annotation-family.service';
 
 import {CreatedDatePipe} from './pipes/created-date.pipe';
 import {CreatedDateStringPipe} from './pipes/created-date-string.pipe';
@@ -66,7 +67,8 @@ import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
     UserBookService,
     VocabularyService,
     WordCategoryService,
-    BaseVocabularyService
+    BaseVocabularyService,
+    AnnotationFamilyService
   ],
   entryComponents: [
     WordAnnosComponent,

@@ -15,6 +15,7 @@
   margin-left: 1em;
   font-weight: normal;
 }
+
 .sticky.header {
   background-color: white;
   border: 1px solid silver;
@@ -39,6 +40,19 @@
   margin: 0 0 .5em 0;
 }
 
+.operations .title {
+  margin-right: 0.5em;
+  display: inline-block;
+  border-bottom-style: double;
+  border-bottom-color: silver;
+}
+
+.operations, .operations .ui.header {
+  font-weight: normal;
+  font-size: 0.8em;
+  margin-left: 1.2em;
+}
+
 .annotations .ui.buttons {
   margin-right: 0.5rem;
 }
@@ -54,6 +68,7 @@
 .ui.statistic.para-no {
   min-width: 1.8em;
   padding-top: 0.6em;
+  cursor: pointer;
 }
 
 .ui.statistic.para-no .value {
@@ -65,10 +80,6 @@
   position: relative;
   display: flex;
   flex: 1 1 auto;
-  /*flex-direction: row;*/
-  /*flex-direction: row-reverse;*/
-  /*flex-direction: column;*/
-  /*flex-direction: column-reverse;*/
   border: 1px solid white;
   padding: 0.3em;
   border-radius: 0.5em;
@@ -76,23 +87,7 @@
   font-size: 1.1rem;
 }
 
+
 .paragraph > .selected.para-content {
   border-color: lightskyblue;
-}
-
-.paragraph .para-no {
-  cursor: pointer;
-}
-
-.operations .title {
-  margin-right: 0.5em;
-  display: inline-block;
-  border-bottom-style: double;
-  border-bottom-color: silver;
-}
-
-.operations, .operations .ui.header {
-  font-weight: normal;
-  font-size: 0.8em;
-  margin-left: 1.2em;
 }

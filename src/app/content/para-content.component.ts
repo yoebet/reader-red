@@ -8,8 +8,7 @@ import Drop from 'tether-drop'
 
 import {Annotator} from '../anno/annotator';
 import {AnnotateResult} from '../anno/annotate-result'
-import {HighlightGroups} from '../anno/annotations';
-import {wordMeaningAnnotation} from '../anno/annotation';
+import {AnnotationSet, HighlightGroups} from '../anno/annotation-set';
 
 import {Para} from '../models/para';
 import {DictEntry} from '../models/dict-entry';
@@ -32,6 +31,7 @@ export class ParaContentComponent implements OnChanges {
   @Input() lookupDict: boolean;
   @Input() highlightSentence: boolean;
   @Input() annotatedWordsHover: boolean;
+  @Input() annotationSet: AnnotationSet;
   @Output() dictRequest = new EventEmitter<DictRequest>();
 
   transRendered = false;
@@ -110,7 +110,7 @@ export class ParaContentComponent implements OnChanges {
   }
 
   lookupWordsMeaning() {
-    this.annotator.switchAnnotation(wordMeaningAnnotation);
+    this.annotator.switchAnnotation(this.annotationSet.wordMeaningAnnotation);
     let ar: AnnotateResult = this.annotator.annotate();
     if (!ar || !ar.wordEl) {
       return;
@@ -348,6 +348,7 @@ export class ParaContentComponent implements OnChanges {
     let content = function () {
       wacr.instance.enabled = component.annotatedWordsHover;
       wacr.instance.wordEl = wordEl;
+      wacr.instance.annotationSet = component.annotationSet;
       return wacr.location.nativeElement;
     };
     let drop = new Drop({
