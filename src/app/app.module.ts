@@ -15,7 +15,7 @@ import {DictService} from './services/dict.service';
 import {UserBookService} from './services/user-book.service';
 import {VocabularyService} from './services/vocabulary.service';
 import {WordCategoryService} from './services/word-category.service';
-import {BaseVocabularyService} from './services/base-vocabulary.service';
+import {UserPreferenceService} from './services/user-preference.service';
 import {AnnotationFamilyService} from './services/annotation-family.service';
 
 import {CreatedDatePipe} from './pipes/created-date.pipe';
@@ -30,7 +30,7 @@ import {ParaContentComponent} from './content/para-content.component';
 import {WordAnnosComponent} from './content/word-annos.component';
 import {DictEntryComponent} from './dict/dict-entry.component';
 import {VocabularyComponent} from './vocabulary/vocabulary.component';
-import {BaseVocabularyComponent} from './vocabulary/base-vocabulary.component';
+import {BaseVocabularyComponent} from './preference/base-vocabulary.component';
 import {WordMeaningsComponent} from './vocabulary/word-meanings.component';
 import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
 
@@ -67,7 +67,7 @@ import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
     UserBookService,
     VocabularyService,
     WordCategoryService,
-    BaseVocabularyService,
+    UserPreferenceService,
     AnnotationFamilyService
   ],
   entryComponents: [

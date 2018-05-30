@@ -5,7 +5,7 @@ import {BookListComponent} from './book/book-list.component';
 import {BookComponent} from './book/book.component';
 import {ChapComponent} from './chap/chap.component';
 import {VocabularyComponent} from './vocabulary/vocabulary.component';
-import {BaseVocabularyComponent} from './vocabulary/base-vocabulary.component';
+import {BaseVocabularyComponent} from './preference/base-vocabulary.component';
 
 const routes: Routes = [
   {path: 'books', component: BookListComponent},

@@ -6,6 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
 
 import {BaseService} from './base.service';
 import {WordCategory} from "../models/word-category";
@@ -14,6 +15,7 @@ import {WordCategory} from "../models/word-category";
 export class WordCategoryService extends BaseService<WordCategory> {
 
   wordCategories: WordCategory[];
+  wordCategoriesMap: Map<string, WordCategory>;
 
   constructor(protected http: HttpClient) {
     super(http);
@@ -25,11 +27,28 @@ export class WordCategoryService extends BaseService<WordCategory> {
     if (this.wordCategories) {
       return Observable.of(this.wordCategories);
     }
-    let obs = super.list(this.baseUrl + '/?userBase').share();
-    obs.subscribe(wcs => {
-      this.wordCategories = wcs;
+    return super.list().map((cats: WordCategory[]) => {
+      // setup extend
+      let catsMap = new Map();
+      for (let cat of cats) {
+        catsMap.set(cat.code, cat);
+      }
+      for (let cat of cats) {
+        if (cat.extendTo) {
+          cat.extend = catsMap.get(cat.extendTo);
+        }
+      }
+      this.wordCategoriesMap = catsMap;
+      this.wordCategories = cats;
+      return cats;
     });
-    return obs;
+  }
+
+  listUserBaseCandidates(): Observable<WordCategory[]> {
+    return this.list()
+      .map((wcs: WordCategory[]) => {
+        return wcs.filter(wc => wc.useAsUserBase);
+      });
   }
 
 

@@ -10,10 +10,9 @@ import {
 import Drop from 'tether-drop'
 
 import {WordCategoryService} from "../services/word-category.service";
-import {BaseVocabularyService} from "../services/base-vocabulary.service";
-import {BaseVocabulary} from "../models/base-vocabulary";
+import {UserPreferenceService} from "../services/user-preference.service";
 import {WordCategory} from "../models/word-category";
-import {WordMeaningsComponent} from "./word-meanings.component";
+import {WordMeaningsComponent} from "../vocabulary/word-meanings.component";
 
 @Component({
   selector: 'base-vocabulary-main',
@@ -23,9 +22,10 @@ import {WordMeaningsComponent} from "./word-meanings.component";
 export class BaseVocabularyComponent implements OnInit {
   @ViewChild('wordMeanings', {read: ViewContainerRef}) wordMeanings: ViewContainerRef;
 
-  baseVocabulary: BaseVocabulary;
+  baseVocabulary: string;
   showSamples = false;
   sampleWords: string[];
+  gypCollapse = true;
 
   junior1 = {code: 'junior1', name: '初级'} as WordCategory;
   junior2 = {code: 'junior2', name: '基础'} as WordCategory;
@@ -44,43 +44,37 @@ export class BaseVocabularyComponent implements OnInit {
 
 
   constructor(private wordCategoryService: WordCategoryService,
-              private baseVocabularyService: BaseVocabularyService,
+              private userPreferenceService: UserPreferenceService,
               private resolver: ComponentFactoryResolver) {
   }
 
   ngOnInit() {
-    this.wordCategoryService.list()
+    this.wordCategoryService.listUserBaseCandidates()
       .subscribe((cats: WordCategory[]) => {
         if (!cats) {
           return;
         }
-        let catsMap = new Map();
-        for (let cat of cats) {
-          catsMap.set(cat.code, cat);
-        }
+        let catsMap = this.wordCategoryService.wordCategoriesMap;
         for (let thisCat of this.allCats) {
           let cat = catsMap.get(thisCat.code);
           if (cat) {
             Object.assign(thisCat, cat);
-            if (thisCat.extendTo) {
-              thisCat.extend = catsMap.get(thisCat.extendTo);
-            }
           }
         }
       });
-    this.baseVocabularyService.get()
-      .subscribe((bv: BaseVocabulary) => {
+    this.userPreferenceService.getBaseVocabulary()
+      .subscribe((bv: string) => {
         if (!bv) {
           return;
         }
         this.baseVocabulary = bv;
-        this.selected = this.allCats.find(cat => cat.code === bv.categoryCode);
+        this.selected = this.allCats.find(cat => cat.code === bv);
       });
   }
 
   select(wordCategory) {
     this.selected = wordCategory;
-    this.changed = !this.baseVocabulary || this.selected.code !== this.baseVocabulary.categoryCode;
+    this.changed = !this.baseVocabulary || this.selected.code !== this.baseVocabulary;
     this.processSamples();
   }
 
@@ -88,9 +82,8 @@ export class BaseVocabularyComponent implements OnInit {
     if (!this.selected) {
       return;
     }
-    let baseVocabulary = new BaseVocabulary();
-    baseVocabulary.categoryCode = this.selected.code;
-    this.baseVocabularyService.reset(baseVocabulary)
+    let baseVocabulary = this.selected.code;
+    this.userPreferenceService.setBaseVocabulary(baseVocabulary)
       .subscribe(opr => {
         if (opr && opr.ok === 1) {
           this.baseVocabulary = baseVocabulary;

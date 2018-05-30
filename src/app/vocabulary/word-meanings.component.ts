@@ -22,6 +22,9 @@ export class WordMeaningsComponent {
   }
 
   set word(word) {
+    if (this._word === word) {
+      return;
+    }
     this._word = word;
     this.dictService.getEntry(word, {simple: true})
       .subscribe((entry: DictEntry) => {

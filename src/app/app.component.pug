@@ -1,6 +1,6 @@
 .ui.container
   .ui.secondary.pointing.menu
-    a.item(routerLink='/', routerLinkActive='active') Home
+    a.item(routerLink='/') Home
     a.item(routerLink='/books', routerLinkActive='active') Books
     a.item(routerLink='/vocabulary', routerLinkActive='active') Vocabulary
     a.item(routerLink='/base-vocabulary', routerLinkActive='active') Base Vocabulary
@@ -8,7 +8,7 @@
       a.item(*ngIf='!currentUser', href='javascript:', (click)='gotoLogin()') Login
       .item(*ngIf='currentUser')
         | {{currentUser.name}} &nbsp;&nbsp;
-        a(href='javascript:', (click)='logout()') Logout
+        a((click)='logout()', href='#') Logout
 
   .ui.small.form.login(*ngIf='loginForm')
     h3 Login

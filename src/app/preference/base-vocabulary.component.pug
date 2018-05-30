@@ -1,3 +1,9 @@
+.ui.gray.header
+  .ui.right.floated.mini.button((click)='gypCollapse=!gypCollapse')
+    ng-template([ngIf]='gypCollapse') More
+    ng-template([ngIf]='!gypCollapse') Less
+  | Base Vocabulary
+
 .ui
   .ui.stackable.steps.base-voca
     .step(*ngFor='let wc of [junior1, junior2, cet4, cet6]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
@@ -8,18 +14,19 @@
           ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount | approximate}} = &nbsp;
           | {{wc.extendedWordCount | approximate}}
 
-.ui
-  ng-template(ngFor='', let-wc='', [ngForOf]="[gre,yasi,pro]")
-    .ui.steps.base-voca
-      .step([ngClass]='{active:wc===selected}', (click)='select(wc)')
-        i.truck.icon
-        .content
-          .title {{wc.name}}
-          .description
-            ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount | approximate}} = &nbsp;
-            | {{wc.extendedWordCount | approximate}}
+div
+  .ui([suiCollapse]='gypCollapse')
+    ng-template(ngFor='', let-wc='', [ngForOf]="[gre,yasi,pro]")
+      .ui.steps.base-voca
+        .step([ngClass]='{active:wc===selected}', (click)='select(wc)')
+          i.truck.icon
+          .content
+            .title {{wc.name}}
+            .description
+              ng-template([ngIf]='wc.extend') {{wc.extend.name}} + {{wc.wordCount | approximate}} = &nbsp;
+              | {{wc.extendedWordCount | approximate}}
 
-.clearing
+.ui.clearing.hidden.divider
 .ui
   | Selected:
   .selected-name
