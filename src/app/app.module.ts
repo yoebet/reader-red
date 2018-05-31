@@ -31,8 +31,11 @@ import {WordAnnosComponent} from './content/word-annos.component';
 import {DictEntryComponent} from './dict/dict-entry.component';
 import {VocabularyComponent} from './vocabulary/vocabulary.component';
 import {BaseVocabularyComponent} from './preference/base-vocabulary.component';
-import {WordMeaningsComponent} from './vocabulary/word-meanings.component';
+import {SimpleMeaningsComponent} from './dict/simple-meanings.component';
 import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
+import {WordTagsSettingComponent} from "./preference/word-tags-setting.component";
+import {UserWordComponent} from './dict/user-word.component';
+import {WordTagsComponent} from './dict/word-tags.component';
 
 @NgModule({
   imports: [
@@ -56,7 +59,10 @@ import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
     ApproximateNumberPipe,
     VocabularyComponent,
     BaseVocabularyComponent,
-    WordMeaningsComponent
+    SimpleMeaningsComponent,
+    WordTagsSettingComponent,
+    UserWordComponent,
+    WordTagsComponent
   ],
   providers: [
     AppService,
@@ -72,7 +78,7 @@ import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
   ],
   entryComponents: [
     WordAnnosComponent,
-    WordMeaningsComponent
+    SimpleMeaningsComponent
   ],
   bootstrap: [AppComponent]
 })

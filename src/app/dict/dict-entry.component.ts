@@ -8,7 +8,6 @@ import {union, last} from 'lodash';
 import {DictEntry, TagLabelMap} from '../models/dict-entry';
 import {UserWord} from '../models/user-word';
 import {Para} from '../models/para';
-import {OpResult} from '../models/op-result';
 import {DictService} from '../services/dict.service';
 import {VocabularyService} from '../services/vocabulary.service';
 import {ParaService} from '../services/para.service';
@@ -27,7 +26,6 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
   @Output() viewReady = new EventEmitter();
   viewReadyEntry = null;
 
-  categoryTags: string[];
   refWords: string[];
   userWord: UserWord;
   userWordSource: any;
@@ -309,7 +307,6 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
 
   private onEntryChanged() {
     let entry = this.entry;
-    this.categoryTags = DictEntry.EvaluateCategoryTags(entry.categories);
     this.refWords = null;
     let refWords = union(entry.baseForms, this.relatedWords);
     if (refWords.length > 0) {
@@ -352,47 +349,6 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
     }
   }
 
-  addToVocabulary() {
-    let uw = new UserWord();
-    uw.word = this.entry.word;
-    if (this.context) {
-      uw.bookId = this.context.bookId;
-      uw.chapId = this.context.chapId;
-      uw.paraId = this.context.paraId;
-    }
-    this.vocaService.create(uw)
-      .subscribe(_ => this.userWord = uw);
-  }
-
-  familiarityUp() {
-    if (this.userWord.familiarity < 3) {
-      this.userWord.familiarity++;
-      this.vocaService.update(this.userWord)
-        .subscribe(() => {
-        });
-    }
-  }
-
-  familiarityDown() {
-    if (this.userWord.familiarity > 1) {
-      this.userWord.familiarity--;
-      this.vocaService.update(this.userWord)
-        .subscribe(() => {
-        });
-    }
-  }
-
-  removeUserWord() {
-    if (!confirm('确定要移除吗？')) {
-      return;
-    }
-    this.vocaService.remove(this.userWord.word).subscribe((opr: OpResult) => {
-      if (opr.ok === 1) {
-        this.onUserWordRemoved.emit(this.userWord);
-        this.userWord = null;
-      }
-    });
-  }
 
 
   get tagLabelMap() {

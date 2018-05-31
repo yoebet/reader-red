@@ -1,0 +1,11 @@
+
+.card.word-category {
+  border: 1px solid white;
+  cursor: pointer;
+  /*box-shadow: 0 1px 3px 0 #D4D4D5, 0 0 0 1px #D4D4D5;*/
+}
+
+.card.word-category.selected {
+  /*border: 1px solid darkgreen;*/
+  box-shadow: 0 1px 3px 0 green, 0 0 0 1px green;
+}

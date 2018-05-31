@@ -4,6 +4,7 @@ export class Model {
   _id: string;
   createdAt?: string;
   updatedAt?: string;
+  no?: number;
 
 
   static sequenceNo(_id: string, bytes: number = 3): number {

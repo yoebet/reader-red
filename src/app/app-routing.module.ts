@@ -6,13 +6,15 @@ import {BookComponent} from './book/book.component';
 import {ChapComponent} from './chap/chap.component';
 import {VocabularyComponent} from './vocabulary/vocabulary.component';
 import {BaseVocabularyComponent} from './preference/base-vocabulary.component';
+import {WordTagsSettingComponent} from "./preference/word-tags-setting.component";
 
 const routes: Routes = [
   {path: 'books', component: BookListComponent},
   {path: 'books/:id', component: BookComponent},
   {path: 'chaps/:id', component: ChapComponent},
   {path: 'vocabulary', component: VocabularyComponent},
-  {path: 'base-vocabulary', component: BaseVocabularyComponent}
+  {path: 'base-vocabulary', component: BaseVocabularyComponent},
+  {path: 'word-tags', component: WordTagsSettingComponent}
 ];
 
 @NgModule({

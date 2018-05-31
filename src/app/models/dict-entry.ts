@@ -26,48 +26,6 @@ export class DictEntry extends Model {
   forms?: any;
 
 
-  static EvaluateCategoryTags(categories): string[] {
-    let tags = [];
-    if (!categories) {
-      return tags;
-    }
-    if (categories.junior) {
-      tags.push('基础');
-    } else {
-      if (categories.cet) {
-        if (categories.cet === 4) {
-          tags.push('CET 4');
-        } else if (categories.cet === 6) {
-          tags.push('CET 6');
-        }
-      } else {
-        let wCategories = [
-          ['gre', 'GRE'],
-          ['yasi', '雅思'],
-          ['pro', '英专']
-        ];
-        for (let [key, name] of wCategories) {
-          if (categories[key]) {
-            tags.push(name);
-          }
-        }
-      }
-      if (categories.haici) {
-        tags.push(`海词 ${categories.haici}星`);
-      }
-      let wordFreqs = ['coca', 'bnc', 'anc'];
-      for (let freqName of wordFreqs) {
-        let rank = categories[freqName];
-        if (rank) {
-          let align3 = rank + (3 - rank % 3);
-          tags.push(`${freqName.toUpperCase()} ${align3}000`);
-        }
-      }
-    }
-
-    return tags;
-  }
-
   static POS = [
     {abbr: 'n.', name: 'n. 名词'},
     {abbr: 'v.', name: 'v. 动词'},

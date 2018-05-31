@@ -42,4 +42,4 @@
           a.item(*ngFor='let uw of group.userWords', (click)='selectWord(uw)') {{uw.word}}
 
     .ui.clearing.hidden.divider
-    dict-entry(*ngIf='entry', [entry]='entry', (onUserWordRemoved)='onUserWordRemoved($event)')
+    dict-entry(*ngIf='entry', [entry]='entry')

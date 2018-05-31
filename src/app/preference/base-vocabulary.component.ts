@@ -12,10 +12,10 @@ import Drop from 'tether-drop'
 import {WordCategoryService} from "../services/word-category.service";
 import {UserPreferenceService} from "../services/user-preference.service";
 import {WordCategory} from "../models/word-category";
-import {WordMeaningsComponent} from "../vocabulary/word-meanings.component";
+import {SimpleMeaningsComponent} from "../dict/simple-meanings.component";
 
 @Component({
-  selector: 'base-vocabulary-main',
+  selector: 'base-vocabulary',
   templateUrl: './base-vocabulary.component.html',
   styleUrls: ['./base-vocabulary.component.css']
 })
@@ -39,7 +39,7 @@ export class BaseVocabularyComponent implements OnInit {
 
   selected: WordCategory;
   changed = false;
-  wordMeaningsComponentRef: ComponentRef<WordMeaningsComponent>;
+  wordMeaningsComponentRef: ComponentRef<SimpleMeaningsComponent>;
   wordDrops = new Map<string, Drop>();
 
 
@@ -49,7 +49,7 @@ export class BaseVocabularyComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.wordCategoryService.listUserBaseCandidates()
+    this.wordCategoryService.list()
       .subscribe((cats: WordCategory[]) => {
         if (!cats) {
           return;
@@ -118,7 +118,7 @@ export class BaseVocabularyComponent implements OnInit {
       return;
     }
     if (!this.wordMeaningsComponentRef) {
-      let factory: ComponentFactory<WordMeaningsComponent> = this.resolver.resolveComponentFactory(WordMeaningsComponent);
+      let factory: ComponentFactory<SimpleMeaningsComponent> = this.resolver.resolveComponentFactory(SimpleMeaningsComponent);
       this.wordMeanings.clear();
       this.wordMeaningsComponentRef = this.wordMeanings.createComponent(factory);
     }

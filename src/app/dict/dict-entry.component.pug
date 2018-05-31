@@ -7,8 +7,9 @@
       span {{entry.phonetics['UK']}}
       label.ui.small.label 美
       span {{entry.phonetics['US']}}
-    .categories
-      label.ui.small.label(*ngFor='let cat of categoryTags') {{cat}}
+
+    word-tags([categories]='entry.categories')
+
   .clearing
 
   .ui.horizontal.list.base-forms(*ngIf='refWords||entryStack.length > 0')
@@ -18,22 +19,7 @@
     a.ui.item(*ngFor='let word of refWords||[]', (click)='goto(word)')
       | {{word}}
 
-  .ui.horizontal.link.list.user-vocabulary
-    ng-template([ngIf]='userWord')
-      .item
-        .ui.mini.label([ngClass]='"word-familiarity-"+userWord.familiarity') {{userWord.familiarity | wordFamiliarity}}
-      a.item
-        | 熟悉度
-        .ui.icon.mini.buttons
-          .ui.button([ngClass]='{disabled:userWord.familiarity===3}', (click)='familiarityUp()')
-            i.double.angle.up.icon
-          .ui.button([ngClass]='{disabled:userWord.familiarity===1}', (click)='familiarityDown()')
-            i.double.angle.down.icon
-      .item
-        .word-add-on 加入于 {{userWord | createdDateString}}
-      a.item((click)='removeUserWord()') 移除
-    .item(*ngIf='!userWord')
-      .ui.mini.button((click)='addToVocabulary()') 加入我的词汇
+  user-word([word]='entry.word', [userWord]='userWord', [context]='context')
 
 
   .ui.clearing.divider

@@ -44,13 +44,6 @@ export class WordCategoryService extends BaseService<WordCategory> {
     });
   }
 
-  listUserBaseCandidates(): Observable<WordCategory[]> {
-    return this.list()
-      .map((wcs: WordCategory[]) => {
-        return wcs.filter(wc => wc.useAsUserBase);
-      });
-  }
-
 
   fetchSampleWords(code, limit = 20): Observable<string[]> {
     let url = `${this.baseUrl}/${code}/sample`;

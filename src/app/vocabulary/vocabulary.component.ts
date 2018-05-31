@@ -18,7 +18,7 @@ import {ChapService} from '../services/chap.service';
 })
 export class VocabularyComponent implements OnInit {
   userWords: UserWord[];
-  selectedWord: UserWord;
+  // selectedWord: UserWord;
   entry: DictEntry;
 
   filteredUserWords: UserWord[];
@@ -54,25 +54,25 @@ export class VocabularyComponent implements OnInit {
 
   selectHistoryEntry(entry) {
     this.entry = entry;
-    this.vocaService.getOne(entry.word)
+/*    this.vocaService.getOne(entry.word)
       .subscribe(userWord => {
         this.selectedWord = userWord;
-      });
+      });*/
   }
 
   selectWord(uw) {
-    this.selectedWord = uw;
+    // this.selectedWord = uw;
     this.dictService.getEntry(uw.word)
       .subscribe(entry => {
         this.entry = entry;
       });
   }
 
-  onUserWordRemoved(userWord) {
+/*  onUserWordRemoved(userWord) {
     if (userWord === this.selectedWord) {
       this.selectedWord = null;
     }
-  }
+  }*/
 
   ensureCreatedDate(userWord) {
     if (userWord.createdMoment) {
