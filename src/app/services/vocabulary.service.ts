@@ -7,6 +7,8 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
+import {sortedIndexBy} from 'lodash';
+
 import {UserWord} from '../models/user-word';
 import {OpResult} from '../models/op-result';
 import {BaseService} from './base.service';
@@ -16,6 +18,8 @@ export class VocabularyService extends BaseService<UserWord> {
 
   allWords: UserWord[];
   userWordsMap = new Map<string, UserWord>();
+  private _latestAdded: UserWord[] = [];
+  latestAddedCapacity = 10;
 
   constructor(protected http: HttpClient) {
     super(http);
@@ -26,6 +30,71 @@ export class VocabularyService extends BaseService<UserWord> {
   clearCache() {
     this.allWords = null;
     this.userWordsMap.clear();
+    this._latestAdded = [];
+  }
+
+  get latestAdded() {
+    return this._latestAdded;
+  }
+
+  private pushLatest(userWord) {
+    if (userWord.familiarity === UserWord.FamiliarityHighest) {
+      return;
+    }
+    let la = this._latestAdded;
+    let inLatestAdded = la.find(uw => uw.word === userWord.word);
+    if (!inLatestAdded) {
+      la.push(userWord);
+    }
+    if (la.length > this.latestAddedCapacity) {
+      la.shift();
+    }
+  }
+
+  private removeFromLatest(userWord) {
+    let la = this._latestAdded;
+    let index = la.indexOf(userWord);
+    if (index >= 0) {
+      la.splice(index, 1);
+    }
+  }
+
+
+  private updateLatest(uw) {
+    let la = this._latestAdded;
+    if (uw.familiarity === UserWord.FamiliarityHighest) {
+      let idx = la.indexOf(uw);
+      if (idx >= 0) {
+        la.splice(idx, 1);
+      }
+      return;
+    }
+    if (la.length === 0) {
+      la.push(uw);
+      return;
+    }
+    if (la.indexOf(uw) >= 0) {
+      return;
+    }
+    let last = la[la.length - 1];
+    if (uw.createdMoment.isAfter(last.createdMoment)) {
+      la.push(uw);
+      if (la.length > this.latestAddedCapacity) {
+        la.shift();
+      }
+      return;
+    }
+    let insertIndex = sortedIndexBy(la, uw, o => o.createdMoment.valueOf());
+    if (insertIndex === 0) {
+      if (la.length < this.latestAddedCapacity) {
+        la.unshift(uw);
+      }
+      return;
+    }
+    la.splice(insertIndex, 0, uw);
+    if (la.length > this.latestAddedCapacity) {
+      la.shift();
+    }
   }
 
   getOne(word: string): Observable<UserWord> {
@@ -54,8 +123,11 @@ export class VocabularyService extends BaseService<UserWord> {
         return;
       }
       this.allWords = userWords;
+      let la = this._latestAdded;
       for (let uw of userWords) {
         this.userWordsMap.set(uw.word, uw);
+        UserWord.ensureCreatedDate(uw);
+        this.updateLatest(uw);
       }
     });
     return obs;
@@ -66,13 +138,16 @@ export class VocabularyService extends BaseService<UserWord> {
       .catch(this.handleError);
     obs = obs.share();
     obs.subscribe((result: UserWord) => {
-      if (result && result._id) {
-        userWord._id = result._id;
-        this.userWordsMap.set(userWord.word, userWord);
-        if (this.allWords) {
-          this.allWords.push(userWord);
-        }
+      if (!result || !result._id) {
+        return;
       }
+      userWord._id = result._id;
+      UserWord.ensureCreatedDate(userWord);
+      this.userWordsMap.set(userWord.word, userWord);
+      if (this.allWords) {
+        this.allWords.push(userWord);
+      }
+      this.pushLatest(userWord);
     });
     return obs;
   }
@@ -80,8 +155,15 @@ export class VocabularyService extends BaseService<UserWord> {
   update(userWord: UserWord): Observable<OpResult> {
     const url = `${this.baseUrl}/${userWord.word}`;
     let up = {familiarity: userWord.familiarity};
-    return this.http.put<OpResult>(url, up, this.httpOptions)
+    let obs = this.http.put<OpResult>(url, up, this.httpOptions)
       .catch(this.handleError);
+    obs = obs.share();
+    obs.subscribe((opr: OpResult) => {
+      if (opr.ok === 1) {
+        this.updateLatest(userWord);
+      }
+    });
+    return obs;
   }
 
   remove(word: string): Observable<OpResult> {
@@ -91,16 +173,21 @@ export class VocabularyService extends BaseService<UserWord> {
     obs = obs.share();
     obs.subscribe((opr: OpResult) => {
       if (opr.ok === 1) {
+        let userWord = this.userWordsMap.get(word);
+        if (!userWord) {
+          return;
+        }
         this.userWordsMap.delete(word);
         if (this.allWords) {
           this.allWords = this.allWords.filter(uw => uw.word !== word);
         }
+        this.removeFromLatest(userWord);
       }
     });
     return obs;
   }
 
-  sync(userWords: UserWord[]): Observable<OpResult> {
+  /*sync(userWords: UserWord[]): Observable<OpResult> {
     const url = `${this.baseUrl}/sync`;
     userWords = userWords.map(userWord => {
       let {word, familiarity} = userWord;
@@ -116,6 +203,6 @@ export class VocabularyService extends BaseService<UserWord> {
     });
     return this.http.post<OpResult>(url, userWords, this.httpOptions)
       .catch(this.handleError);
-  }
+  }*/
 
 }

@@ -14,6 +14,7 @@ export class DictService extends BaseService<DictEntry> {
 
   private _entryHistory: DictEntry[] = [];
   private entryCache: Map<string, DictEntry> = new Map();
+  entryHistoryCapacity = 10;
 
   constructor(protected http: HttpClient) {
     super(http);
@@ -40,7 +41,7 @@ export class DictService extends BaseService<DictEntry> {
     if (!inHistory) {
       eh.push(entry);
     }
-    if (eh.length > 20) {
+    if (eh.length > this.entryHistoryCapacity) {
       eh.shift();
     }
   }

@@ -3,7 +3,6 @@ import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
 import {groupBy, sortBy} from 'lodash';
 
-import {Model} from '../models/model';
 import {UserWord} from '../models/user-word';
 import {DictEntry} from '../models/dict-entry';
 import {VocabularyService} from '../services/vocabulary.service';
@@ -18,7 +17,6 @@ import {ChapService} from '../services/chap.service';
 })
 export class VocabularyComponent implements OnInit {
   userWords: UserWord[];
-  // selectedWord: UserWord;
   entry: DictEntry;
 
   filteredUserWords: UserWord[];
@@ -28,7 +26,7 @@ export class VocabularyComponent implements OnInit {
 
   filter: any = {
     familiarityAll: true,
-    addOn: '1.weeks'
+    addOn: 'All'
   };
 
   grouping: any = {groupBy: ''};
@@ -47,6 +45,10 @@ export class VocabularyComponent implements OnInit {
     return this.dictService.entryHistory;
   }
 
+  get latestAdded(): UserWord[] {
+    return this.vocaService.latestAdded;
+  }
+
   clearHistory() {
     this.dictService.clearHistory();
   }
@@ -54,10 +56,10 @@ export class VocabularyComponent implements OnInit {
 
   selectHistoryEntry(entry) {
     this.entry = entry;
-/*    this.vocaService.getOne(entry.word)
-      .subscribe(userWord => {
-        this.selectedWord = userWord;
-      });*/
+    /*    this.vocaService.getOne(entry.word)
+          .subscribe(userWord => {
+            this.selectedWord = userWord;
+          });*/
   }
 
   selectWord(uw) {
@@ -68,27 +70,12 @@ export class VocabularyComponent implements OnInit {
       });
   }
 
-/*  onUserWordRemoved(userWord) {
-    if (userWord === this.selectedWord) {
-      this.selectedWord = null;
-    }
-  }*/
+  /*  onUserWordRemoved(userWord) {
+      if (userWord === this.selectedWord) {
+        this.selectedWord = null;
+      }
+    }*/
 
-  ensureCreatedDate(userWord) {
-    if (userWord.createdMoment) {
-      return;
-    }
-    let createdDate = Model.timestampOfObjectId(userWord._id);
-    userWord.createdMoment = moment(createdDate);
-    let date = userWord.createdMoment;
-    let dayOfWeek = date.day();
-    let weekOfYear = date.week();
-    let dayOfMonth = date.date();//1-31
-    let month = date.month();//0-11
-    let year = date.year();
-    let dateString = `${year}-${month + 1}-${dayOfMonth}`;
-    userWord.createdDateParts = {year, month, dayOfMonth, weekOfYear, dayOfWeek, dateString};
-  }
 
   private filterUserWords() {
     this.filteredUserWords = [];
@@ -109,7 +96,7 @@ export class VocabularyComponent implements OnInit {
         }
       }
       if (filter.addOn !== 'All') {
-        this.ensureCreatedDate(userWord);
+        UserWord.ensureCreatedDate(userWord);
         if (userWord.createdMoment.isBefore(fromThen)) {
           continue;
         }
@@ -153,7 +140,7 @@ export class VocabularyComponent implements OnInit {
       sortBy(this.groupedUserWords, ['bookId', 'chap.no']);
     } else if (gb === 'AddOn') {
       for (let userWord of this.filteredUserWords) {
-        this.ensureCreatedDate(userWord);
+        UserWord.ensureCreatedDate(userWord);
       }
       let grouped = groupBy(this.filteredUserWords, 'createdDateParts.dateString');
       for (let dateString in grouped) {

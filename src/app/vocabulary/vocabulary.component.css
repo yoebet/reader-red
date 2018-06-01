@@ -1,5 +1,6 @@
-.ui.list.words-history .item.operation a {
+.item a.operation {
   font-size: 0.9em;
+  color: #606060 !important;
 }
 
 .form.filter-group .field {
@@ -25,4 +26,12 @@
   font-size: 0.9em;
   margin-right: 0.4em;
   color: dimgrey;
+}
+
+.column-header {
+  /*font-weight: bold;*/
+}
+
+.ui.list.latest-added, .ui.list.words-history {
+  margin-left: 1.5em;
 }

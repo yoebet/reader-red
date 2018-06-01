@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input} from "@angular/core";
 import {VocabularyService} from "../services/vocabulary.service";
 import {UserWord} from "../models/user-word";
 import {OpResult} from "../models/op-result";
@@ -8,18 +8,13 @@ import {OpResult} from "../models/op-result";
   templateUrl: './user-word.component.html',
   styleUrls: ['./user-word.component.css']
 })
-export class UserWordComponent implements OnInit {
+export class UserWordComponent {
   @Input() word: string;
   @Input() userWord: UserWord;
   @Input() context: any;
 
 
   constructor(private vocaService: VocabularyService) {
-
-  }
-
-  ngOnInit() {
-
   }
 
 
@@ -36,7 +31,7 @@ export class UserWordComponent implements OnInit {
   }
 
   familiarityUp() {
-    if (this.userWord.familiarity < 3) {
+    if (this.userWord.familiarity < UserWord.FamiliarityHighest) {
       this.userWord.familiarity++;
       this.vocaService.update(this.userWord)
         .subscribe(() => {
@@ -45,7 +40,7 @@ export class UserWordComponent implements OnInit {
   }
 
   familiarityDown() {
-    if (this.userWord.familiarity > 1) {
+    if (this.userWord.familiarity > UserWord.FamiliarityLowest) {
       this.userWord.familiarity--;
       this.vocaService.update(this.userWord)
         .subscribe(() => {
@@ -57,11 +52,11 @@ export class UserWordComponent implements OnInit {
     if (!confirm('确定要移除吗？')) {
       return;
     }
-    this.vocaService.remove(this.userWord.word).subscribe((opr: OpResult) => {
-      if (opr.ok === 1) {
-        // this.onUserWordRemoved.emit(this.userWord);
-        this.userWord = null;
-      }
-    });
+    this.vocaService.remove(this.userWord.word)
+      .subscribe((opr: OpResult) => {
+        if (opr.ok === 1) {
+          this.userWord = null;
+        }
+      });
   }
 }
