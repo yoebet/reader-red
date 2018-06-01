@@ -36,6 +36,7 @@ import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
 import {WordTagsSettingComponent} from "./preference/word-tags-setting.component";
 import {UserWordComponent} from './dict/user-word.component';
 import {WordTagsComponent} from './dict/word-tags.component';
+import {WordTextComponent} from './dict/word-text.component';
 
 @NgModule({
   imports: [
@@ -62,7 +63,8 @@ import {WordTagsComponent} from './dict/word-tags.component';
     SimpleMeaningsComponent,
     WordTagsSettingComponent,
     UserWordComponent,
-    WordTagsComponent
+    WordTagsComponent,
+    WordTextComponent
   ],
   providers: [
     AppService,

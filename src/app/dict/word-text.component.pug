@@ -1,0 +1,10 @@
+.word-source(*ngIf='para')
+  .book-title(*ngIf='para.book') {{para.book.name}}
+  ng-template([ngIf]='para.chap')
+    .chap-title.pre-wrap {{para.chap.name}}
+    .chap-title-zh.pre-wrap([suiCollapse]='!textTrans') {{para.chap.zhName}}
+  .ui.segment.word-source-text
+    .content-text([innerHTML]='sanitizedContent')
+    div([suiCollapse]='!textTrans')
+      .ui.small.clearing.hidden.divider
+      .trans-text([innerHTML]='sanitizedTrans')
