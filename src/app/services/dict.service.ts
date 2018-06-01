@@ -6,7 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 
-import {DictEntry} from '../models/dict-entry';
+import {DictEntry, PosMeanings} from '../models/dict-entry';
 import {BaseService} from './base.service';
 
 @Injectable()
@@ -61,18 +61,40 @@ export class DictService extends BaseService<DictEntry> {
   getEntry(idOrWord: string, options: any = {}): Observable<DictEntry> {
     let cachedEntry = this.entryCache.get(idOrWord);
     if (cachedEntry) {
-      if (options.simple || typeof cachedEntry.complete !== 'undefined') {
+      if (!options.complete || typeof cachedEntry.complete !== 'undefined') {
         return Observable.of(cachedEntry);
       }
     }
     let url = `${this.baseUrl}/${idOrWord}`;
-    let switches = ['base', 'stem', 'simple'].filter(name => options[name]);
+    let switches = ['base', 'stem', 'complete'].filter(name => options[name]);
     if (switches.length > 0) {
       url += '?';
       url += switches.join('&');
     }
 
-    return this.cacheOne(this.getOneByUrl(url), !options.simple);
+    return this.cacheOne(this.getOneByUrl(url));
   }
+
+  getCompleteMeanings(idOrWord: string): Observable<PosMeanings[]> {
+    let cachedEntry = this.entryCache.get(idOrWord);
+    if (cachedEntry) {
+      if (typeof cachedEntry.complete !== 'undefined') {
+        return Observable.of(cachedEntry.complete);
+      }
+    }
+
+    let url = `${this.baseUrl}/${idOrWord}/complete`;
+    let obs = this.http.get<PosMeanings[]>(url, this.httpOptions)
+      .catch(this.handleError);
+    if (!cachedEntry) {
+      return obs;
+    }
+    obs = obs.share();
+    obs.subscribe((complete: PosMeanings[]) => {
+      cachedEntry.complete = complete;
+    });
+    return obs;
+  }
+
 
 }

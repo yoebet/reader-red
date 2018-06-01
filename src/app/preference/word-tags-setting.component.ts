@@ -126,7 +126,7 @@ export class WordTagsSettingComponent implements OnInit {
     if (this.showSamples && !this.sampleWordEntries) {
       this.sampleWordEntries = [];
       for (let word of this.sampleWords) {
-        this.dictService.getEntry(word, {simple: true})
+        this.dictService.getEntry(word)
           .subscribe((entry: DictEntry) => {
             if (entry) {
               this.sampleWordEntries.push(entry);

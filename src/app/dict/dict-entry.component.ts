@@ -2,7 +2,6 @@ import {
   Component, Input, Output, OnInit, EventEmitter, OnChanges,
   SimpleChanges, ChangeDetectorRef, AfterViewChecked
 } from '@angular/core';
-import {DomSanitizer} from '@angular/platform-browser';
 import {union, last} from 'lodash';
 
 import {DictEntry, TagLabelMap} from '../models/dict-entry';
@@ -44,8 +43,7 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
   constructor(private cdr: ChangeDetectorRef,
               private dictService: DictService,
               private vocaService: VocabularyService,
-              private paraService: ParaService,
-              private sanitizer: DomSanitizer) {
+              private paraService: ParaService) {
   }
 
   ngOnInit() {
@@ -81,6 +79,18 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
     }
   }
 
+  loadCompleteMeanings() {
+    let _id = this.entry._id;
+    this.dictService.getCompleteMeanings(_id).subscribe(complete => {
+      if (!complete) {
+        return;
+      }
+      if (!this.entry || this.entry._id !== _id) {
+        return;
+      }
+      this.entry.complete = complete;
+    })
+  }
 
   loadMoreParas() {
     if (!this.userWordSource) {

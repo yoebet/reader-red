@@ -32,15 +32,19 @@
         .ui.item(*ngFor='let item of entry.simple')
           | {{item.pos}} {{item.exp}}
       sui-accordion([closeOthers]='false')
-        sui-accordion-panel.pos-meanings(*ngFor='let pm of entry.complete||[]', [isOpen]='false')
-          .pos-header(title='')
-            i.dropdown.icon
-            | {{pm.pos}}
-          .ui.ordered.selection.divided.list.meaning-items(content='')
-            .ui.item(*ngFor='let item of pm.items', [ngClass]='{"selected-item":item.id===selectedItemId}')
-              span.meaning-item
-                span.ui.small.label(*ngFor='let tag of item.tags') {{tagLabelMap[tag]}}
-                | {{item.exp}}
+        ng-template([ngIf]='!entry.complete')
+          .ui.right.floated.mini.button((click)='loadCompleteMeanings()') 完整释义...
+          .ui.clearing.hidden.divider
+        ng-template([ngIf]='entry.complete')
+          sui-accordion-panel.pos-meanings(*ngFor='let pm of entry.complete', [isOpen]='false')
+            .pos-header(title='')
+              i.dropdown.icon
+              | {{pm.pos}}
+            .ui.ordered.selection.divided.list.meaning-items(content='')
+              .ui.item(*ngFor='let item of pm.items', [ngClass]='{"selected-item":item.id===selectedItemId}')
+                span.meaning-item
+                  span.ui.small.label(*ngFor='let tag of item.tags') {{tagLabelMap[tag]}}
+                  | {{item.exp}}
     .ui.bottom.attached.segment(suiTabContent='te')
       .ui.right.floated.header
         sui-checkbox([(ngModel)]='textTrans') 中文

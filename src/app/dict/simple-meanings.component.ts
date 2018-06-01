@@ -30,7 +30,7 @@ export class SimpleMeaningsComponent {
       return;
     }
     this._word = word;
-    this.dictService.getEntry(word, {simple: true})
+    this.dictService.getEntry(word)
       .subscribe((entry: DictEntry) => {
         this._entry = entry;
       });
