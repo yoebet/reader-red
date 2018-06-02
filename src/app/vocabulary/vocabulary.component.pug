@@ -17,38 +17,70 @@
             | {{entry.word}}
           .item
             a.right.floated.operation(*ngIf='entryHistory.length>0', (click)='clearHistory()') 清空
+
   .thirteen.wide.column
-    .ui.segment.small.form.filter-group
-      .field
-        label.title 筛选
-        .grouped.fields
-          span.label.field-name 熟悉度
-          sui-checkbox([(ngModel)]="filter.familiarityAll") 全部
-          sui-checkbox(*ngFor='let fam of familiarities', [(ngModel)]='filter["familiarity"+fam.value]', [isDisabled]='filter.familiarityAll') {{fam.label}}
-        .grouped.fields
-          span.label.field-name 加入日期
-          sui-radio-button(name="filterAddOn", value="All", [(ngModel)]="filter.addOn") 全部
-          //sui-radio-button(name="filterAddOn", value="3.days", [(ngModel)]="filter.addOn") 最近3天
-          sui-radio-button(name="filterAddOn", value="1.weeks", [(ngModel)]="filter.addOn") 最近1周
-          sui-radio-button(name="filterAddOn", value="1.months", [(ngModel)]="filter.addOn") 最近1月
-          //| Last Touch 最近..
-      .field
-        label.title 分组
-        sui-radio-button(name="groupBy", value="", [(ngModel)]="grouping.groupBy") 不分组
-        sui-radio-button(name="groupBy", value="AddOn", [(ngModel)]="grouping.groupBy") 按加入日期
-        sui-radio-button(name="groupBy", value="Source", [(ngModel)]="grouping.groupBy") 按章节
+    .ui.right.floated.small.compact.menu
+      a.item((click)='searching=false', [ngClass]='{active:!searching}') 生词
+      a.item((click)='searching=true', [ngClass]='{active:searching}') 搜索
+    //.ui.right.floated.horizontal.list
+      a.item((click)='searching=false', [ngClass]='{disabled:!searching}') 我的词汇
+      a.item((click)='searching=true', [ngClass]='{disabled:searching}') 搜索
+    .ui.clearing.hidden.divider
 
-        .ui.mini.primary.button((click)='refreshWordList()') 确定
+    div.user-vocabulary(*ngIf='!searching')
+      .ui.segment.small.form.filter-group
+        .field
+          label.title 筛选
+          .grouped.fields
+            span.label.field-name 熟悉度
+            sui-checkbox([(ngModel)]="filter.familiarityAll") 全部
+            sui-checkbox(*ngFor='let fam of familiarities', [(ngModel)]='filter["familiarity"+fam.value]', [isDisabled]='filter.familiarityAll') {{fam.label}}
+          .grouped.fields
+            span.label.field-name 加入日期
+            sui-radio-button(name="filterAddOn", value="All", [(ngModel)]="filter.addOn") 全部
+            //sui-radio-button(name="filterAddOn", value="3.days", [(ngModel)]="filter.addOn") 最近3天
+            sui-radio-button(name="filterAddOn", value="1.weeks", [(ngModel)]="filter.addOn") 最近1周
+            sui-radio-button(name="filterAddOn", value="1.months", [(ngModel)]="filter.addOn") 最近1月
+            //| Last Touch 最近..
+        .field
+          label.title 分组
+          sui-radio-button(name="groupBy", value="", [(ngModel)]="grouping.groupBy") 不分组
+          sui-radio-button(name="groupBy", value="AddOn", [(ngModel)]="grouping.groupBy") 按加入日期
+          sui-radio-button(name="groupBy", value="Source", [(ngModel)]="grouping.groupBy") 按章节
 
-    .clearing
+          .ui.mini.primary.button((click)='refreshWordList()') 确定
 
-    .ui.list(*ngIf='groupedUserWords')
-      .item(*ngFor='let group of groupedUserWords')
-        div
-          | {{group.title}} &nbsp;
-          span.ui.mini.circular.label {{group.userWords.length}}
-        .ui.horizontal.list
-          a.item(*ngFor='let uw of group.userWords', (click)='selectWord(uw)') {{uw.word}}
+      .clearing
+
+      .ui.list(*ngIf='groupedUserWords')
+        .item(*ngFor='let group of groupedUserWords')
+          div
+            | {{group.title}} &nbsp;
+            span.ui.mini.circular.label {{group.userWords.length}}
+          .ui.horizontal.list
+            a.item(*ngFor='let uw of group.userWords', (click)='selectWord(uw)') {{uw.word}}
+
+    div.searching(*ngIf='searching')
+      .ui.segment.small.form.filter-group
+        .field
+          .grouped.fields.search
+            sui-search([optionsLookup]="dictSearch", optionsField="word", searchDelay="400",
+            (resultSelected)="selectResultItem($event)", [retainSelectedResult]="false", placeholder='单词、短语...')
+          //label.title 词典
+          .grouped.fields
+            sui-checkbox([(ngModel)]='phrase', [isDisabled]='phraseOnly') 短语
+            sui-checkbox([(ngModel)]='phraseOnly') 仅短语
+          .grouped.fields
+            label.title 范围
+            sui-radio-button(name="wordScope", value="All", [(ngModel)]="wordScope", [isDisabled]='phraseOnly') 不限
+            sui-radio-button(name="wordScope", value="basic", [(ngModel)]="wordScope", [isDisabled]='phraseOnly') 基础
+            sui-radio-button(name="wordScope", value="cet", [(ngModel)]="wordScope", [isDisabled]='phraseOnly') CET
+            sui-radio-button(name="wordScope", value="gre", [(ngModel)]="wordScope", [isDisabled]='phraseOnly') GRE
+        //.field
+          label.title 文本
+          .grouped.fields
+            //span.label.field-name 范围
+        //.clearing
 
     .ui.clearing.hidden.divider
     dict-entry(*ngIf='entry', [entry]='entry')

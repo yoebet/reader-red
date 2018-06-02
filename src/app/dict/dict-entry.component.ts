@@ -21,7 +21,6 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() initialSelectedItemId: number;
   @Input() relatedWords: string[];
   @Input() context: any;
-  @Output() onUserWordRemoved = new EventEmitter<UserWord>();
   @Output() viewReady = new EventEmitter();
   viewReadyEntry = null;
 
@@ -44,6 +43,11 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
               private dictService: DictService,
               private vocaService: VocabularyService,
               private paraService: ParaService) {
+  }
+
+
+  get tagLabelMap() {
+    return TagLabelMap;
   }
 
   ngOnInit() {
@@ -174,9 +178,5 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
     }
   }
 
-
-  get tagLabelMap() {
-    return TagLabelMap;
-  }
 
 }

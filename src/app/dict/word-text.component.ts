@@ -188,7 +188,7 @@ export class WordTextComponent implements OnChanges {
 
     content = contentHolder.innerHTML;
 
-    let trans = para.trans;
+    let trans = para.trans || '';
     if (sids.length > 0) {
       contentHolder.innerHTML = trans;
       let transEls = contentHolder.querySelectorAll(DictEntryComponent.sentenceTagName);

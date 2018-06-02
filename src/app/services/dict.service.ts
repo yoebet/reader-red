@@ -98,4 +98,21 @@ export class DictService extends BaseService<DictEntry> {
   }
 
 
+  search(key: string, options?): Observable<DictEntry[]> {
+    let limit = options.limit;
+    if (!limit) {
+      limit = 8;
+    }
+    let url = `${this.baseUrl}/search/${key}?limit=${limit}`;
+
+    let switches = ['phrase', 'phraseOnly', 'basic', 'cet', 'gre']
+      .filter(name => options[name]);
+    if (switches.length > 0) {
+      url += '&';
+      url += switches.join('&');
+    }
+
+    return this.list(url);
+  }
+
 }

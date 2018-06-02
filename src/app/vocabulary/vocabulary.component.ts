@@ -7,7 +7,6 @@ import {UserWord} from '../models/user-word';
 import {DictEntry} from '../models/dict-entry';
 import {VocabularyService} from '../services/vocabulary.service';
 import {DictService} from '../services/dict.service';
-import {BookService} from '../services/book.service';
 import {ChapService} from '../services/chap.service';
 
 @Component({
@@ -18,22 +17,40 @@ import {ChapService} from '../services/chap.service';
 export class VocabularyComponent implements OnInit {
   userWords: UserWord[];
   entry: DictEntry;
+  searching = false;
 
   filteredUserWords: UserWord[];
   groupedUserWords: any[];
-
   familiarities = UserWord.Familiarities;
 
   filter: any = {
     familiarityAll: true,
     addOn: 'All'
   };
-
   grouping: any = {groupBy: ''};
+
+  phrase = false;
+  phraseOnly = false;
+  wordScope = 'All';
+
+  dictSearch = (key: string) => {
+    let options = {
+      phrase: this.phrase && !this.phraseOnly,
+      phraseOnly: this.phraseOnly
+    };
+    for (let category of ['basic', 'cet', 'gre']) {
+      if (this.wordScope === category) {
+        options[category] = true;
+        break;
+      }
+    }
+    let o = this.dictService.search(key.trim(), options);
+    return o.toPromise();
+  };
+
 
   constructor(private vocaService: VocabularyService,
               private dictService: DictService,
-              private bookService: BookService,
               private chapService: ChapService) {
   }
 
@@ -163,4 +180,8 @@ export class VocabularyComponent implements OnInit {
     });
   }
 
+  selectResultItem(entrySimple) {
+    this.dictService.getEntry(entrySimple.word)
+      .subscribe(e => this.entry = e);
+  }
 }

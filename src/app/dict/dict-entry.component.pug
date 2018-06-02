@@ -2,7 +2,7 @@
   .ui.header.entry-header
     .ui.right.floated.sub.header
     .entry-word {{entry.word}}
-    .phonetics(*ngIf='entry.phonetics')
+    .phonetics(*ngIf='entry.phonetics && entry.phonetics["UK"]')
       label.ui.small.label 英
       span {{entry.phonetics['UK']}}
       label.ui.small.label 美
@@ -33,7 +33,7 @@
           | {{item.pos}} {{item.exp}}
       sui-accordion([closeOthers]='false')
         ng-template([ngIf]='!entry.complete')
-          .ui.right.floated.mini.button((click)='loadCompleteMeanings()') 完整释义...
+          .ui.right.floated.mini.button((click)='loadCompleteMeanings()') 详尽释义...
           .ui.clearing.hidden.divider
         ng-template([ngIf]='entry.complete')
           sui-accordion-panel.pos-meanings(*ngFor='let pm of entry.complete', [isOpen]='false')
@@ -70,7 +70,7 @@
 
             word-text([entry]='entry', [para]='para', [textTrans]='textTrans')
 
-            .ui.clearing.divider(*ngIf='!first&&!last')
+            .ui.clearing.divider(*ngIf='!last')
 
           ng-template([ngIf]='userWordSource.moreParas.length===0')
             | No More.

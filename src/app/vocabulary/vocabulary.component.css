@@ -3,6 +3,10 @@
   color: #606060 !important;
 }
 
+.ui.list.latest-added, .ui.list.words-history {
+  margin-left: 1.5em;
+}
+
 .form.filter-group .field {
   margin-bottom: 0.5em;
 }
@@ -28,10 +32,10 @@
   color: dimgrey;
 }
 
-.column-header {
-  /*font-weight: bold;*/
+.grouped.fields.search {
+  padding-right: 1em;
 }
 
-.ui.list.latest-added, .ui.list.words-history {
-  margin-left: 1.5em;
-}
+/*.form.filter-group .grouped.fields {*/
+  /*padding-left: 1em;*/
+/*}*/
