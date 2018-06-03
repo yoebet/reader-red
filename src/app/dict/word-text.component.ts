@@ -17,6 +17,7 @@ export class WordTextComponent implements OnChanges {
   @Input() entry: DictEntry;
   @Input() para: Para;
   @Input() textTrans: boolean;
+  @Input() showTitle: boolean;
 
   sanitizedContent: SafeHtml;
   sanitizedTrans: SafeHtml;

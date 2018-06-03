@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 
 import * as moment from 'moment';
 import {groupBy, sortBy} from 'lodash';
@@ -8,6 +8,7 @@ import {DictEntry} from '../models/dict-entry';
 import {VocabularyService} from '../services/vocabulary.service';
 import {DictService} from '../services/dict.service';
 import {ChapService} from '../services/chap.service';
+import {SuiSearch} from "ng2-semantic-ui/dist/modules/search/components/search";
 
 @Component({
   selector: 'vocabulary-main',
@@ -15,6 +16,7 @@ import {ChapService} from '../services/chap.service';
   styleUrls: ['./vocabulary.component.css']
 })
 export class VocabularyComponent implements OnInit {
+  @ViewChild('searchInput', {read: SuiSearch}) searchInput: SuiSearch<any>;
   userWords: UserWord[];
   entry: DictEntry;
   searching = false;
@@ -38,10 +40,12 @@ export class VocabularyComponent implements OnInit {
       phrase: this.phrase && !this.phraseOnly,
       phraseOnly: this.phraseOnly
     };
-    for (let category of ['basic', 'cet', 'gre']) {
-      if (this.wordScope === category) {
-        options[category] = true;
-        break;
+    if (!this.phraseOnly) {
+      for (let category of ['basic', 'cet', 'gre']) {
+        if (this.wordScope === category) {
+          options[category] = true;
+          break;
+        }
       }
     }
     let o = this.dictService.search(key.trim(), options);
@@ -73,26 +77,38 @@ export class VocabularyComponent implements OnInit {
 
   selectHistoryEntry(entry) {
     this.entry = entry;
-    /*    this.vocaService.getOne(entry.word)
-          .subscribe(userWord => {
-            this.selectedWord = userWord;
-          });*/
   }
 
   selectWord(uw) {
-    // this.selectedWord = uw;
     this.dictService.getEntry(uw.word)
       .subscribe(entry => {
         this.entry = entry;
       });
   }
 
-  /*  onUserWordRemoved(userWord) {
-      if (userWord === this.selectedWord) {
-        this.selectedWord = null;
-      }
-    }*/
+  selectSearchResult(entrySimple) {
+    this.dictService.getEntry(entrySimple.word)
+      .subscribe(e => this.entry = e);
+  }
 
+  resetSearch() {
+    this.searchInput.optionsLookup = this.dictSearch;
+  }
+
+  onKeyup($event) {
+    if ($event.which !== 13) {
+      return;
+    }
+    let searchInput = this.searchInput;
+    let results = searchInput.results;
+    let query = searchInput.query;
+    for (let entry of results) {
+      if (entry.word === query) {
+        searchInput.select(entry);
+        break;
+      }
+    }
+  }
 
   private filterUserWords() {
     this.filteredUserWords = [];
@@ -178,10 +194,5 @@ export class VocabularyComponent implements OnInit {
       this.filterUserWords();
       this.groupUserWords();
     });
-  }
-
-  selectResultItem(entrySimple) {
-    this.dictService.getEntry(entrySimple.word)
-      .subscribe(e => this.entry = e);
   }
 }

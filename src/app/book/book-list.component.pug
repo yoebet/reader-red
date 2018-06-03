@@ -7,5 +7,5 @@
   .item(*ngFor='let book of books; trackBy: bookTracker')
     i.ui.right.floated.checkmark.icon(*ngIf='book.userBook')
     a((click)='gotoDetail(book)', [routerLink]="['/books', book._id]")
-      .enname {{book.name}}
+      .enname ({{book.code}}) {{book.name}}
       .zhname(*ngIf='showZh && book.zhName') {{book.zhName}}

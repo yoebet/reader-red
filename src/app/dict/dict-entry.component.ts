@@ -33,6 +33,7 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
   selectedItemId: number;
   selectMeaningItem = true;
   textTrans = false;
+  textShowTitle = false;
   textTabActive = false;
 
   static sentenceTagName = 's-st';
@@ -46,9 +47,9 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
 
-  get tagLabelMap() {
+  /*get tagLabelMap() {
     return TagLabelMap;
-  }
+  }*/
 
   ngOnInit() {
     this.initialWord = this.entry.word;

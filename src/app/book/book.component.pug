@@ -1,6 +1,6 @@
 div(*ngIf='book')
   h4.ui.header
-    | {{book.name}}
+    | ({{book.code}}) {{book.name}}
     i.checkmark.icon(*ngIf='userBook')
   .ui.header
     .ui.right.floated.header

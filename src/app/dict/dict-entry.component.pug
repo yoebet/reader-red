@@ -43,13 +43,14 @@
             .ui.ordered.selection.divided.list.meaning-items(content='')
               .ui.item(*ngFor='let item of pm.items', [ngClass]='{"selected-item":item.id===selectedItemId}')
                 span.meaning-item
-                  span.ui.small.label(*ngFor='let tag of item.tags') {{tagLabelMap[tag]}}
+                  //span.ui.small.label(*ngFor='let tag of item.tags') {{tagLabelMap[tag]}}
                   | {{item.exp}}
     .ui.bottom.attached.segment(suiTabContent='te')
       .ui.right.floated.header
+        sui-checkbox([(ngModel)]='textShowTitle') 标题
         sui-checkbox([(ngModel)]='textTrans') 中文
+      .clearing
       ng-template([ngIf]='!userWordSource')
-        .ui.clearing.divider
         .ui.right.floated.mini.button((click)='loadMoreParas()') 加载文本...
         .ui.clearing.hidden.divider
 
@@ -57,9 +58,9 @@
         div(*ngIf='userWordSource.isCurrentPara')
           | 来源：当前段落
 
-        word-text([entry]='entry', [para]='userWordSource.para', [textTrans]='textTrans')
-
-        .ui.clearing.divider
+        ng-template([ngIf]='userWordSource.para')
+          word-text([entry]='entry', [para]='userWordSource.para', [textTrans]='textTrans', [showTitle]='textShowTitle')
+          .ui.clearing.divider
 
         ng-template([ngIf]='!userWordSource.moreParas')
           .ui.right.floated.mini.button((click)='loadMoreParas()') 更多文本...
@@ -68,7 +69,7 @@
         ng-template([ngIf]='userWordSource.moreParas')
           ng-template(ngFor='', let-para='', [ngForOf]="userWordSource.moreParas", let-first="first", let-last="last")
 
-            word-text([entry]='entry', [para]='para', [textTrans]='textTrans')
+            word-text([entry]='entry', [para]='para', [textTrans]='textTrans', [showTitle]='textShowTitle')
 
             .ui.clearing.divider(*ngIf='!last')
 
