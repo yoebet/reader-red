@@ -1,14 +1,15 @@
-import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 
 import * as moment from 'moment';
 import {groupBy, sortBy} from 'lodash';
 
 import {UserWord} from '../models/user-word';
 import {DictEntry} from '../models/dict-entry';
-import {VocabularyService} from '../services/vocabulary.service';
+import {UserWordService} from '../services/user-word.service';
 import {DictService} from '../services/dict.service';
 import {ChapService} from '../services/chap.service';
 import {SuiSearch} from "ng2-semantic-ui/dist/modules/search/components/search";
+import {UserVocabularyService} from "../services/user-vocabulary.service";
 
 @Component({
   selector: 'vocabulary-main',
@@ -19,11 +20,13 @@ export class VocabularyComponent implements OnInit {
   @ViewChild('searchInput', {read: SuiSearch}) searchInput: SuiSearch<any>;
   userWords: UserWord[];
   entry: DictEntry;
-  searching = false;
+  action = 'userWords';
 
   filteredUserWords: UserWord[];
   groupedUserWords: any[];
   familiarities = UserWord.Familiarities;
+
+  wordStatistic: Object;
 
   filter: any = {
     familiarityAll: true,
@@ -53,9 +56,10 @@ export class VocabularyComponent implements OnInit {
   };
 
 
-  constructor(private vocaService: VocabularyService,
+  constructor(private userWordService: UserWordService,
               private dictService: DictService,
-              private chapService: ChapService) {
+              private chapService: ChapService,
+              private userVocabularyService: UserVocabularyService) {
   }
 
   ngOnInit() {
@@ -67,7 +71,7 @@ export class VocabularyComponent implements OnInit {
   }
 
   get latestAdded(): UserWord[] {
-    return this.vocaService.latestAdded;
+    return this.userWordService.latestAdded;
   }
 
   clearHistory() {
@@ -160,10 +164,17 @@ export class VocabularyComponent implements OnInit {
               }
               group.chap = chap;
               group.bookId = chap.bookId;
-              group.title = chap.name;
-              if (group.title.length > 90) {
-                group.title = group.title.substring(0, 90) + '...';
+              let title = chap.name;
+              let truncate = 96;
+              if (title.length > truncate) {
+                for (; truncate > 80; truncate--) {
+                  if (title.charAt(truncate) === ' ') {
+                    break;
+                  }
+                }
+                title = title.substring(0, truncate) + '...';
               }
+              group.title = title;
             });
         } else {
           group.title = '- Other';
@@ -189,10 +200,18 @@ export class VocabularyComponent implements OnInit {
   }
 
   refreshWordList() {
-    this.vocaService.list().subscribe(allWords => {
+    this.userWordService.list().subscribe(allWords => {
       this.userWords = allWords;
       this.filterUserWords();
       this.groupUserWords();
     });
+  }
+
+  clickStatistic() {
+    this.action = "statistic";
+    this.userVocabularyService.statistic()
+      .subscribe(statistic => {
+        this.wordStatistic = statistic;
+      })
   }
 }

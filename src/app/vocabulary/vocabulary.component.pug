@@ -20,14 +20,15 @@
 
   .thirteen.wide.column
     .ui.right.floated.small.compact.menu
-      a.item((click)='searching=false', [ngClass]='{active:!searching}') 生词
-      a.item((click)='searching=true', [ngClass]='{active:searching}') 搜索
-    //.ui.right.floated.horizontal.list
-      a.item((click)='searching=false', [ngClass]='{disabled:!searching}') 我的词汇
-      a.item((click)='searching=true', [ngClass]='{disabled:searching}') 搜索
+      a.item((click)='action="userWords"', [ngClass]='{active:action==="userWords"}') 我的词表
+      a.item((click)='action="wordCards"', [ngClass]='{active:action==="wordCards"}') 词汇卡片
+      a.item((click)='action="search"', [ngClass]='{active:action==="search"}') 搜索
+      a.item((click)='clickStatistic()', [ngClass]='{active:action==="statistic"}') 统计
+    //.ui.right.floated.buttons
+      .ui.small.button 统计
     .ui.clearing.hidden.divider
 
-    div.user-vocabulary(*ngIf='!searching')
+    div.user-vocabulary(*ngIf='action==="userWords"')
       .ui.segment.small.form.filter-group
         .field
           label.title 筛选
@@ -60,7 +61,7 @@
           .ui.horizontal.list
             a.item(*ngFor='let uw of group.userWords', (click)='selectWord(uw)') {{uw.word}}
 
-    div.searching(*ngIf='searching')
+    div.searching(*ngIf='action==="search"')
       .ui.segment.small.form.filter-group
         .field
           .grouped.fields.search
@@ -82,6 +83,17 @@
           .grouped.fields
             //span.label.field-name 范围
         //.clearing
+    div.statistic(*ngIf='action==="statistic"')
+      .ui.list(*ngIf='wordStatistic')
+        .item baseVocabularyCount {{wordStatistic.baseVocabularyCount}}
+        .item userWordsCount {{wordStatistic.userWordsCount}}
+        .item familiarity1Count {{wordStatistic.familiarity1Count}}
+        .item familiarity2Count {{wordStatistic.familiarity2Count}}
+        .item familiarity3Count {{wordStatistic.familiarity3Count}}
+        .item unfamiliarCountInBV {{wordStatistic.unfamiliarCountInBV}}
+        .item familiarCountNotInBV {{wordStatistic.familiarCountNotInBV}}
+        .item graspedCount {{wordStatistic.graspedCount}}
+
 
     .ui.clearing.hidden.divider
     dict-entry(*ngIf='entry', [entry]='entry')

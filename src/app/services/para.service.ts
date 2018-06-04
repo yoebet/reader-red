@@ -7,7 +7,6 @@ import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/catch';
 import {uniq} from 'lodash';
 
-import {Book} from '../models/book';
 import {Chap} from '../models/chap';
 import {Para} from '../models/para';
 import {BaseService} from './base.service';

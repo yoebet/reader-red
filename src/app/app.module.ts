@@ -13,8 +13,9 @@ import {ChapService} from './services/chap.service';
 import {ParaService} from './services/para.service';
 import {DictService} from './services/dict.service';
 import {UserBookService} from './services/user-book.service';
-import {VocabularyService} from './services/vocabulary.service';
+import {UserWordService} from './services/user-word.service';
 import {WordCategoryService} from './services/word-category.service';
+import {UserVocabularyService} from './services/user-vocabulary.service';
 import {UserPreferenceService} from './services/user-preference.service';
 import {AnnotationFamilyService} from './services/annotation-family.service';
 
@@ -73,8 +74,9 @@ import {WordTextComponent} from './dict/word-text.component';
     ParaService,
     DictService,
     UserBookService,
-    VocabularyService,
+    UserWordService,
     WordCategoryService,
+    UserVocabularyService,
     UserPreferenceService,
     AnnotationFamilyService
   ],

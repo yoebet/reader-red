@@ -6,7 +6,7 @@
 
 .ui
   .ui.stackable.steps.base-voca
-    .step(*ngFor='let wc of [junior1, junior2, cet4, cet6]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
+    .step(*ngFor='let wc of [basic, cet4, cet6]', [ngClass]='{active:wc===selected}', (click)='select(wc)')
       i.truck.icon
       .content
         .title {{wc.name}}
@@ -16,7 +16,7 @@
 
 div
   .ui([suiCollapse]='gypCollapse')
-    ng-template(ngFor='', let-wc='', [ngForOf]="[gre,yasi,pro]")
+    ng-template(ngFor='', let-wc='', [ngForOf]="[gre,yasi]")
       .ui.steps.base-voca
         .step([ngClass]='{active:wc===selected}', (click)='select(wc)')
           i.truck.icon

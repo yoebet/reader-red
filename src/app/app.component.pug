@@ -3,9 +3,9 @@
     a.item(routerLink='/') Home
     a.item(routerLink='/books', routerLinkActive='active') Books
     ng-template([ngIf]='currentUser')
-      a.item(routerLink='/vocabulary', routerLinkActive='active') Vocabulary
-      a.item(routerLink='/base-vocabulary', routerLinkActive='active') Base Vocabulary
-      a.item(routerLink='/word-tags', routerLinkActive='active') Word Tags
+      a.item(routerLink='/vocabulary', routerLinkActive='active') 我的词汇
+      a.item(routerLink='/base-vocabulary', routerLinkActive='active') 基础词汇
+      a.item(routerLink='/word-tags', routerLinkActive='active') 词汇标签
     .right.menu
       a.item(*ngIf='!currentUser', href='javascript:', (click)='gotoLogin()') Login
       .item(*ngIf='currentUser')

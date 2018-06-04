@@ -40,11 +40,11 @@ export class WordTagsSettingComponent implements OnInit {
 
         let group1 = {
           title: '普通',
-          codes: ['junior1', 'junior2', 'basic', 'cet4', 'cet6', 'cet'],
+          codes: [/*'junior1', 'junior2', */'basic', 'cet4', 'cet6'/*, 'cet'*/],
           categories: null as WordCategory[]
         };
         let group2 = {
-          title: '考试',
+          title: '高级',
           codes: ['gre', 'yasi', 'pro'],
           categories: null as WordCategory[]
         };

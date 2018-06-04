@@ -5,7 +5,7 @@ import {OpResult} from './models/op-result';
 import {BookService} from "./services/book.service";
 import {ChapService} from "./services/chap.service";
 import {DictService} from "./services/dict.service";
-import {VocabularyService} from "./services/vocabulary.service";
+import {UserWordService} from "./services/user-word.service";
 
 @Component({
   selector: 'app-root',
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
               private bookService: BookService,
               private chapService: ChapService,
               private dictService: DictService,
-              private vocabularyService: VocabularyService) {
+              private vocabularyService: UserWordService) {
   }
 
   ngOnInit() {

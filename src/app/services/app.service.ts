@@ -20,7 +20,7 @@ export class AppService {
 
   currentUser: User;
 
-  onCurrentUserChanged = new EventEmitter<{ from, to }>();
+  readonly onCurrentUserChanged = new EventEmitter<{ from, to }>();
 
   constructor(private http: HttpClient) {
     let apiBase = environment.apiBase || '';

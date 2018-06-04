@@ -1,5 +1,8 @@
 .ui.horizontal.link.list.user-vocabulary
   ng-template([ngIf]='userWord')
+    .item(*ngIf='wordCategory')
+      | 我的基础词汇
+      .ui.mini.teal.label {{wordCategory.name}}
     .item
       .ui.mini.label([ngClass]='"word-familiarity-"+userWord.familiarity') {{userWord.familiarity | wordFamiliarity}}
     a.item

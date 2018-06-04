@@ -1,39 +1,77 @@
-import {Component, Input} from "@angular/core";
-import {VocabularyService} from "../services/vocabulary.service";
+import {Component, Input, OnInit} from "@angular/core";
+
+import {Observable} from "rxjs/Observable";
+import 'rxjs/add/operator/switchMap';
+
+import {UserWordService} from "../services/user-word.service";
 import {UserWord} from "../models/user-word";
 import {OpResult} from "../models/op-result";
+import {UserVocabularyService} from "../services/user-vocabulary.service";
+import {WordCategoryService} from "../services/word-category.service";
+import {WordCategory} from "../models/word-category";
+
 
 @Component({
   selector: 'user-word',
   templateUrl: './user-word.component.html',
   styleUrls: ['./user-word.component.css']
 })
-export class UserWordComponent {
-  @Input() word: string;
+export class UserWordComponent implements OnInit {
+  private _word: string;
+  @Input()
+  set word(word: string) {
+    if (this._word === word) {
+      return;
+    }
+    this._word = word;
+    this.userVocabularyService.inBaseVocabulary(word)
+      .subscribe(code => {
+        if (!code) {
+          this.wordCategory = null;
+          return;
+        }
+        this.wordCategoryService.getCategory(code)
+          .subscribe((cat: WordCategory) => {
+            this.wordCategory = cat;
+          });
+      });
+  }
+
+  get word() {
+    return this._word;
+  }
+
   @Input() userWord: UserWord;
   @Input() context: any;
 
+  wordCategory: WordCategory;
 
-  constructor(private vocaService: VocabularyService) {
+
+  constructor(private userWordService: UserWordService,
+              private userVocabularyService: UserVocabularyService,
+              private wordCategoryService: WordCategoryService) {
+  }
+
+  ngOnInit() {
   }
 
 
   addToVocabulary() {
     let uw = new UserWord();
-    uw.word = this.word;
+    uw.word = this._word;
     if (this.context) {
       uw.bookId = this.context.bookId;
       uw.chapId = this.context.chapId;
       uw.paraId = this.context.paraId;
     }
-    this.vocaService.create(uw)
+    this.userWordService.create(uw)
       .subscribe(_ => this.userWord = uw);
   }
 
   familiarityUp() {
     if (this.userWord.familiarity < UserWord.FamiliarityHighest) {
       this.userWord.familiarity++;
-      this.vocaService.update(this.userWord)
+      this.userWordService.update(this.userWord)
         .subscribe(() => {
         });
     }
@@ -42,17 +80,17 @@ export class UserWordComponent {
   familiarityDown() {
     if (this.userWord.familiarity > UserWord.FamiliarityLowest) {
       this.userWord.familiarity--;
-      this.vocaService.update(this.userWord)
+      this.userWordService.update(this.userWord)
         .subscribe(() => {
         });
     }
   }
 
   removeUserWord() {
-    if (!confirm('确定要移除吗？')) {
+    /*if (!confirm('确定要移除吗？')) {
       return;
-    }
-    this.vocaService.remove(this.userWord.word)
+    }*/
+    this.userWordService.remove(this.userWord.word)
       .subscribe((opr: OpResult) => {
         if (opr.ok === 1) {
           this.userWord = null;

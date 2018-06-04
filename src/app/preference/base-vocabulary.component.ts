@@ -27,15 +27,16 @@ export class BaseVocabularyComponent implements OnInit {
   sampleWords: string[];
   gypCollapse = true;
 
-  junior1 = {code: 'junior1', name: '初级'} as WordCategory;
-  junior2 = {code: 'junior2', name: '基础'} as WordCategory;
+  // junior1 = {code: 'junior1', name: '初级'} as WordCategory;
+  // junior2 = {code: 'junior2', name: '中级'} as WordCategory;
+  basic = {code: 'basic', name: '基础'} as WordCategory;
   cet4 = {code: 'cet4', name: 'CET4'} as WordCategory;
   cet6 = {code: 'cet6', name: 'CET6'} as WordCategory;
   gre = {code: 'gre', name: 'GRE'} as WordCategory;
   yasi = {code: 'yasi', name: '雅思'} as WordCategory;
-  pro = {code: 'pro', name: '专英'} as WordCategory;
+  // pro = {code: 'pro', name: '专英'} as WordCategory;
 
-  allCats = [this.junior1, this.junior2, this.cet4, this.cet6, this.gre, this.yasi, this.pro];
+  allCats = [this.basic, this.cet4, this.cet6, this.gre, this.yasi/*, this.pro*/];
 
   selected: WordCategory;
   changed = false;
@@ -49,12 +50,11 @@ export class BaseVocabularyComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.wordCategoryService.list()
-      .subscribe((cats: WordCategory[]) => {
-        if (!cats) {
+    this.wordCategoryService.getCategoriesMap()
+      .subscribe((catsMap: Map<string, WordCategory>) => {
+        if (!catsMap) {
           return;
         }
-        let catsMap = this.wordCategoryService.wordCategoriesMap;
         for (let thisCat of this.allCats) {
           let cat = catsMap.get(thisCat.code);
           if (cat) {

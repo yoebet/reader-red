@@ -14,7 +14,7 @@ import {OpResult} from '../models/op-result';
 import {BaseService} from './base.service';
 
 @Injectable()
-export class VocabularyService extends BaseService<UserWord> {
+export class UserWordService extends BaseService<UserWord> {
 
   allWords: UserWord[];
   userWordsMap = new Map<string, UserWord>();
@@ -24,7 +24,7 @@ export class VocabularyService extends BaseService<UserWord> {
   constructor(protected http: HttpClient) {
     super(http);
     let apiBase = environment.apiBase || '';
-    this.baseUrl = `${apiBase}/voca`;
+    this.baseUrl = `${apiBase}/user_words`;
   }
 
   clearCache() {
@@ -119,11 +119,7 @@ export class VocabularyService extends BaseService<UserWord> {
     let obs = super.list() as Observable<UserWord[]>;
     obs = obs.share();
     obs.subscribe((userWords: UserWord[]) => {
-      if (userWords.length === 0) {
-        return;
-      }
       this.allWords = userWords;
-      let la = this._latestAdded;
       for (let uw of userWords) {
         this.userWordsMap.set(uw.word, uw);
         UserWord.ensureCreatedDate(uw);

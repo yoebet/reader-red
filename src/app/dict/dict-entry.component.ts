@@ -8,7 +8,7 @@ import {DictEntry, TagLabelMap} from '../models/dict-entry';
 import {UserWord} from '../models/user-word';
 import {Para} from '../models/para';
 import {DictService} from '../services/dict.service';
-import {VocabularyService} from '../services/vocabulary.service';
+import {UserWordService} from '../services/user-word.service';
 import {ParaService} from '../services/para.service';
 
 @Component({
@@ -42,7 +42,7 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
 
   constructor(private cdr: ChangeDetectorRef,
               private dictService: DictService,
-              private vocaService: VocabularyService,
+              private vocaService: UserWordService,
               private paraService: ParaService) {
   }
 
