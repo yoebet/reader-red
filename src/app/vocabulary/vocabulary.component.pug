@@ -16,26 +16,25 @@
           a.item(*ngFor='let entry of entryHistory', (click)='selectHistoryEntry(entry)')
             | {{entry.word}}
           .item
-            a.right.floated.operation(*ngIf='entryHistory.length>0', (click)='clearHistory()') 清空
+            a.operation(*ngIf='entryHistory.length>0', (click)='clearHistory()') ^^ 清空
 
   .thirteen.wide.column
     .ui.right.floated.small.compact.menu
-      a.item((click)='action="userWords"', [ngClass]='{active:action==="userWords"}') 我的词表
-      a.item((click)='action="wordCards"', [ngClass]='{active:action==="wordCards"}') 词汇卡片
-      a.item((click)='action="search"', [ngClass]='{active:action==="search"}') 搜索
-      a.item((click)='clickStatistic()', [ngClass]='{active:action==="statistic"}') 统计
-    //.ui.right.floated.buttons
-      .ui.small.button 统计
+      a.item((click)='mode="userWords"', [ngClass]='{active:mode==="userWords"}') 我的词表
+      a.item((click)='mode="wordCards"', [ngClass]='{active:mode==="wordCards"}') 词汇卡片
+      a.item((click)='mode="search"', [ngClass]='{active:mode==="search"}') 搜索
+      a.item((click)='clickStatistic()', [ngClass]='{active:mode==="statistic"}') 统计
     .ui.clearing.hidden.divider
 
-    div.user-vocabulary(*ngIf='action==="userWords"')
+    div.user-vocabulary(*ngIf='mode==="userWords"')
       .ui.segment.small.form.filter-group
         .field
           label.title 筛选
           .grouped.fields
             span.label.field-name 熟悉度
             sui-checkbox([(ngModel)]="filter.familiarityAll") 全部
-            sui-checkbox(*ngFor='let fam of familiarities', [(ngModel)]='filter["familiarity"+fam.value]', [isDisabled]='filter.familiarityAll') {{fam.label}}
+            sui-checkbox(*ngFor='let fam of familiarities', [(ngModel)]='filter["familiarity"+fam.value]',
+            [isDisabled]='filter.familiarityAll') {{fam.label}}
           .grouped.fields
             span.label.field-name 加入日期
             sui-radio-button(name="filterAddOn", value="All", [(ngModel)]="filter.addOn") 全部
@@ -61,7 +60,53 @@
           .ui.horizontal.list
             a.item(*ngFor='let uw of group.userWords', (click)='selectWord(uw)') {{uw.word}}
 
-    div.searching(*ngIf='action==="search"')
+    div.user-vocabulary(*ngIf='mode==="wordCards"')
+      .ui.segment.small.form.filter-group
+        .field
+          label.title 筛选
+          .grouped.fields
+            span.label.field-name 熟悉度
+            sui-checkbox([(ngModel)]="filter.familiarityAll") 全部
+            sui-checkbox(*ngFor='let fam of familiarities', [(ngModel)]='filter["familiarity"+fam.value]',
+            [isDisabled]='filter.familiarityAll') {{fam.label}}
+          .grouped.fields
+            span.label.field-name 加入日期
+            sui-radio-button(name="filterAddOn", value="All", [(ngModel)]="filter.addOn") 全部
+            //sui-radio-button(name="filterAddOn", value="3.days", [(ngModel)]="filter.addOn") 最近3天
+            sui-radio-button(name="filterAddOn", value="1.weeks", [(ngModel)]="filter.addOn") 最近1周
+            sui-radio-button(name="filterAddOn", value="1.months", [(ngModel)]="filter.addOn") 最近1月
+        .field
+          label.title 分批
+          .grouped.inline.fields
+            sui-checkbox([(ngModel)]="cardsRandom") 随机
+            span.label.field-name 排序
+            sui-radio-button(name="cardsOrder", value="none", [(ngModel)]="cardsOrder", [isDisabled]='cardsRandom') 不排序
+            sui-radio-button(name="cardsOrder", value="addOn", [(ngModel)]="cardsOrder", [isDisabled]='cardsRandom') 按加入日期（新的在前）
+
+          .ui.mini.primary.button((click)='generateCardWords()') 生成
+
+      .ui.clearing.hidden.divider
+
+      div(*ngIf='cardWords')
+        .ui.right.floated.mini.buttons
+          .ui.primary.basic.button((click)='nextBatchCardWords()')
+            | 下一批
+            i.right.arrow.icon
+        .ui.clearing.hidden.divider
+        .ui.cards
+          .link.card.word-card(*ngFor='let cw of cardWords', (click)='selectWord(cw.userWord)',
+          [ngClass]='{teal:entry&&entry.word===cw.userWord.word}')
+            .content
+              .header {{cw.userWord.word}}
+              //.meta
+              .description
+                .ui.list(*ngIf='cw.entry')
+                  .ui.item(*ngFor='let item of cw.entry.simple')
+                    | {{item.pos}} {{item.exp}}
+
+      .ui.clearing.hidden.divider
+
+    div.searching(*ngIf='mode==="search"')
       .ui.segment.small.form.filter-group
         .field
           .grouped.fields.search
@@ -83,17 +128,47 @@
           .grouped.fields
             //span.label.field-name 范围
         //.clearing
-    div.statistic(*ngIf='action==="statistic"')
-      .ui.list(*ngIf='wordStatistic')
-        .item baseVocabularyCount {{wordStatistic.baseVocabularyCount}}
-        .item userWordsCount {{wordStatistic.userWordsCount}}
-        .item familiarity1Count {{wordStatistic.familiarity1Count}}
-        .item familiarity2Count {{wordStatistic.familiarity2Count}}
-        .item familiarity3Count {{wordStatistic.familiarity3Count}}
-        .item unfamiliarCountInBV {{wordStatistic.unfamiliarCountInBV}}
-        .item familiarCountNotInBV {{wordStatistic.familiarCountNotInBV}}
-        .item graspedCount {{wordStatistic.graspedCount}}
+    div.statistic(*ngIf='mode==="statistic"')
+      ng-template([ngIf]='wordStatistic')
+        h4.ui.dividing.header 我的词表：
+        .ui.tiny.statistics
+          .grey.statistic
+            .value &nbsp;
+          .red.statistic
+            .value {{wordStatistic.familiarity1Count}}
+            .label 很陌生
+          .teal.statistic
+            .value {{wordStatistic.familiarity2Count}}
+            .label 熟悉中
+          .green.statistic
+            .value {{wordStatistic.familiarity3Count}}
+            .label 已掌握
 
+        h4.ui.dividing.header 词汇量：
+        .ui.tiny.statistics
+          .grey.statistic
+            .value &nbsp;
+          .blue.statistic
+            .value {{wordStatistic.baseVocabularyCount}}
+            .label 我的基础词汇
+          .red.statistic
+            .value -
+          .red.statistic
+            .value {{wordStatistic.unfamiliarCountInBV}}
+            .label 基础词汇中不掌握的
+          .red.statistic
+            .value +
+          .green.statistic
+            .value {{wordStatistic.familiarCountNotInBV}}
+            .label 已掌握且不在基础词汇中的
+
+        .ui.hidden.divider
+        .ui.small.statistics
+          .red.statistic
+            .value =
+          .green.statistic
+            .value {{wordStatistic.graspedCount}}
+            .label 已掌握
 
     .ui.clearing.hidden.divider
     dict-entry(*ngIf='entry', [entry]='entry')

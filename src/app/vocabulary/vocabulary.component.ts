@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 
 import * as moment from 'moment';
-import {groupBy, sortBy} from 'lodash';
+import {groupBy, sortBy, shuffle, take} from 'lodash';
 
 import {UserWord} from '../models/user-word';
 import {DictEntry} from '../models/dict-entry';
@@ -20,11 +20,18 @@ export class VocabularyComponent implements OnInit {
   @ViewChild('searchInput', {read: SuiSearch}) searchInput: SuiSearch<any>;
   userWords: UserWord[];
   entry: DictEntry;
-  action = 'userWords';
+  mode = 'userWords';
 
   filteredUserWords: UserWord[];
   groupedUserWords: any[];
   familiarities = UserWord.Familiarities;
+
+  userWordsForCards: UserWord[];
+  cardWords: { userWord: UserWord, entry?: DictEntry }[];
+  cardsRandom = true;
+  cardsOrder = 'none';
+  cardsCount = 8;
+  cardsOffset = 0;
 
   wordStatistic: Object;
 
@@ -167,7 +174,7 @@ export class VocabularyComponent implements OnInit {
               let title = chap.name;
               let truncate = 96;
               if (title.length > truncate) {
-                for (; truncate > 80; truncate--) {
+                for (let th = truncate - 16; truncate > th; truncate--) {
                   if (title.charAt(truncate) === ' ') {
                     break;
                   }
@@ -181,7 +188,7 @@ export class VocabularyComponent implements OnInit {
         }
         this.groupedUserWords.push(group);
       }
-      sortBy(this.groupedUserWords, ['bookId', 'chap.no']);
+      this.groupedUserWords = sortBy(this.groupedUserWords, ['bookId', 'chap.no']);
     } else if (gb === 'AddOn') {
       for (let userWord of this.filteredUserWords) {
         UserWord.ensureCreatedDate(userWord);
@@ -208,10 +215,67 @@ export class VocabularyComponent implements OnInit {
   }
 
   clickStatistic() {
-    this.action = "statistic";
+    this.mode = "statistic";
+    this.entry = null;
     this.userVocabularyService.statistic()
       .subscribe(statistic => {
         this.wordStatistic = statistic;
-      })
+      });
   }
+
+  generateCardWords() {
+    this.userWordService.list().subscribe(allWords => {
+      this.userWords = allWords;
+      this.filterUserWords();
+      this.userWordsForCards = this.filteredUserWords;
+
+
+      if (!this.cardsRandom) {
+        if (this.cardsOrder === 'addOn') {
+          this.userWordsForCards = sortBy(this.userWordsForCards, userWord => {
+            return -userWord.createdMoment.unix();
+          });
+        }
+      }
+
+      this.cardsOffset = 0;
+      this.nextBatchCardWords();
+    });
+
+  }
+
+  nextBatchCardWords() {
+    this.cardWords = [];
+    let userWords: UserWord[];
+
+    let wordsLen = this.userWordsForCards.length;
+    if (wordsLen === 0) {
+      return;
+    }
+
+    if (this.cardsRandom) {
+      userWords = shuffle(this.userWordsForCards);
+      if (this.cardsCount < wordsLen) {
+        userWords = take(userWords, this.cardsCount);
+      }
+    } else {
+      if (this.cardsOffset >= wordsLen) {
+        this.cardsOffset = 0;
+      }
+      let endOffset = Math.min(this.cardsOffset + this.cardsCount, wordsLen);
+      userWords = this.userWordsForCards.slice(this.cardsOffset, endOffset);
+
+      this.cardsOffset = endOffset;
+    }
+
+    for (let userWord of userWords) {
+      let cardWord = {userWord, entry: null as DictEntry};
+      this.cardWords.push(cardWord);
+      this.dictService.getEntry(userWord.word)
+        .subscribe(entry => {
+          cardWord.entry = entry;
+        });
+    }
+  }
+
 }

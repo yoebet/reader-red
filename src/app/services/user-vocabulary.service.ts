@@ -87,7 +87,9 @@ export class UserVocabularyService {
                   .subscribe((words: string[]) => {
                     if (words) {
                       for (let word of words) {
-                        bvm.set(word, code);
+                        if (word.indexOf(' ') === -1) {
+                          bvm.set(word, code);
+                        }
                       }
                     }
                     codesLen--;
@@ -99,7 +101,6 @@ export class UserVocabularyService {
               }
             });
         });
-
     });
   }
 
@@ -126,62 +127,42 @@ export class UserVocabularyService {
           let bvm = baseVocabularyMap as Map<string, string>;
           let uws = userWords as UserWord[];
 
-          let baseVocabularyCount = bvm.size;
-          let userWordsCount = uws.length;
+          uws = uws.filter(uw => uw.word.indexOf(' ') === -1);
+
 
           let uwsByFamiliarity = groupBy<UserWord>(uws, 'familiarity');
-          let uwsFamiliarity1: UserWord[] = uwsByFamiliarity['1'];
-          let uwsFamiliarity2: UserWord[] = uwsByFamiliarity['2'];
-          let uwsFamiliarity3: UserWord[] = uwsByFamiliarity['3'];
 
-          let wordsFamiliarity1: string[] = [];
-          let wordsFamiliarity2: string[] = [];
-          let wordsFamiliarity3: string[] = [];
-          if (uwsFamiliarity1) {
-            wordsFamiliarity1 = uwsFamiliarity1.map(uw => uw.word) as string[];
-          }
-          if (uwsFamiliarity2) {
-            wordsFamiliarity2 = uwsFamiliarity2.map(uw => uw.word) as string[];
-          }
-          if (uwsFamiliarity3) {
-            wordsFamiliarity3 = uwsFamiliarity3.map(uw => uw.word) as string[];
-          }
-
-          let familiarity1Count = wordsFamiliarity1.length;
-          let familiarity2Count = wordsFamiliarity2.length;
-          let familiarity3Count = wordsFamiliarity3.length;
+          let $word = (uw: UserWord) => uw.word;
+          let wordsFamiliarity1: string[] = uwsByFamiliarity['1'].map($word);
+          let wordsFamiliarity2: string[] = uwsByFamiliarity['2'].map($word);
+          let wordsFamiliarity3: string[] = uwsByFamiliarity['3'].map($word);
 
           let unfamiliarCountInBV = 0;
 
-          for (let word of wordsFamiliarity1) {
-            if (bvm.get(word)) {
-              unfamiliarCountInBV++;
-            }
-          }
-          for (let word of wordsFamiliarity2) {
+          for (let word of wordsFamiliarity1.concat(wordsFamiliarity2)) {
             if (bvm.get(word)) {
               unfamiliarCountInBV++;
             }
           }
 
           let familiarCountNotInBV = 0;
-
           for (let word of wordsFamiliarity3) {
             if (!bvm.get(word)) {
               familiarCountNotInBV++;
             }
           }
 
-          let graspedCount = baseVocabularyCount;
-          graspedCount -= unfamiliarCountInBV;
-          graspedCount += familiarCountNotInBV;
+          let baseVocabularyCount = bvm.size;
+          let userWordsCount = uws.length;
+
+          let graspedCount = baseVocabularyCount - unfamiliarCountInBV + familiarCountNotInBV;
 
           let vocabularyStatistic = {
             baseVocabularyCount,
             userWordsCount,
-            familiarity1Count,
-            familiarity2Count,
-            familiarity3Count,
+            familiarity1Count: wordsFamiliarity1.length,
+            familiarity2Count: wordsFamiliarity2.length,
+            familiarity3Count: wordsFamiliarity3.length,
             unfamiliarCountInBV,
             familiarCountNotInBV,
             graspedCount

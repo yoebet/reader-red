@@ -37,5 +37,10 @@
 }
 
 /*.form.filter-group .grouped.fields {*/
-  /*padding-left: 1em;*/
+/*padding-left: 1em;*/
 /*}*/
+
+.card.word-card {
+  cursor: pointer;
+}
+

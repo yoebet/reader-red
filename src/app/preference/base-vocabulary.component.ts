@@ -27,14 +27,14 @@ export class BaseVocabularyComponent implements OnInit {
   sampleWords: string[];
   gypCollapse = true;
 
-  // junior1 = {code: 'junior1', name: '初级'} as WordCategory;
-  // junior2 = {code: 'junior2', name: '中级'} as WordCategory;
-  basic = {code: 'basic', name: '基础'} as WordCategory;
-  cet4 = {code: 'cet4', name: 'CET4'} as WordCategory;
-  cet6 = {code: 'cet6', name: 'CET6'} as WordCategory;
-  gre = {code: 'gre', name: 'GRE'} as WordCategory;
-  yasi = {code: 'yasi', name: '雅思'} as WordCategory;
-  // pro = {code: 'pro', name: '专英'} as WordCategory;
+  // junior1 = {code: 'junior1'} as WordCategory;
+  // junior2 = {code: 'junior2'} as WordCategory;
+  basic = {code: 'basic'} as WordCategory;
+  cet4 = {code: 'cet4'} as WordCategory;
+  cet6 = {code: 'cet6'} as WordCategory;
+  gre = {code: 'gre'} as WordCategory;
+  yasi = {code: 'yasi'} as WordCategory;
+  // pro = {code: 'pro'} as WordCategory;
 
   allCats = [this.basic, this.cet4, this.cet6, this.gre, this.yasi/*, this.pro*/];
 
