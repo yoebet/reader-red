@@ -1,12 +1,10 @@
 .ui.horizontal.link.list.user-vocabulary
   .item(*ngIf='wordCategory')
     | 我的基础词汇
-    .ui.mini.teal.label {{wordCategory.name}}
+    .ui.mini.label {{wordCategory.name}}
   ng-template([ngIf]='userWord')
     .item
       .ui.mini.label([ngClass]='"word-familiarity-"+userWord.familiarity') {{userWord.familiarity | wordFamiliarity}}
-    a.item
-      | 熟悉度
       .ui.icon.mini.buttons
         .ui.button([ngClass]='{disabled:userWord.familiarity===3}', (click)='familiarityUp()')
           i.double.angle.up.icon

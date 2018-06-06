@@ -1,10 +1,10 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 
+import {UIConstants} from '../config';
 import {DictEntry} from '../models/dict-entry';
 import {Para} from '../models/para';
 import {ParaService} from '../services/para.service';
-import {DictEntryComponent} from "./dict-entry.component";
 import {SafeHtml} from "@angular/platform-browser/src/security/dom_sanitization_service";
 
 @Component({
@@ -107,7 +107,7 @@ export class WordTextComponent implements OnChanges {
         }
         let word = matcher[0];
         if (word === parentWholeText) {
-          element.classList.add(DictEntryComponent.highlightWordClass);
+          element.classList.add(UIConstants.highlightWordClass);
           break;
         }
         nodesToTry.push(textNode);
@@ -140,7 +140,7 @@ export class WordTextComponent implements OnChanges {
           }
 
           let wrapping = document.createElement('span');
-          wrapping.classList.add(DictEntryComponent.highlightWordClass);
+          wrapping.classList.add(UIConstants.highlightWordClass);
           element.replaceChild(wrapping, wordNode);
           wrapping.appendChild(wordNode);
 
@@ -164,7 +164,7 @@ export class WordTextComponent implements OnChanges {
         if (el === contentHolder) {
           return null;
         }
-        if (el.matches(DictEntryComponent.sentenceTagName)) {
+        if (el.matches(UIConstants.sentenceTagName)) {
           return el;
         }
         el = el.parentNode;
@@ -174,7 +174,7 @@ export class WordTextComponent implements OnChanges {
 
     let sids = [];
 
-    let wordEls = Array.from(contentHolder.querySelectorAll('.' + DictEntryComponent.highlightWordClass));
+    let wordEls = Array.from(contentHolder.querySelectorAll('.' + UIConstants.highlightWordClass));
     for (let wordEl of wordEls) {
       let sentenceEl = findSentence(wordEl);
       if (sentenceEl) {
@@ -182,7 +182,7 @@ export class WordTextComponent implements OnChanges {
         if (sids.indexOf(sid) >= 0) {
           continue;
         }
-        sentenceEl.classList.add(DictEntryComponent.highlightSentenceClass);
+        sentenceEl.classList.add(UIConstants.highlightClass);
         sids.push(sid);
       }
     }
@@ -192,13 +192,13 @@ export class WordTextComponent implements OnChanges {
     let trans = para.trans || '';
     if (sids.length > 0) {
       contentHolder.innerHTML = trans;
-      let transEls = contentHolder.querySelectorAll(DictEntryComponent.sentenceTagName);
+      let transEls = contentHolder.querySelectorAll(UIConstants.sentenceTagName);
       let tes = Array.from(transEls);
       for (let transEl of tes) {
         let te = transEl as any;
         let sid = te.dataset.sid;
         if (sids.indexOf(sid) >= 0) {
-          te.classList.add(DictEntryComponent.highlightSentenceClass);
+          te.classList.add(UIConstants.highlightClass);
         }
       }
       trans = contentHolder.innerHTML;

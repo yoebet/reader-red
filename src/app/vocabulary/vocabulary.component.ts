@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 
 import * as moment from 'moment';
-import {groupBy, sortBy, shuffle, take} from 'lodash';
+import {groupBy, sortBy, shuffle, take, random} from 'lodash';
 
 import {UserWord} from '../models/user-word';
 import {DictEntry} from '../models/dict-entry';
@@ -30,7 +30,7 @@ export class VocabularyComponent implements OnInit {
   cardWords: { userWord: UserWord, entry?: DictEntry }[];
   cardsRandom = true;
   cardsOrder = 'none';
-  cardsCount = 8;
+  cardsCount = 6;
   cardsOffset = 0;
 
   wordStatistic: Object;
@@ -254,7 +254,12 @@ export class VocabularyComponent implements OnInit {
     }
 
     if (this.cardsRandom) {
-      userWords = shuffle(this.userWordsForCards);
+      userWords = this.userWordsForCards;
+      if (wordsLen > this.cardsCount * 11) {
+        let sliceFrom = random(wordsLen - this.cardsCount);
+        userWords = userWords.slice(sliceFrom, sliceFrom + this.cardsCount);
+      }
+      userWords = shuffle(userWords);
       if (this.cardsCount < wordsLen) {
         userWords = take(userWords, this.cardsCount);
       }

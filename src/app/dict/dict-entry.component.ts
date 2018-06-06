@@ -36,9 +36,6 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
   textShowTitle = false;
   textTabActive = false;
 
-  static sentenceTagName = 's-st';
-  static highlightSentenceClass = 'highlight';
-  static highlightWordClass = 'highlight-word';
 
   constructor(private cdr: ChangeDetectorRef,
               private dictService: DictService,

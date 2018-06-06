@@ -102,6 +102,9 @@ export class WordAnnosComponent implements OnInit {
         phraseGroup = value;
         continue;
       }
+      if (!this.annotationSet) {
+        continue;
+      }
       let text = this.annotationSet.annotationOutput(name, value);
       if (!text) {
         continue;

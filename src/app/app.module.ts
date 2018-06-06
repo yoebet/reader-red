@@ -35,7 +35,7 @@ import {BaseVocabularyComponent} from './preference/base-vocabulary.component';
 import {SimpleMeaningsComponent} from './dict/simple-meanings.component';
 import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
 import {WordTagsSettingComponent} from "./preference/word-tags-setting.component";
-import {UserWordComponent} from './dict/user-word.component';
+import {UserWordComponent} from './vocabulary/user-word.component';
 import {WordTagsComponent} from './dict/word-tags.component';
 import {WordTextComponent} from './dict/word-text.component';
 

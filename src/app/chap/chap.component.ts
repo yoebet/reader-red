@@ -4,6 +4,7 @@ import {Location} from '@angular/common';
 import 'rxjs/add/operator/switchMap';
 import Tether from 'tether';
 
+import {UIConstants} from '../config';
 import {Book} from '../models/book';
 import {Chap} from '../models/chap';
 import {Para} from '../models/para';
@@ -24,7 +25,7 @@ export class ChapComponent implements OnInit {
   selectedPara: Para;
   showTrans = false;
   leftRight = false;
-  highlightSentence = false;
+  highlightSentence = true;
   annotatedWordsHover = true;
   lookupDict = false;
 
@@ -32,7 +33,6 @@ export class ChapComponent implements OnInit {
 
   dictRequest: DictRequest = null;
   dictTether = null;
-  private tetherClassPrefix = 'dp';
 
   constructor(private bookService: BookService,
               private chapService: ChapService,
@@ -68,11 +68,13 @@ export class ChapComponent implements OnInit {
       if (this.dictRequest && this.dictTether) {
         let dictPopup = document.getElementById('dictPopup');
         if (event.target) {
-          let node = event.target as Node;
-          if (this.dictRequest.wordElement === node) {
-            return;
+          let target = event.target as Element;
+          if (target.contains(this.dictRequest.wordElement)) {
+            if (target.closest(`${UIConstants.sentenceTagName}, .para-text, .paragraph`)) {
+              return;
+            }
           }
-          if (dictPopup.contains(node)) {
+          if (dictPopup.contains(target)) {
             return;
           }
         }
@@ -122,7 +124,7 @@ export class ChapComponent implements OnInit {
 
   private removeTetherClass(el) {
     el.className = el.className.split(' ')
-      .filter(n => !n.startsWith(this.tetherClassPrefix + '-')).join(' ');
+      .filter(n => !n.startsWith(UIConstants.tetherClassPrefix)).join(' ');
     if (el.className === '') {
       el.removeAttribute('class');
     }
@@ -172,7 +174,7 @@ export class ChapComponent implements OnInit {
             attachment: 'together'
           }
         ],
-        classPrefix: this.tetherClassPrefix
+        classPrefix: UIConstants.tetherClassPrefix.replace(/-$/, '')
       });
     }
   }
