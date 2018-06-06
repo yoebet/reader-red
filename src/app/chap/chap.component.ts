@@ -27,12 +27,14 @@ export class ChapComponent implements OnInit {
   leftRight = false;
   highlightSentence = true;
   annotatedWordsHover = true;
+  markNewWords = true;
   lookupDict = false;
 
   annotationSet: AnnotationSet;
 
   dictRequest: DictRequest = null;
   dictTether = null;
+
 
   constructor(private bookService: BookService,
               private chapService: ChapService,
@@ -112,14 +114,21 @@ export class ChapComponent implements OnInit {
     this.selectPara(para);
   }
 
-  onAnnotatedWordsHoverChange() {
+  private toggleBodyClass(className: string, flag: boolean) {
     let bodyClasses = document.body.classList;
-    let className = 'drop-anno-disabled';
-    if (this.annotatedWordsHover) {
+    if (flag) {
       bodyClasses.remove(className);
     } else {
       bodyClasses.add(className);
     }
+  }
+
+  onMarkNewWordsChange() {
+    this.toggleBodyClass(UIConstants.newwordDisabledBodyClass, this.markNewWords);
+  }
+
+  onAnnotatedWordsHoverChange() {
+    this.toggleBodyClass(UIConstants.annoDisabledBodyClass, this.annotatedWordsHover);
   }
 
   private removeTetherClass(el) {
@@ -174,7 +183,7 @@ export class ChapComponent implements OnInit {
             attachment: 'together'
           }
         ],
-        classPrefix: UIConstants.tetherClassPrefix.replace(/-$/, '')
+        classPrefix: UIConstants.tetherClassPrefixNoHyphen
       });
     }
   }

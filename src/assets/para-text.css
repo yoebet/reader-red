@@ -20,18 +20,6 @@
   margin-left: 1em;
 }
 
-
-.para-text.content-text [data-mid] {
-  border-bottom: 1px dashed cadetblue;
-}
-
-.para-text.content-text [data-note]:after {
-  content: '注';
-  font-size: 0.6em;
-  vertical-align: super;
-  color: indianred;
-}
-
 .para-text s-st.highlight {
   /*background: lightblue;*/
   background: rgba(173, 216, 230, 0.4)

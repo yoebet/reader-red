@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 
+import {UIConstants} from '../config';
 import {AnnotationSet} from '../anno/annotation-set';
 import {DictEntry} from '../models/dict-entry';
 import {DictService} from '../services/dict.service';
@@ -29,6 +30,9 @@ export class WordAnnosComponent implements OnInit {
   }
 
   set wordEl(_wordEl: Element) {
+    if (_wordEl === this._wordEl) {
+      return;
+    }
     this._wordEl = _wordEl;
     if (this.initialized && this.enabled) {
       this.parseAnnotations();
@@ -135,7 +139,7 @@ export class WordAnnosComponent implements OnInit {
         if (el === this.paraTextEl) {
           return null;
         }
-        if (el.matches('s-st')) {
+        if (el.matches(UIConstants.sentenceTagName)) {
           return el;
         }
       }

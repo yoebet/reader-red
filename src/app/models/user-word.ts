@@ -8,7 +8,7 @@ export class UserWord extends Model {
   chapId: string;
   paraId: string;
   familiarity: number = 1;
-  lastTouch: Date;
+  // lastTouch: string;
   createdDateParts?: { year: number, month: number, dayOfMonth: number, weekOfYear: number, dayOfWeek: number, dateString: string };
   createdMoment?: moment.Moment;
 

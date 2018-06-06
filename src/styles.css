@@ -36,6 +36,7 @@
 @import url('assets/annos-popup.css');
 @import url('assets/annotations.css');
 @import url('assets/para-text.css');
+@import url('assets/word-markers.css');
 
 .pre-wrap {
   white-space: pre-wrap;
@@ -110,8 +111,3 @@ sui-multi-select i.list.icon {
 .word-source-text .content-text .highlight-word {
   background: #ffffc0;
 }
-
-/*.word-source-text .content-text, .word-source-text .trans-text {*/
-  /*line-height: 1.5rem;*/
-  /*font-size: 1.1rem;*/
-/*}*/

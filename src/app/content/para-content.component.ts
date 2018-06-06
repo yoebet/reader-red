@@ -16,6 +16,9 @@ import {DictEntry} from '../models/dict-entry';
 import {DictService} from '../services/dict.service';
 import {DictRequest} from '../chap/dict-request';
 import {WordAnnosComponent} from './word-annos.component'
+import {UserWord} from "../models/user-word";
+import {CombinedWordsMap, UserVocabularyService} from "../services/user-vocabulary.service";
+import {guestBaseForms, guestStem} from '../en/word-forms';
 
 @Component({
   selector: 'para-content',
@@ -32,14 +35,17 @@ export class ParaContentComponent implements OnInit, OnChanges {
   @Input() activeAlways: boolean;
   @Input() lookupDict: boolean;
   @Input() highlightSentence: boolean;
+  @Input() markNewWords: boolean;
   @Input() annotatedWordsHover: boolean;
   @Input() annotationSet: AnnotationSet;
+
   @Output() dictRequest = new EventEmitter<DictRequest>();
 
   transRendered = false;
   sentenceHoverSetup = false;
   associatedWordsHoverSetup = false;
   annotatedWordsHoverSetup = false;
+  wordMarked = false;
 
   highlightedSentences: Element[];
   highlightedWords: Element[];
@@ -49,7 +55,12 @@ export class ParaContentComponent implements OnInit, OnChanges {
   static highlightWordsSelector = HighlightGroups.highlightAnnotationSelectors;
   annotator: Annotator;
 
-  constructor(private dictService: DictService, private resolver: ComponentFactoryResolver) {
+  combinedWordsMap: CombinedWordsMap;
+
+
+  constructor(private dictService: DictService,
+              private userVocabularyService: UserVocabularyService,
+              private resolver: ComponentFactoryResolver) {
   }
 
   get active() {
@@ -57,6 +68,14 @@ export class ParaContentComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.userVocabularyService.getCombinedWordsMap()
+      .subscribe((map: CombinedWordsMap) => {
+        this.combinedWordsMap = map;
+        if (this.active) {
+          this.markUserNewWords();
+        }
+      });
+
     if (this.activeAlways) {
       this.setupAssociatedWordsHover();
       this.setupAnnotatedWordsHover();
@@ -391,15 +410,162 @@ export class ParaContentComponent implements OnInit, OnChanges {
     this.annotatedWordsHoverSetup = true;
   }
 
+  markUserNewWords() {
+
+    if (this.wordMarked || !this.markNewWords || !this.combinedWordsMap || !this.active) {
+      return;
+    }
+
+    let content = this.para.content;
+    let contentHolder = document.createElement('div');
+    contentHolder.innerHTML = content;
+
+    let nodeIterator = document.createNodeIterator(
+      contentHolder,
+      NodeFilter.SHOW_TEXT
+    );
+
+    let textNodes = [];
+
+    let tn;
+    while (tn = nodeIterator.nextNode()) {
+      textNodes.push(tn);
+    }
+
+    let wordsMap = this.combinedWordsMap;
+
+    let wordPattern = /\b\w{3,}\b/;
+
+    for (let textNode of textNodes) {
+      let text = textNode.nodeValue;
+      let element = textNode.parentNode;
+      let parentWholeText = element.textContent;
+      if (text.trim().length < 3) {
+        continue;
+      }
+
+      let baseOffset = 0;
+
+      let matcher;
+      while (matcher = text.match(wordPattern)) {
+        let word = matcher[0];
+        let offset = matcher.index;
+
+        let codeOrUW = wordsMap.get(word);
+        let wordClasses: string[];
+
+        let containsUpperCase = false;
+        if (!codeOrUW) {
+          if (word.toLowerCase() !== word) {
+            containsUpperCase = true;
+            word = word.toLowerCase();
+            codeOrUW = wordsMap.get(word);
+          }
+        }
+
+        if (!codeOrUW) {
+          let forms = guestBaseForms(word);
+          for (let form of forms) {
+            codeOrUW = wordsMap.get(form);
+            if (codeOrUW) {
+              break;
+            }
+          }
+        }
+
+        if (!codeOrUW) {
+          let stem = guestStem(word);
+          codeOrUW = wordsMap.get(stem);
+        }
+
+        if (!codeOrUW) {
+          if (containsUpperCase
+            || text.charAt(offset + word.length) === "’"
+            || (offset > 0 && text.charAt(offset - 1) === "-")) {
+            codeOrUW = 'ignore';
+          }
+        }
+
+        if (!codeOrUW) {
+          wordClasses = [UIConstants.userWordBeyondClass];
+        } else if (typeof codeOrUW === 'string') {
+          // base vocabulary
+        } else {
+          let uw = codeOrUW as UserWord;
+          if (uw.familiarity === UserWord.FamiliarityHighest) {
+            // grasped
+          } else {
+            wordClasses = [UIConstants.userWordFamiliarityClassPrefix + uw.familiarity];
+          }
+        }
+
+        if (!wordClasses) {
+          if (word.length + 3 >= text.length) {
+            break;
+          }
+          let from = offset + word.length;
+          text = text.substr(from);
+          baseOffset += from;
+          continue;
+        }
+
+        wordClasses.unshift(UIConstants.userWordCommonClass);
+
+        if (word === parentWholeText) {
+          element.classList.add(...wordClasses);
+          break;
+        }
+
+        let totalOffset = baseOffset + offset;
+        if (totalOffset > 0) {
+          textNode = textNode.splitText(totalOffset);
+        }
+        let wordNode = textNode;
+        if (offset + word.length < text.length) {
+          textNode = wordNode.splitText(word.length);
+        }
+
+        let wrapping = document.createElement(UIConstants.userWordTagName);
+        wrapping.classList.add(...wordClasses);
+        element.replaceChild(wrapping, wordNode);
+        wrapping.appendChild(wordNode);
+
+        if (offset + word.length + 3 >= text.length) {
+          break;
+        }
+        text = textNode.nodeValue;
+        baseOffset = 0;
+      }
+    }
+
+    content = contentHolder.innerHTML;
+    this.contentText.element.nativeElement.innerHTML = content;
+
+    this.wordMarked = true;
+
+    this.sentenceHoverSetup = false;
+    this.associatedWordsHoverSetup = false;
+    this.annotatedWordsHoverSetup = false;
+
+    this.setupSentenceHover();
+    this.setupAssociatedWordsHover();
+    this.setupAnnotatedWordsHover();
+  }
+
   refreshContent() {
     let html = this.para.content || ' ';
-    // html = `<div class="part">${html}</div>`;
     this.contentText.element.nativeElement.innerHTML = html;
+
+    this.sentenceHoverSetup = false;
+    this.associatedWordsHoverSetup = false;
+    this.annotatedWordsHoverSetup = false;
+    this.transRendered = false;
+
+    this.markUserNewWords();
   }
 
   refreshTrans() {
     let html = this.para.trans || ' ';
-    // html = `<div class="part">${html}</div>`;
     this.paraTrans.element.nativeElement.innerHTML = html;
     this.transRendered = true;
   }
@@ -407,10 +573,6 @@ export class ParaContentComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.para) {
       this.refreshContent();
-      this.sentenceHoverSetup = false;
-      this.associatedWordsHoverSetup = false;
-      this.annotatedWordsHoverSetup = false;
-      this.transRendered = false;
     }
     if (this.showTrans && !this.transRendered) {
       this.refreshTrans();
@@ -424,7 +586,12 @@ export class ParaContentComponent implements OnInit, OnChanges {
       this.clearWordHighlights();
     }
 
+    if (changes.markNewWords && this.markNewWords) {
+      this.markUserNewWords();
+    }
+
     if (this.gotFocus) {
+      this.markUserNewWords();
       this.setupSentenceHover();
       this.setupAssociatedWordsHover();
       this.setupAnnotatedWordsHover();

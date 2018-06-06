@@ -87,3 +87,24 @@
   border-bottom-color: cornflowerblue;
   border-bottom-style: solid;
 }
+
+
+.para-text.content-text [data-mid] {
+  border-bottom: 1px dashed cadetblue;
+}
+
+.para-text.content-text [data-note]:after {
+  content: '注';
+  font-size: 0.6em;
+  vertical-align: super;
+  color: indianred;
+}
+
+body.anno-disabled .para-content y-o {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+body.anno-disabled .para-content y-o[data-note]:after {
+  content:''
+}

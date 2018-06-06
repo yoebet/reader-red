@@ -25,16 +25,16 @@ export class AppComponent implements OnInit {
               private bookService: BookService,
               private chapService: ChapService,
               private dictService: DictService,
-              private vocabularyService: UserWordService) {
+              private userWordService: UserWordService) {
   }
 
   ngOnInit() {
     this.appService.onCurrentUserChanged.subscribe(change => {
-      console.log('User Changed: ' + change.from + ' -> ' + change.to);
+      // console.log('User Changed: ' + change.from + ' -> ' + change.to);
       this.bookService.clearBookList();
       // this.chapService.clearCache();
       this.dictService.clearHistory();
-      this.vocabularyService.clearCache();
+      this.userWordService.clearCache();
     });
     this.appService.checkLogin();
   }

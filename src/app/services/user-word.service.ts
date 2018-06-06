@@ -6,6 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
 
 import {sortedIndexBy} from 'lodash';
 
@@ -17,9 +18,12 @@ import {BaseService} from './base.service';
 export class UserWordService extends BaseService<UserWord> {
 
   allWords: UserWord[];
-  userWordsMap = new Map<string, UserWord>();
+  userWordsMap: Map<string, UserWord>;
   private _latestAdded: UserWord[] = [];
   latestAddedCapacity = 10;
+
+  private allWords$: Observable<UserWord[]>;
+
 
   constructor(protected http: HttpClient) {
     super(http);
@@ -29,7 +33,8 @@ export class UserWordService extends BaseService<UserWord> {
 
   clearCache() {
     this.allWords = null;
-    this.userWordsMap.clear();
+    this.allWords$ = null;
+    this.userWordsMap = null;
     this._latestAdded = [];
   }
 
@@ -98,14 +103,16 @@ export class UserWordService extends BaseService<UserWord> {
   }
 
   getOne(word: string): Observable<UserWord> {
-    let userWord = this.userWordsMap.get(word);
-    if (userWord) {
-      return Observable.of(userWord);
+    if (this.userWordsMap) {
+      let userWord = this.userWordsMap.get(word);
+      if (userWord) {
+        return Observable.of(userWord);
+      }
     }
     let obs = super.getOne(word) as Observable<UserWord>;
     obs = obs.share();
     obs.subscribe((uw: UserWord) => {
-      if (uw) {
+      if (uw && this.userWordsMap) {
         this.userWordsMap.set(uw.word, uw);
       }
     });
@@ -116,17 +123,30 @@ export class UserWordService extends BaseService<UserWord> {
     if (this.allWords) {
       return Observable.of(this.allWords);
     }
-    let obs = super.list() as Observable<UserWord[]>;
-    obs = obs.share();
-    obs.subscribe((userWords: UserWord[]) => {
+    if (this.allWords$) {
+      return this.allWords$;
+    }
+    let obs = super.list().map((userWords: UserWord[]) => {
       this.allWords = userWords;
+      this.allWords$ = null;
+      this.userWordsMap = new Map();
       for (let uw of userWords) {
         this.userWordsMap.set(uw.word, uw);
         UserWord.ensureCreatedDate(uw);
         this.updateLatest(uw);
       }
-    });
+      return userWords;
+    }).share();
+
+    this.allWords$ = obs;
     return obs;
+  }
+
+  getUserWordsMap(): Observable<Map<string, UserWord>> {
+    if (this.userWordsMap) {
+      return Observable.of(this.userWordsMap);
+    }
+    return this.list().map(_ => this.userWordsMap);
   }
 
   create(userWord: UserWord): Observable<UserWord> {
@@ -139,7 +159,9 @@ export class UserWordService extends BaseService<UserWord> {
       }
       userWord._id = result._id;
       UserWord.ensureCreatedDate(userWord);
-      this.userWordsMap.set(userWord.word, userWord);
+      if (this.userWordsMap) {
+        this.userWordsMap.set(userWord.word, userWord);
+      }
       if (this.allWords) {
         this.allWords.push(userWord);
       }
@@ -169,15 +191,20 @@ export class UserWordService extends BaseService<UserWord> {
     obs = obs.share();
     obs.subscribe((opr: OpResult) => {
       if (opr.ok === 1) {
-        let userWord = this.userWordsMap.get(word);
-        if (!userWord) {
-          return;
+        let userWord;
+        if (this.userWordsMap) {
+          userWord = this.userWordsMap.get(word);
+          if (!userWord) {
+            return;
+          }
+          this.userWordsMap.delete(word);
         }
-        this.userWordsMap.delete(word);
         if (this.allWords) {
           this.allWords = this.allWords.filter(uw => uw.word !== word);
         }
-        this.removeFromLatest(userWord);
+        if (userWord) {
+          this.removeFromLatest(userWord);
+        }
       }
     });
     return obs;

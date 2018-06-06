@@ -127,10 +127,10 @@ export class WordTextComponent implements OnChanges {
         }
         while (matcher) {
           let word = matcher[0];
-          let offset = matcher['index'];
+          let offset = matcher.index;
           let wordNode = textNode;
           if (offset > 0) {
-            if (offset > 2) {
+            if (offset > 3) {
               nodesToTry.push(wordNode);
             }
             wordNode = wordNode.splitText(offset);
