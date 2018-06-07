@@ -11,6 +11,8 @@ import {UserPreferenceService} from "./user-preference.service";
 import {WordCategory} from "../models/word-category";
 
 import {UserWord} from "../models/user-word";
+import {CombinedWordsMap} from "../en/combined-words-map";
+import {DictService} from "./dict.service";
 
 @Injectable()
 export class UserVocabularyService {
@@ -24,7 +26,8 @@ export class UserVocabularyService {
 
   constructor(private preferenceService: UserPreferenceService,
               private userWordService: UserWordService,
-              private wordCategoryService: WordCategoryService) {
+              private wordCategoryService: WordCategoryService,
+              private dictService: DictService) {
 
     preferenceService.onBaseVocabularyChanged
       .subscribe(code => {
@@ -97,6 +100,10 @@ export class UserVocabularyService {
                     if (codesLen === 0) {
                       observer.next(bvm);
                       observer.complete();
+
+                      if (this.combinedWordsMap) {
+                        this.combinedWordsMap.baseVocabularyMap = bvm;
+                      }
                     }
                   });
               }
@@ -129,12 +136,16 @@ export class UserVocabularyService {
 
     let obs = Observable.combineLatest(
       this.getBaseVocabularyMap(),
-      this.userWordService.getUserWordsMap()
-    ).map(([baseVocabularyMap, userWordsMap]) => {
-      if (!baseVocabularyMap || !userWordsMap) {
+      this.userWordService.getUserWordsMap(),
+      this.dictService.loadBaseForms()
+    ).map(([baseVocabularyMap, userWordsMap, baseFormsMap]) => {
+      if (!baseVocabularyMap || !userWordsMap || !baseFormsMap) {
         return null;
       }
-      let cwm = new CombinedWordsMap(baseVocabularyMap, userWordsMap as Map<string, UserWord>);
+      let cwm = new CombinedWordsMap(
+        baseVocabularyMap as Map<string, string>,
+        userWordsMap as Map<string, UserWord>,
+        baseFormsMap as Map<string, string>);
       this.combinedWordsMap = cwm;
       this.combinedWordsMap$ = null;
       return cwm;
@@ -199,29 +210,6 @@ export class UserVocabularyService {
         });
 
     });
-  }
-}
-
-export class CombinedWordsMap {
-
-  baseVocabularyMap: Map<string, string>;
-  userWordsMap: Map<string, UserWord>;
-
-  constructor(baseVocabularyMap: Map<string, string>, userWordsMap: Map<string, UserWord>) {
-    this.baseVocabularyMap = baseVocabularyMap;
-    this.userWordsMap = userWordsMap;
-  }
-
-  get(word: string): (string | UserWord) {
-    let userWord = this.userWordsMap.get(word);
-    if (userWord) {
-      return userWord;
-    }
-    let categoryCode = this.baseVocabularyMap.get(word);
-    if (categoryCode) {
-      return categoryCode;
-    }
-    return null;
   }
 
 }

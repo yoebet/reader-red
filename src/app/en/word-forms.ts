@@ -35,6 +35,24 @@ function guestBaseForms(word) {
       forms.push(st);
       forms.push(st + 'e');
     }
+    return forms;
+  }
+
+  if (word.endsWith('er')) {
+    forms.push(word.substring(0, len - 1));
+    forms.push(word.substring(0, len - 2));
+    return forms;
+  }
+
+  if (word.endsWith('est')) {
+    forms.push(word.substring(0, len - 2));
+    if (word.charAt(len - 4) === 'i') {
+      forms.push(word.substring(0, len - 4) + 'y');
+    } else if (word.charAt(len - 4) === word.charAt(len - 5)) {
+      forms.push(word.substring(0, len - 4));
+    } else {
+      forms.push(word.substring(0, len - 3));
+    }
   }
   return forms;
 }

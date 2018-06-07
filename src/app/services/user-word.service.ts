@@ -129,7 +129,11 @@ export class UserWordService extends BaseService<UserWord> {
     let obs = super.list().map((userWords: UserWord[]) => {
       this.allWords = userWords;
       this.allWords$ = null;
-      this.userWordsMap = new Map();
+      if (this.userWordsMap) {
+        this.userWordsMap.clear();
+      } else {
+        this.userWordsMap = new Map();
+      }
       for (let uw of userWords) {
         this.userWordsMap.set(uw.word, uw);
         UserWord.ensureCreatedDate(uw);

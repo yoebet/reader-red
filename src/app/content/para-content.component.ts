@@ -17,8 +17,8 @@ import {DictService} from '../services/dict.service';
 import {DictRequest} from '../chap/dict-request';
 import {WordAnnosComponent} from './word-annos.component'
 import {UserWord} from "../models/user-word";
-import {CombinedWordsMap, UserVocabularyService} from "../services/user-vocabulary.service";
-import {guestBaseForms, guestStem} from '../en/word-forms';
+import {UserVocabularyService} from "../services/user-vocabulary.service";
+import {CombinedWordsMap} from "../en/combined-words-map";
 
 @Component({
   selector: 'para-content',
@@ -194,7 +194,8 @@ export class ParaContentComponent implements OnInit, OnChanges {
       return;
     }
     $event.stopPropagation();
-    if (this.lookupDict) {
+    let ctrlKey = $event.ctrlKey || $event.metaKey;
+    if ((!ctrlKey && this.lookupDict) || (ctrlKey && !this.lookupDict)) {
       if (!this.annotator) {
         let contentEl = this.contentText.element.nativeElement;
         this.annotator = new Annotator(contentEl);
@@ -416,9 +417,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
       return;
     }
 
-    let content = this.para.content;
-    let contentHolder = document.createElement('div');
-    contentHolder.innerHTML = content;
+    let contentHolder = this.contentText.element.nativeElement;
 
     let nodeIterator = document.createNodeIterator(
       contentHolder,
@@ -452,40 +451,16 @@ export class ParaContentComponent implements OnInit, OnChanges {
         let offset = matcher.index;
 
         let codeOrUW = wordsMap.get(word);
-        let wordClasses: string[];
-
-        let containsUpperCase = false;
-        if (!codeOrUW) {
-          if (word.toLowerCase() !== word) {
-            containsUpperCase = true;
-            word = word.toLowerCase();
-            codeOrUW = wordsMap.get(word);
-          }
-        }
 
         if (!codeOrUW) {
-          let forms = guestBaseForms(word);
-          for (let form of forms) {
-            codeOrUW = wordsMap.get(form);
-            if (codeOrUW) {
-              break;
-            }
-          }
-        }
-
-        if (!codeOrUW) {
-          let stem = guestStem(word);
-          codeOrUW = wordsMap.get(stem);
-        }
-
-        if (!codeOrUW) {
-          if (containsUpperCase
+          if (/[A-Z]/.test(word)
             || text.charAt(offset + word.length) === "’"
             || (offset > 0 && text.charAt(offset - 1) === "-")) {
             codeOrUW = 'ignore';
           }
         }
 
+        let wordClasses: string[];
         if (!codeOrUW) {
           wordClasses = [UIConstants.userWordBeyondClass];
         } else if (typeof codeOrUW === 'string') {
@@ -538,18 +513,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
       }
     }
 
-    content = contentHolder.innerHTML;
-    this.contentText.element.nativeElement.innerHTML = content;
-
     this.wordMarked = true;
-
-    this.sentenceHoverSetup = false;
-    this.associatedWordsHoverSetup = false;
-    this.annotatedWordsHoverSetup = false;
-
-    this.setupSentenceHover();
-    this.setupAssociatedWordsHover();
-    this.setupAnnotatedWordsHover();
   }
 
   refreshContent() {

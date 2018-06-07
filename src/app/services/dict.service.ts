@@ -14,6 +14,8 @@ export class DictService extends BaseService<DictEntry> {
 
   private _entryHistory: DictEntry[] = [];
   private entryCache: Map<string, DictEntry> = new Map();
+  private baseFormsMap: Map<string, string>;
+
   entryHistoryCapacity = 10;
 
   constructor(protected http: HttpClient) {
@@ -113,6 +115,25 @@ export class DictService extends BaseService<DictEntry> {
     }
 
     return this.list(url);
+  }
+
+  loadBaseForms(): Observable<Map<string, string>> {
+    if (this.baseFormsMap) {
+      return Observable.of(this.baseFormsMap);
+    }
+
+    let url = `${this.baseUrl}/loadBaseForms`;
+    let obs = this.http.post<any[]>(url, null, this.httpOptions)
+      .catch(this.handleError).map((words: string[][]) => {
+        this.baseFormsMap = new Map();
+        for (let [word, base] of words) {
+          this.baseFormsMap.set(word, base);
+        }
+        return this.baseFormsMap;
+      });
+
+    obs = obs.share();
+    return obs;
   }
 
 }
