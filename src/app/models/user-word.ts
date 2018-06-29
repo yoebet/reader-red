@@ -26,8 +26,8 @@ export class UserWord extends Model {
     if (userWord.createdMoment) {
       return;
     }
-    let createdDate = Model.timestampOfObjectId(userWord._id);
-    userWord.createdMoment = moment(createdDate);
+    let time = Model.createdTime(userWord);
+    userWord.createdMoment = moment(time);
     let date = userWord.createdMoment;
     let dayOfWeek = date.day();
     let weekOfYear = date.week();

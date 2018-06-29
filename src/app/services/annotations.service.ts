@@ -10,12 +10,10 @@ import 'rxjs/add/operator/map';
 
 import {BaseService} from './base.service';
 import {AnnotationFamily} from "../models/annotation-family";
-import {AnnotationGroup} from "../models/annotation-group";
-import {Annotation} from "../models/annotation";
 import {AnnotationSet} from "../anno/annotation-set";
 
 @Injectable()
-export class AnnotationFamilyService extends BaseService<AnnotationFamily> {
+export class AnnotationsService extends BaseService<AnnotationFamily> {
 
   annotationsMap: Map<string, AnnotationSet> = new Map<string, AnnotationSet>();
 

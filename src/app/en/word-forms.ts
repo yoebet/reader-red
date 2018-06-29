@@ -59,11 +59,14 @@ function guestBaseForms(word) {
 
 function guestStem(word) {
   let len = word.length;
-  let affixes = ['ly', 'ness', 'ful', 'ment', 'ness', 'or', 'ion'];
+  let affixes = ['ly', 'ness', 'ful', 'ment', 'less', 'or'];
   for (let affix of affixes) {
     if (word.endsWith(affix)) {
       return word.substring(0, len - affix.length);
     }
+  }
+  if (word.endsWith('ion')) {
+    return word.substring(0, len - 3) + 'e';
   }
   return null;
 }

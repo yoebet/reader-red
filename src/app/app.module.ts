@@ -17,7 +17,7 @@ import {UserWordService} from './services/user-word.service';
 import {WordCategoryService} from './services/word-category.service';
 import {UserVocabularyService} from './services/user-vocabulary.service';
 import {UserPreferenceService} from './services/user-preference.service';
-import {AnnotationFamilyService} from './services/annotation-family.service';
+import {AnnotationsService} from './services/annotations.service';
 
 import {CreatedDatePipe} from './pipes/created-date.pipe';
 import {CreatedDateStringPipe} from './pipes/created-date-string.pipe';
@@ -78,7 +78,7 @@ import {WordTextComponent} from './dict/word-text.component';
     WordCategoryService,
     UserVocabularyService,
     UserPreferenceService,
-    AnnotationFamilyService
+    AnnotationsService
   ],
   entryComponents: [
     WordAnnosComponent,

@@ -11,7 +11,7 @@ import {Para} from '../models/para';
 import {AnnotationSet} from '../anno/annotation-set';
 import {BookService} from '../services/book.service';
 import {ChapService} from '../services/chap.service';
-import {AnnotationFamilyService} from "../services/annotation-family.service";
+import {AnnotationsService} from "../services/annotations.service";
 import {DictRequest} from './dict-request';
 
 @Component({
@@ -38,7 +38,7 @@ export class ChapComponent implements OnInit {
 
   constructor(private bookService: BookService,
               private chapService: ChapService,
-              private annoService: AnnotationFamilyService,
+              private annoService: AnnotationsService,
               private route: ActivatedRoute,
               private location: Location) {
   }

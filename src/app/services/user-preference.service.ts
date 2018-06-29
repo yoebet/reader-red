@@ -56,9 +56,13 @@ export class UserPreferenceService extends BaseService<UserPreference> {
     });
   }
 
+  private setValue(code: string, value) {
+    let url = `${this.baseUrl}/code/${code}`;
+    return this.http.post<OpResult>(url, {[code]: value}, this.httpOptions).catch(this.handleError);
+  }
+
   setBaseVocabulary(categoryCode: string): Observable<OpResult> {
-    let url = this.baseUrl + '/baseVocabulary';
-    let obs = this.http.post<OpResult>(url, {categoryCode}, this.httpOptions).catch(this.handleError);
+    let obs = this.setValue('baseVocabulary', categoryCode);
     obs = obs.share();
     obs.subscribe(opr => {
       if (opr && opr.ok === 1) {
@@ -72,8 +76,7 @@ export class UserPreferenceService extends BaseService<UserPreference> {
   }
 
   setWordTags(categoryCodes: string[]): Observable<OpResult> {
-    let url = this.baseUrl + '/wordTags';
-    let obs = this.http.post<OpResult>(url, categoryCodes, this.httpOptions).catch(this.handleError);
+    let obs = this.setValue('wordTags', categoryCodes);
     obs = obs.share();
     obs.subscribe(opr => {
       if (opr && opr.ok === 1) {

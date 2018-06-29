@@ -58,18 +58,14 @@ export class WordCategoryService extends BaseService<WordCategory> {
     if (this.wordCategories) {
       return Observable.of(this.wordCategoriesMap);
     }
-    return this.list().map((cats) => {
-      return this.wordCategoriesMap;
-    });
+    return this.list().map(cats => this.wordCategoriesMap);
   }
 
   getCategory(code: string): Observable<WordCategory> {
     if (this.wordCategories) {
       return Observable.of(this.wordCategoriesMap.get(code));
     }
-    return this.getCategoriesMap().map((catsMap) => {
-      return this.wordCategoriesMap.get(code);
-    });
+    return this.getCategoriesMap().map(catsMap => catsMap.get(code));
   }
 
   fetchSampleWords(code, limit = 20): Observable<string[]> {

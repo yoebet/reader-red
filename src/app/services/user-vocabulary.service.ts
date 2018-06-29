@@ -17,7 +17,7 @@ import {DictService} from "./dict.service";
 @Injectable()
 export class UserVocabularyService {
 
-  private baseVocabularyCategory: WordCategory;
+  private baseVocabulary: string;
 
   private baseVocabularyMap: Map<string, string>;
   private combinedWordsMap: CombinedWordsMap;
@@ -31,15 +31,10 @@ export class UserVocabularyService {
 
     preferenceService.onBaseVocabularyChanged
       .subscribe(code => {
-        if (this.baseVocabularyCategory
-          && code === this.baseVocabularyCategory.code) {
+        if (code === this.baseVocabulary) {
           return;
         }
-        this.wordCategoryService.getCategory(code)
-          .subscribe((cat: WordCategory) => {
-            this.baseVocabularyCategory = cat;
-            this.invalidateBaseVocabularyMap();
-          });
+        this.invalidateBaseVocabularyMap();
       });
   }
 
@@ -72,11 +67,13 @@ export class UserVocabularyService {
                 return;
               }
 
-              this.baseVocabularyCategory = cat;
-
-              let codes = [];
+              let codes = new Set();
               while (cat) {
-                codes.push(cat.code);
+                if(codes.contains(cat.code)) {
+                  console.warn("CIRCULAR ..");
+                  break;
+                }
+                codes.add(cat.code);
                 if (cat.extend) {
                   cat = cat.extend;
                 } else {

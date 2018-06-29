@@ -23,15 +23,22 @@ export class Model {
     return new Date(seconds * 1000);
   }
 
-  static createdTimeString(model: Model, precise: string = 'date'): string {
+  static createdTime(model: Model) {
     if (!model) {
+      return null;
+    }
+    if (model.createdAt) {
+      return new Date(model.createdAt);
+    }
+    return Model.timestampOfObjectId(model._id);
+  }
+
+  static createdTimeString(model: Model, precise: string = 'date'): string {
+    let time = Model.createdTime(model);
+    if (!time) {
       return '';
     }
-    let createdAt = Model.timestampOfObjectId(model._id);
-    if (!createdAt && model.createdAt) {
-      createdAt = new Date(model.createdAt);
-    }
-    return Model.timeString(createdAt, precise);
+    return Model.timeString(time, precise);
   }
 
   static updatedTimeString(model: Model, precise: string = 'date'): string {
