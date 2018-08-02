@@ -67,13 +67,13 @@ export class UserVocabularyService {
                 return;
               }
 
-              let codes = new Set();
+              let codes = [];
               while (cat) {
-                if(codes.contains(cat.code)) {
+                if (codes.includes(cat.code)) {
                   console.warn("CIRCULAR ..");
                   break;
                 }
-                codes.add(cat.code);
+                codes.push(cat.code);
                 if (cat.extend) {
                   cat = cat.extend;
                 } else {
@@ -83,13 +83,13 @@ export class UserVocabularyService {
 
               let codesLen = codes.length;
 
-              for (let code of codes) {
-                this.wordCategoryService.loadAllWords(code)
+              for (let tcode of codes) {
+                this.wordCategoryService.loadAllWords(tcode)
                   .subscribe((words: string[]) => {
                     if (words) {
                       for (let word of words) {
                         if (word.indexOf(' ') === -1) {
-                          bvm.set(word, code);
+                          bvm.set(word, tcode);
                         }
                       }
                     }
@@ -161,8 +161,7 @@ export class UserVocabularyService {
           let bvm = baseVocabularyMap as Map<string, string>;
           let uws = userWords as UserWord[];
 
-          uws = uws.filter(uw => uw.word.indexOf(' ') === -1);
-
+          uws = uws.filter(uw => uw.word && uw.word.indexOf(' ') === -1);
 
           let uwsByFamiliarity = groupBy<UserWord>(uws, 'familiarity');
 

@@ -22,7 +22,7 @@ export class DictEntry extends Model {
   complete?: PosMeanings[] = [];
   categories: any = {};
   phonetics?: any;
-  baseForms?: any;
+  baseForm?: string;
   forms?: any;
 
 

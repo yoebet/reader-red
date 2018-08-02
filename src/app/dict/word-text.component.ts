@@ -47,8 +47,12 @@ export class WordTextComponent implements OnChanges {
     let first = strings[0];
     let commonLength = first.length;
     for (let i = 1; i < strings.length; ++i) {
+      let si = strings[i];
+      if(commonLength > si.length){
+        commonLength = si.length;
+      }
       for (let j = 0; j < commonLength; ++j) {
-        if (strings[i].charAt(j) !== first.charAt(j)) {
+        if (si.charAt(j) !== first.charAt(j)) {
           commonLength = j;
           break;
         }
@@ -60,8 +64,8 @@ export class WordTextComponent implements OnChanges {
   highlightTheWord(para) {
     let entry = this.entry;
     let words = [entry.word];
-    if (entry.baseForms) {
-      words = words.concat(entry.baseForms);
+    if (entry.baseForm) {
+      words.push(entry.baseForm);
     }
     if (entry.forms) {
       words = words.concat(entry.forms);
