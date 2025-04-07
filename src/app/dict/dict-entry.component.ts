@@ -135,7 +135,7 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
   private onEntryChanged() {
     let entry = this.entry;
     this.refWords = null;
-    let refWords = union(entry.baseForm ? [entry.baseForm] : null, this.relatedWords);
+    let refWords = union<string>(entry.baseForm ? [entry.baseForm] : null, this.relatedWords);
     if (refWords.length > 0) {
       let previous = last(this.entryStack);
       if (previous) {

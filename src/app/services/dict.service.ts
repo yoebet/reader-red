@@ -1,13 +1,12 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/share';
+import { Observable, of as ObservableOf } from 'rxjs/';
+import { map, share } from 'rxjs/operators';
 
-import {DictEntry, PosMeanings} from '../models/dict-entry';
-import {BaseService} from './base.service';
+import { DictEntry, PosMeanings } from '../models/dict-entry';
+import { BaseService } from './base.service';
 
 @Injectable()
 export class DictService extends BaseService<DictEntry> {
@@ -49,8 +48,7 @@ export class DictService extends BaseService<DictEntry> {
   }
 
   private cacheOne(obs: Observable<DictEntry>, putInHistory = true): Observable<DictEntry> {
-    obs = obs.share();
-    obs.subscribe(entry => {
+    obs.pipe(share()).subscribe(entry => {
       if (entry) {
         if (putInHistory) {
           this.pushHistory(entry);
@@ -65,7 +63,7 @@ export class DictService extends BaseService<DictEntry> {
     let cachedEntry = this.entryCache.get(idOrWord);
     if (cachedEntry) {
       if (!options.complete || typeof cachedEntry.complete !== 'undefined') {
-        return Observable.of(cachedEntry);
+        return ObservableOf(cachedEntry);
       }
     }
     let url = `${this.baseUrl}/${idOrWord}`;
@@ -82,17 +80,16 @@ export class DictService extends BaseService<DictEntry> {
     let cachedEntry = this.entryCache.get(idOrWord);
     if (cachedEntry) {
       if (typeof cachedEntry.complete !== 'undefined') {
-        return Observable.of(cachedEntry.complete);
+        return ObservableOf(cachedEntry.complete);
       }
     }
 
     let url = `${this.baseUrl}/${idOrWord}/complete`;
-    let obs = this.http.get<PosMeanings[]>(url, this.httpOptions)
-      .catch(this.handleError);
+    let obs = this.http.get<PosMeanings[]>(url, this.httpOptions);
     if (!cachedEntry) {
       return obs;
     }
-    obs = obs.share();
+    obs = obs.pipe(share());
     obs.subscribe((complete: PosMeanings[]) => {
       cachedEntry.complete = complete;
     });
@@ -119,21 +116,18 @@ export class DictService extends BaseService<DictEntry> {
 
   loadBaseForms(): Observable<Map<string, string>> {
     if (this.baseFormsMap) {
-      return Observable.of(this.baseFormsMap);
+      return ObservableOf(this.baseFormsMap);
     }
 
     let url = `${this.baseUrl}/loadBaseForms`;
-    let obs = this.http.post<any[]>(url, null, this.httpOptions)
-      .catch(this.handleError).map((words: string[][]) => {
+    return this.http.post<any[]>(url, null, this.httpOptions)
+      .pipe(map((words: string[][]) => {
         this.baseFormsMap = new Map();
         for (let [word, base] of words) {
           this.baseFormsMap.set(word, base);
         }
         return this.baseFormsMap;
-      });
-
-    obs = obs.share();
-    return obs;
+      }), share());
   }
 
 }

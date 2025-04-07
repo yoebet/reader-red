@@ -78,8 +78,8 @@ export class WordTagsSettingComponent implements OnInit {
 
   }
 
-  private sortCodes(codes) {
-    return sortBy(codes, code => {
+  private sortCodes(codes: string[]) {
+    return sortBy<string>(codes, (code: string) => {
       let category = this.wordCategoriesMap.get(code);
       return category.no;
     });

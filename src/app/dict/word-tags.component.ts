@@ -1,10 +1,10 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnInit} from '@angular/core';
 
 import {isEqual} from 'lodash';
 
-import {WordCategoryService} from "../services/word-category.service";
-import {UserPreferenceService} from "../services/user-preference.service";
-import {WordCategory} from "../models/word-category";
+import {WordCategoryService} from '../services/word-category.service';
+import {UserPreferenceService} from '../services/user-preference.service';
+import {WordCategory} from '../models/word-category';
 
 @Component({
   selector: 'word-tags',

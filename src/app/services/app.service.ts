@@ -1,13 +1,12 @@
-import {Injectable, EventEmitter} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
+import { EventEmitter, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
+import { Observable } from 'rxjs/';
+import { share } from 'rxjs/operators';
 
-import {User} from '../models/user';
-import {OpResult} from '../models/op-result';
+import { User } from '../models/user';
+import { OpResult } from '../models/op-result';
 
 @Injectable()
 export class AppService {
@@ -28,9 +27,8 @@ export class AppService {
   }
 
   login(name, pass): Observable<OpResult> {
-    let obs = this.http.post(this.loginUrl, {name, pass}, this.httpOptions)
-      .catch(this.handleError);
-    obs = obs.share();
+    let obs = this.http.post<OpResult>(this.loginUrl, { name, pass }, this.httpOptions)
+      .pipe(share());
     obs.subscribe((opr: OpResult) => {
       if (opr && opr.ok === 1) {
         let from = this.currentUser ? this.currentUser.name : null;
@@ -38,7 +36,7 @@ export class AppService {
         this.currentUser.name = name;
         this.currentUser.role = (opr as any).role;
         if (from !== name) {
-          this.onCurrentUserChanged.emit({from, to: name});
+          this.onCurrentUserChanged.emit({ from, to: name });
         }
       }
     });
@@ -46,15 +44,14 @@ export class AppService {
   }
 
   logout(): Observable<OpResult> {
-    let obs = this.http.delete(this.loginUrl, this.httpOptions)
-      .catch(this.handleError);
-    obs = obs.share();
+    let obs = this.http.delete<OpResult>(this.loginUrl, this.httpOptions)
+      .pipe(share());
     obs.subscribe((opr: OpResult) => {
       if (opr && opr.ok === 1) {
         let from = this.currentUser ? this.currentUser.name : null;
         this.currentUser = null;
         if (from !== null) {
-          this.onCurrentUserChanged.emit({from, to: null});
+          this.onCurrentUserChanged.emit({ from, to: null });
         }
       }
     });
@@ -63,9 +60,7 @@ export class AppService {
 
   checkLogin(): Observable<any> {
     let url = `${this.loginUrl}/userinfo`;
-    let obs = this.http.get<any>(url, this.httpOptions)
-      .catch(this.handleError);
-    obs = obs.share();
+    let obs = this.http.get<any>(url, this.httpOptions).pipe(share());
     obs.subscribe(userinfo => {
       let from = this.currentUser ? this.currentUser.name : null;
       if (userinfo && userinfo.login) {
@@ -77,7 +72,7 @@ export class AppService {
       }
       let to = this.currentUser ? this.currentUser.name : null;
       if (from !== to) {
-        this.onCurrentUserChanged.emit({from, to});
+        this.onCurrentUserChanged.emit({ from, to });
       }
     });
     return obs;

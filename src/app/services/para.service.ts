@@ -1,17 +1,15 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/combineLatest';
-import 'rxjs/add/operator/catch';
-import {uniq} from 'lodash';
+import { combineLatest, Observable } from 'rxjs/';
+import { uniq } from 'lodash';
 
-import {Chap} from '../models/chap';
-import {Para} from '../models/para';
-import {BaseService} from './base.service';
-import {ChapService} from './chap.service';
-import {BookService} from './book.service';
+import { Chap } from '../models/chap';
+import { Para } from '../models/para';
+import { BaseService } from './base.service';
+import { ChapService } from './chap.service';
+import { BookService } from './book.service';
 
 @Injectable()
 export class ParaService extends BaseService<Para> {
@@ -32,8 +30,8 @@ export class ParaService extends BaseService<Para> {
           observer.complete();
           return;
         }
-        let {bookId, chapId} = para;
-        Observable.combineLatest(
+        let { bookId, chapId } = para;
+        combineLatest(
           this.bookService.getOne(bookId),
           this.chapService.getOne(chapId))
           .subscribe(([book, chap]) => {
@@ -47,7 +45,7 @@ export class ParaService extends BaseService<Para> {
   }
 
   textSearch(word: string, options: any = {}): Observable<Para[]> {
-    let {limit} = options;
+    let { limit } = options;
     if (!limit) {
       limit = 8;
     }
@@ -59,11 +57,11 @@ export class ParaService extends BaseService<Para> {
           observer.next([]);
           observer.complete();
         }
-        let bookIds = uniq(paras.map(p => p.bookId).filter(bookId => bookId != null));
-        let chapIds = uniq(paras.map(p => p.chapId).filter(chapId => chapId != null));
+        let bookIds = uniq<string>(paras.map(p => p.bookId).filter(bookId => bookId != null));
+        let chapIds = uniq<string>(paras.map(p => p.chapId).filter(chapId => chapId != null));
         let booksObs: Observable<any>[] = bookIds.map(bookId => this.bookService.getOne(bookId));
         let chapsObs: Observable<any>[] = chapIds.map(chapId => this.chapService.getOne(chapId));
-        Observable.combineLatest(booksObs.concat(chapsObs)).subscribe(bookOrChaps => {
+        combineLatest(booksObs.concat(chapsObs)).subscribe(bookOrChaps => {
           let bookOrChapMap = new Map();
           for (let boc of bookOrChaps) {
             bookOrChapMap.set(boc._id, boc);

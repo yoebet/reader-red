@@ -1,8 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
-
 import {UserWordService} from '../services/user-word.service';
 import {UserWord} from '../models/user-word';
 import {OpResult} from '../models/op-result';

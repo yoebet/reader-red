@@ -2,11 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
+import { Observable, of as ObservableOf } from 'rxjs/';
+import { map } from 'rxjs/operators';
 
 import {BaseService} from './base.service';
 import {AnnotationFamily} from '../models/annotation-family';
@@ -26,10 +23,10 @@ export class AnnotationsService extends BaseService<AnnotationFamily> {
   getAnnotationSet(familyId: string): Observable<AnnotationSet> {
     let anns = this.annotationsMap.get(familyId);
     if (anns) {
-      return Observable.of(anns);
+      return ObservableOf(anns);
     }
 
-    return this.getDetail(familyId).map((family: AnnotationFamily) => {
+    return this.getDetail(familyId).pipe(map((family: AnnotationFamily) => {
       if (!family) {
         return null;
       }
@@ -37,7 +34,7 @@ export class AnnotationsService extends BaseService<AnnotationFamily> {
       let anns2 = new AnnotationSet(groups);
       this.annotationsMap.set(familyId, anns2);
       return anns2;
-    });
+    }));
   }
 
 }

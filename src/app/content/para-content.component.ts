@@ -1,24 +1,33 @@
 import {
-  OnChanges, Input, SimpleChanges, Output, EventEmitter,
-  Component, ViewChild, ViewContainerRef,
-  ComponentFactoryResolver, ComponentFactory, ComponentRef, OnInit
+  Component,
+  ComponentFactory,
+  ComponentFactoryResolver,
+  ComponentRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 
-import Drop from 'tether-drop';
+import * as Drop from 'tether-drop';
 
-import {Annotator} from '../anno/annotator';
-import {AnnotateResult} from '../anno/annotate-result';
-import {AnnotationSet, HighlightGroups} from '../anno/annotation-set';
+import { Annotator } from '../anno/annotator';
+import { AnnotateResult } from '../anno/annotate-result';
+import { AnnotationSet, HighlightGroups } from '../anno/annotation-set';
 
-import {UIConstants} from '../config';
-import {Para} from '../models/para';
-import {DictEntry} from '../models/dict-entry';
-import {DictService} from '../services/dict.service';
-import {DictRequest} from '../chap/dict-request';
-import {WordAnnosComponent} from './word-annos.component';
-import {UserWord} from '../models/user-word';
-import {UserVocabularyService} from '../services/user-vocabulary.service';
-import {CombinedWordsMap} from '../en/combined-words-map';
+import { UIConstants } from '../config';
+import { Para } from '../models/para';
+import { DictEntry } from '../models/dict-entry';
+import { DictService } from '../services/dict.service';
+import { DictRequest } from '../chap/dict-request';
+import { WordAnnosComponent } from './word-annos.component';
+import { UserWord } from '../models/user-word';
+import { UserVocabularyService } from '../services/user-vocabulary.service';
+import { CombinedWordsMap } from '../en/combined-words-map';
 
 @Component({
   selector: 'para-content',
@@ -26,9 +35,9 @@ import {CombinedWordsMap} from '../en/combined-words-map';
   styleUrls: ['./para-content.component.css']
 })
 export class ParaContentComponent implements OnInit, OnChanges {
-  @ViewChild('contentText', {read: ViewContainerRef}) contentText: ViewContainerRef;
-  @ViewChild('paraTrans', {read: ViewContainerRef}) paraTrans: ViewContainerRef;
-  @ViewChild('wordAnnos', {read: ViewContainerRef}) wordAnnos: ViewContainerRef;
+  @ViewChild('contentText', { read: ViewContainerRef }) contentText: ViewContainerRef;
+  @ViewChild('paraTrans', { read: ViewContainerRef }) paraTrans: ViewContainerRef;
+  @ViewChild('wordAnnos', { read: ViewContainerRef }) wordAnnos: ViewContainerRef;
   @Input() para: Para;
   @Input() showTrans: boolean;
   @Input() gotFocus: boolean;
@@ -102,7 +111,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
   }
 
   private removeTagIfDummy(el) {
-    let result = {changed: false, removed: false};
+    let result = { changed: false, removed: false };
     if (el.tagName !== Annotator.annotationTagName.toUpperCase()) {
       return result;
     }
@@ -155,7 +164,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
     }
     let oriForWord = element.dataset.word || word;
 
-    this.dictService.getEntry(oriForWord, {base: true, stem: true})
+    this.dictService.getEntry(oriForWord, { base: true, stem: true })
       .subscribe((entry: DictEntry) => {
         if (entry == null) {
           this.removeTagIfDummy(element);
@@ -170,7 +179,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
         let chap = this.para.chap;
         let chapId = chap._id;
         let bookId = chap.book._id;
-        dr.context = {bookId, chapId, paraId};
+        dr.context = { bookId, chapId, paraId };
         dr.onClose = () => {
           this.removeTagIfDummy(element);
         };

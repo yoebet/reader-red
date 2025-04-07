@@ -1,15 +1,15 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import * as moment from 'moment';
-import {groupBy, sortBy, shuffle, take, random} from 'lodash';
+import { groupBy, random, shuffle, sortBy, take } from 'lodash';
 
-import {UserWord} from '../models/user-word';
-import {DictEntry} from '../models/dict-entry';
-import {UserWordService} from '../services/user-word.service';
-import {DictService} from '../services/dict.service';
-import {ChapService} from '../services/chap.service';
-import {SuiSearch} from 'ng2-semantic-ui/dist/modules/search/components/search';
-import {UserVocabularyService} from '../services/user-vocabulary.service';
+import { UserWord } from '../models/user-word';
+import { DictEntry } from '../models/dict-entry';
+import { UserWordService } from '../services/user-word.service';
+import { DictService } from '../services/dict.service';
+import { ChapService } from '../services/chap.service';
+import { SuiSearch } from 'ng2-semantic-ui/dist/modules/search/components/search';
+import { UserVocabularyService } from '../services/user-vocabulary.service';
 
 @Component({
   selector: 'vocabulary-main',
@@ -17,7 +17,7 @@ import {UserVocabularyService} from '../services/user-vocabulary.service';
   styleUrls: ['./vocabulary.component.css']
 })
 export class VocabularyComponent implements OnInit {
-  @ViewChild('searchInput', {read: SuiSearch}) searchInput: SuiSearch<any>;
+  @ViewChild('searchInput', { read: SuiSearch }) searchInput: SuiSearch<any>;
   userWords: UserWord[];
   entry: DictEntry;
   mode = 'userWords';
@@ -39,7 +39,7 @@ export class VocabularyComponent implements OnInit {
     familiarityAll: true,
     addOn: 'All'
   };
-  grouping: any = {groupBy: ''};
+  grouping: any = { groupBy: '' };
 
   phrase = false;
   phraseOnly = false;
@@ -153,15 +153,18 @@ export class VocabularyComponent implements OnInit {
     this.groupedUserWords = [];
     let gb = this.grouping.groupBy;
     if (!gb) {
-      let group: any = {key: '-', title: 'All', userWords: this.filteredUserWords};
+      let group: any = { key: '-', title: 'All', userWords: this.filteredUserWords };
       this.groupedUserWords.push(group);
       return;
     }
     if (gb === 'Source') {
       let grouped = groupBy(this.filteredUserWords, 'chapId');
       for (let chapId in grouped) {
+        if (!grouped.hasOwnProperty(chapId)) {
+          continue;
+        }
         let userWords = grouped[chapId];
-        let group: any = {key: chapId, userWords};
+        let group: any = { key: chapId, userWords };
         if (chapId && chapId !== 'null') {
           this.chapService.getOne(chapId)
             .subscribe(chap => {
@@ -195,8 +198,11 @@ export class VocabularyComponent implements OnInit {
       }
       let grouped = groupBy(this.filteredUserWords, 'createdDateParts.dateString');
       for (let dateString in grouped) {
+        if (!grouped.hasOwnProperty(dateString)) {
+          continue;
+        }
         let userWords = grouped[dateString];
-        let group: any = {key: dateString, title: dateString, userWords};
+        let group: any = { key: dateString, title: dateString, userWords };
         this.groupedUserWords.push(group);
       }
       this.groupedUserWords = sortBy(this.groupedUserWords, group => {
@@ -274,7 +280,7 @@ export class VocabularyComponent implements OnInit {
     }
 
     for (let userWord of userWords) {
-      let cardWord = {userWord, entry: null as DictEntry};
+      let cardWord = { userWord, entry: null as DictEntry };
       this.cardWords.push(cardWord);
       this.dictService.getEntry(userWord.word)
         .subscribe(entry => {

@@ -7,7 +7,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 
-import Drop from 'tether-drop';
+import * as Drop from 'tether-drop';
 
 import {WordCategoryService} from '../services/word-category.service';
 import {UserPreferenceService} from '../services/user-preference.service';

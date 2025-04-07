@@ -1,18 +1,15 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
+import { Observable, of as ObservableOf } from 'rxjs/';
+import { map, share } from 'rxjs/operators';
 
-import {sortedIndexBy} from 'lodash';
+import { sortedIndexBy } from 'lodash';
 
-import {UserWord} from '../models/user-word';
-import {OpResult} from '../models/op-result';
-import {BaseService} from './base.service';
+import { UserWord } from '../models/user-word';
+import { OpResult } from '../models/op-result';
+import { BaseService } from './base.service';
 
 @Injectable()
 export class UserWordService extends BaseService<UserWord> {
@@ -106,11 +103,10 @@ export class UserWordService extends BaseService<UserWord> {
     if (this.userWordsMap) {
       let userWord = this.userWordsMap.get(word);
       if (userWord) {
-        return Observable.of(userWord);
+        return ObservableOf(userWord);
       }
     }
-    let obs = super.getOne(word) as Observable<UserWord>;
-    obs = obs.share();
+    let obs = super.getOne(word).pipe(share());
     obs.subscribe((uw: UserWord) => {
       if (uw && this.userWordsMap) {
         this.userWordsMap.set(uw.word, uw);
@@ -121,12 +117,12 @@ export class UserWordService extends BaseService<UserWord> {
 
   list(): Observable<UserWord[]> {
     if (this.allWords) {
-      return Observable.of(this.allWords);
+      return ObservableOf(this.allWords);
     }
     if (this.allWords$) {
       return this.allWords$;
     }
-    let obs = super.list().map((userWords: UserWord[]) => {
+    let obs = super.list().pipe(map((userWords: UserWord[]) => {
       this.allWords = userWords;
       this.allWords$ = null;
       if (this.userWordsMap) {
@@ -140,7 +136,7 @@ export class UserWordService extends BaseService<UserWord> {
         this.updateLatest(uw);
       }
       return userWords;
-    }).share();
+    }), share());
 
     this.allWords$ = obs;
     return obs;
@@ -148,15 +144,13 @@ export class UserWordService extends BaseService<UserWord> {
 
   getUserWordsMap(): Observable<Map<string, UserWord>> {
     if (this.userWordsMap) {
-      return Observable.of(this.userWordsMap);
+      return ObservableOf(this.userWordsMap);
     }
-    return this.list().map(_ => this.userWordsMap);
+    return this.list().pipe(map(_ => this.userWordsMap));
   }
 
   create(userWord: UserWord): Observable<UserWord> {
-    let obs = this.http.post<UserWord>(this.baseUrl, userWord, this.httpOptions)
-      .catch(this.handleError);
-    obs = obs.share();
+    let obs = this.http.post<UserWord>(this.baseUrl, userWord, this.httpOptions).pipe(share());
     obs.subscribe((result: UserWord) => {
       if (!result || !result._id) {
         return;
@@ -176,10 +170,8 @@ export class UserWordService extends BaseService<UserWord> {
 
   update(userWord: UserWord): Observable<OpResult> {
     const url = `${this.baseUrl}/${userWord.word}`;
-    let up = {familiarity: userWord.familiarity};
-    let obs = this.http.put<OpResult>(url, up, this.httpOptions)
-      .catch(this.handleError);
-    obs = obs.share();
+    let up = { familiarity: userWord.familiarity };
+    let obs = this.http.put<OpResult>(url, up, this.httpOptions).pipe(share());
     obs.subscribe((opr: OpResult) => {
       if (opr.ok === 1) {
         this.updateLatest(userWord);
@@ -190,9 +182,7 @@ export class UserWordService extends BaseService<UserWord> {
 
   remove(word: string): Observable<OpResult> {
     const url = `${this.baseUrl}/${word}`;
-    let obs = this.http.delete<OpResult>(url, this.httpOptions)
-      .catch(this.handleError);
-    obs = obs.share();
+    let obs = this.http.delete<OpResult>(url, this.httpOptions).pipe(share());
     obs.subscribe((opr: OpResult) => {
       if (opr.ok === 1) {
         let userWord;

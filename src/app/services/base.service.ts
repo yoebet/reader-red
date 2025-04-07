@@ -1,8 +1,7 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
+import {Observable, throwError} from 'rxjs/';
+import { catchError } from 'rxjs/operators';
 
 import {Model} from '../models/model';
 import {OpResult} from '../models/op-result';
@@ -23,19 +22,16 @@ export class BaseService<M extends Model> {
   }
 
   list(url: string = null): Observable<M[]> {
-    return this.http.get<M[]>(url || this.baseUrl, this.httpOptions)
-      .catch(this.handleError);
+    return this.http.get<M[]>(url || this.baseUrl, this.httpOptions);
   }
 
   getOne(id: string): Observable<M> {
     const url = `${this.baseUrl}/${id}`;
-    return this.http.get<M>(url, this.httpOptions)
-      .catch(this.handleError);
+    return this.http.get<M>(url, this.httpOptions);
   }
 
   getOneByUrl(url: string): Observable<M> {
-    return this.http.get<M>(url, this.httpOptions)
-      .catch(this.handleError);
+    return this.http.get<M>(url, this.httpOptions);
   }
 
   getDetail(id: string): Observable<M> {
@@ -44,22 +40,19 @@ export class BaseService<M extends Model> {
   }
 
   create(model: M): Observable<M> {
-    return this.http.post<M>(this.baseUrl, model, this.httpOptions)
-      .catch(this.handleError);
+    return this.http.post<M>(this.baseUrl, model, this.httpOptions);
   }
 
   remove(model: M | string): Observable<OpResult> {
     const id = this.modelId(model);
     const url = `${this.baseUrl}/${id}`;
-    return this.http.delete<OpResult>(url, this.httpOptions)
-      .catch(this.handleError);
+    return this.http.delete<OpResult>(url, this.httpOptions);
   }
 
   update(model: M): Observable<OpResult> {
     const id = this.modelId(model);
     const url = `${this.baseUrl}/${id}`;
-    return this.http.put<OpResult>(url, model, this.httpOptions)
-      .catch(this.handleError);
+    return this.http.put<OpResult>(url, model, this.httpOptions);
   }
 
   protected modelId(model: M | string): string {

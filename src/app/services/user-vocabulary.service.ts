@@ -1,18 +1,17 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/combineLatest';
-import {groupBy} from 'lodash';
+import { combineLatest, Observable, of as ObservableOf } from 'rxjs/';
+import { map, share } from 'rxjs/operators';
+import { groupBy } from 'lodash';
 
-import {UserWordService} from './user-word.service';
-import {WordCategoryService} from './word-category.service';
-import {UserPreferenceService} from './user-preference.service';
-import {WordCategory} from '../models/word-category';
+import { UserWordService } from './user-word.service';
+import { WordCategoryService } from './word-category.service';
+import { UserPreferenceService } from './user-preference.service';
+import { WordCategory } from '../models/word-category';
 
-import {UserWord} from '../models/user-word';
-import {CombinedWordsMap} from '../en/combined-words-map';
-import {DictService} from './dict.service';
+import { UserWord } from '../models/user-word';
+import { CombinedWordsMap } from '../en/combined-words-map';
+import { DictService } from './dict.service';
 
 @Injectable()
 export class UserVocabularyService {
@@ -46,7 +45,7 @@ export class UserVocabularyService {
 
   getBaseVocabularyMap(): Observable<Map<string, string>> {
     if (this.baseVocabularyMap) {
-      return Observable.of(this.baseVocabularyMap);
+      return ObservableOf(this.baseVocabularyMap);
     }
 
     let bvm = this.baseVocabularyMap = new Map();
@@ -112,30 +111,30 @@ export class UserVocabularyService {
 
   inBaseVocabulary(word: string): Observable<string> {
     if (this.baseVocabularyMap) {
-      return Observable.of(this.baseVocabularyMap.get(word));
+      return ObservableOf(this.baseVocabularyMap.get(word));
     }
     return this.getBaseVocabularyMap()
-      .map((map: Map<string, string>) => {
-        if (!map) {
+      .pipe(map((vmap: Map<string, string>) => {
+        if (!vmap) {
           return null;
         }
-        return map.get(word);
-      });
+        return vmap.get(word);
+      }));
   }
 
   getCombinedWordsMap(): Observable<CombinedWordsMap> {
     if (this.combinedWordsMap) {
-      return Observable.of(this.combinedWordsMap);
+      return ObservableOf(this.combinedWordsMap);
     }
     if (this.combinedWordsMap$) {
       return this.combinedWordsMap$;
     }
 
-    let obs = Observable.combineLatest(
+    let obs = combineLatest(
       this.getBaseVocabularyMap(),
       this.userWordService.getUserWordsMap(),
       this.dictService.loadBaseForms()
-    ).map(([baseVocabularyMap, userWordsMap, baseFormsMap]) => {
+    ).pipe(map(([baseVocabularyMap, userWordsMap, baseFormsMap]) => {
       if (!baseVocabularyMap || !userWordsMap || !baseFormsMap) {
         return null;
       }
@@ -146,15 +145,14 @@ export class UserVocabularyService {
       this.combinedWordsMap = cwm;
       this.combinedWordsMap$ = null;
       return cwm;
-    });
-    obs = obs.share();
+    }), share());
     this.combinedWordsMap$ = obs;
     return obs;
   }
 
   statistic(): Observable<Object> {
     return Observable.create(observer => {
-      Observable.combineLatest(
+      combineLatest(
         this.getBaseVocabularyMap(),
         this.userWordService.list())
         .subscribe(([baseVocabularyMap, userWords]) => {

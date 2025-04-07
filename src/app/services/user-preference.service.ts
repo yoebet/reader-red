@@ -1,14 +1,13 @@
-import {EventEmitter, Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
+import { EventEmitter, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
+import { Observable, of as ObservableOf } from 'rxjs/';
+import { map, share } from 'rxjs/operators';
 
-import {OpResult} from '../models/op-result';
-import {BaseService} from './base.service';
-import {UserPreference} from '../models/user-preference';
+import { OpResult } from '../models/op-result';
+import { BaseService } from './base.service';
+import { UserPreference } from '../models/user-preference';
 
 @Injectable()
 export class UserPreferenceService extends BaseService<UserPreference> {
@@ -26,15 +25,15 @@ export class UserPreferenceService extends BaseService<UserPreference> {
 
   get(): Observable<UserPreference> {
     if (this.userPreference) {
-      return Observable.of(this.userPreference);
+      return ObservableOf(this.userPreference);
     }
     if (this.userPreference$) {
       return this.userPreference$;
     }
     this.userPreference$ = super.getOneByUrl(this.baseUrl)
-      .map((up: UserPreference) => {
+      .pipe(map((up: UserPreference) => {
         return up ? up : new UserPreference();
-      }).share();
+      }), share());
     this.userPreference$.subscribe((up: UserPreference) => {
       this.userPreference = up;
       if (up.baseVocabulary) {
@@ -45,25 +44,24 @@ export class UserPreferenceService extends BaseService<UserPreference> {
   }
 
   getBaseVocabulary(): Observable<string> {
-    return this.get().map((up: UserPreference) => {
+    return this.get().pipe(map((up: UserPreference) => {
       return up.baseVocabulary;
-    });
+    }));
   }
 
   getWordTags(): Observable<string[]> {
-    return this.get().map((up: UserPreference) => {
+    return this.get().pipe(map((up: UserPreference) => {
       return up.wordTags;
-    });
+    }));
   }
 
   private setValue(code: string, value) {
     let url = `${this.baseUrl}/code/${code}`;
-    return this.http.post<OpResult>(url, {[code]: value}, this.httpOptions).catch(this.handleError);
+    return this.http.post<OpResult>(url, { [code]: value }, this.httpOptions);
   }
 
   setBaseVocabulary(categoryCode: string): Observable<OpResult> {
-    let obs = this.setValue('baseVocabulary', categoryCode);
-    obs = obs.share();
+    let obs = this.setValue('baseVocabulary', categoryCode).pipe(share());
     obs.subscribe(opr => {
       if (opr && opr.ok === 1) {
         if (this.userPreference) {
@@ -76,8 +74,7 @@ export class UserPreferenceService extends BaseService<UserPreference> {
   }
 
   setWordTags(categoryCodes: string[]): Observable<OpResult> {
-    let obs = this.setValue('wordTags', categoryCodes);
-    obs = obs.share();
+    let obs = this.setValue('wordTags', categoryCodes).pipe(share());
     obs.subscribe(opr => {
       if (opr && opr.ok === 1) {
         if (this.userPreference) {

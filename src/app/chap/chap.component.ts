@@ -1,18 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, ParamMap} from '@angular/router';
-import {Location} from '@angular/common';
-import 'rxjs/add/operator/switchMap';
-import Tether from 'tether';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Location } from '@angular/common';
+import { switchMap } from 'rxjs/operators';
+import * as Tether from 'tether';
 
-import {UIConstants} from '../config';
-import {Book} from '../models/book';
-import {Chap} from '../models/chap';
-import {Para} from '../models/para';
-import {AnnotationSet} from '../anno/annotation-set';
-import {BookService} from '../services/book.service';
-import {ChapService} from '../services/chap.service';
-import {AnnotationsService} from '../services/annotations.service';
-import {DictRequest} from './dict-request';
+import { UIConstants } from '../config';
+import { Book } from '../models/book';
+import { Chap } from '../models/chap';
+import { Para } from '../models/para';
+import { AnnotationSet } from '../anno/annotation-set';
+import { BookService } from '../services/book.service';
+import { ChapService } from '../services/chap.service';
+import { AnnotationsService } from '../services/annotations.service';
+import { DictRequest } from './dict-request';
 
 @Component({
   selector: 'chap-detail',
@@ -44,8 +44,9 @@ export class ChapComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.switchMap((params: ParamMap) =>
-      this.chapService.getDetail(params.get('id'))
+    this.route.paramMap.pipe(
+      switchMap((params: ParamMap) =>
+        this.chapService.getDetail(params.get('id')))
     ).subscribe(chap => {
       if (!chap) {
         return;

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router, ParamMap} from '@angular/router';
 import {Location} from '@angular/common';
-import 'rxjs/add/operator/switchMap';
+import { switchMap } from 'rxjs/operators';
 
 import {Book} from '../models/book';
 import {Chap} from '../models/chap';
@@ -28,8 +28,9 @@ export class BookComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.switchMap((params: ParamMap) =>
-      this.bookService.getDetail(params.get('id'))
+    this.route.paramMap.pipe(
+      switchMap((params: ParamMap) =>
+        this.bookService.getDetail(params.get('id')))
     ).subscribe(book => {
       if (!book) {
         return;

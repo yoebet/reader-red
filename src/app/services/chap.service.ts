@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
+import { Observable, of as ObservableOf } from 'rxjs/';
+import { share } from 'rxjs/operators';
 
 import {Book} from '../models/book';
 import {Chap} from '../models/chap';
@@ -49,8 +49,7 @@ export class ChapService extends BaseService<Chap> {
   }
 
   getDetail(id: string): Observable<Chap> {
-    let obs = super.getDetail(id) as Observable<Chap>;
-    obs = obs.share();
+    let obs = super.getDetail(id).pipe(share());
     obs.subscribe((chap: Chap) => {
       this.cacheChap(chap);
     });
@@ -61,10 +60,9 @@ export class ChapService extends BaseService<Chap> {
   getOne(id: string): Observable<Chap> {
     let chap0 = this.chapsMap.get(id);
     if (chap0) {
-      return Observable.of(chap0);
+      return ObservableOf(chap0);
     }
-    let obs = super.getOne(id) as Observable<Chap>;
-    obs = obs.share();
+    let obs = super.getOne(id).pipe(share());
     obs.subscribe((chap: Chap) => {
       this.cacheChap(chap);
     });
