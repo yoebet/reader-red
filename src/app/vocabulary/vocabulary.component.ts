@@ -8,8 +8,8 @@ import {DictEntry} from '../models/dict-entry';
 import {UserWordService} from '../services/user-word.service';
 import {DictService} from '../services/dict.service';
 import {ChapService} from '../services/chap.service';
-import {SuiSearch} from "ng2-semantic-ui/dist/modules/search/components/search";
-import {UserVocabularyService} from "../services/user-vocabulary.service";
+import {SuiSearch} from 'ng2-semantic-ui/dist/modules/search/components/search';
+import {UserVocabularyService} from '../services/user-vocabulary.service';
 
 @Component({
   selector: 'vocabulary-main',
@@ -60,7 +60,7 @@ export class VocabularyComponent implements OnInit {
     }
     let o = this.dictService.search(key.trim(), options);
     return o.toPromise();
-  };
+  }
 
 
   constructor(private userWordService: UserWordService,
@@ -215,7 +215,7 @@ export class VocabularyComponent implements OnInit {
   }
 
   clickStatistic() {
-    this.mode = "statistic";
+    this.mode = 'statistic';
     this.entry = null;
     this.userVocabularyService.statistic()
       .subscribe(statistic => {

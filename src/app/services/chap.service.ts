@@ -59,9 +59,9 @@ export class ChapService extends BaseService<Chap> {
 
 
   getOne(id: string): Observable<Chap> {
-    let chap = this.chapsMap.get(id);
-    if (chap) {
-      return Observable.of(chap);
+    let chap0 = this.chapsMap.get(id);
+    if (chap0) {
+      return Observable.of(chap0);
     }
     let obs = super.getOne(id) as Observable<Chap>;
     obs = obs.share();

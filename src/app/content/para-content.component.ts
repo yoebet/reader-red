@@ -4,10 +4,10 @@ import {
   ComponentFactoryResolver, ComponentFactory, ComponentRef, OnInit
 } from '@angular/core';
 
-import Drop from 'tether-drop'
+import Drop from 'tether-drop';
 
 import {Annotator} from '../anno/annotator';
-import {AnnotateResult} from '../anno/annotate-result'
+import {AnnotateResult} from '../anno/annotate-result';
 import {AnnotationSet, HighlightGroups} from '../anno/annotation-set';
 
 import {UIConstants} from '../config';
@@ -15,10 +15,10 @@ import {Para} from '../models/para';
 import {DictEntry} from '../models/dict-entry';
 import {DictService} from '../services/dict.service';
 import {DictRequest} from '../chap/dict-request';
-import {WordAnnosComponent} from './word-annos.component'
-import {UserWord} from "../models/user-word";
-import {UserVocabularyService} from "../services/user-vocabulary.service";
-import {CombinedWordsMap} from "../en/combined-words-map";
+import {WordAnnosComponent} from './word-annos.component';
+import {UserWord} from '../models/user-word';
+import {UserVocabularyService} from '../services/user-vocabulary.service';
+import {CombinedWordsMap} from '../en/combined-words-map';
 
 @Component({
   selector: 'para-content',
@@ -454,8 +454,8 @@ export class ParaContentComponent implements OnInit, OnChanges {
 
         if (!codeOrUW) {
           if (/[A-Z]/.test(word)
-            || text.charAt(offset + word.length) === "’"
-            || (offset > 0 && text.charAt(offset - 1) === "-")) {
+            || text.charAt(offset + word.length) === '’'
+            || (offset > 0 && text.charAt(offset - 1) === '-')) {
             codeOrUW = 'ignore';
           }
         }

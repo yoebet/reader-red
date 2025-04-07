@@ -1,5 +1,5 @@
 import {Annotation} from '../models/annotation';
-import {AnnotateResult} from './annotate-result'
+import {AnnotateResult} from './annotate-result';
 
 export class Annotator {
   static annotationTagName = 'y-o';

@@ -95,8 +95,8 @@ export class WordCategoryService extends BaseService<WordCategory> {
     let obs = this.http.post<string[]>(url, null, this.httpOptions)
       .catch(this.handleError).share();
     this.allWordsMap.set(code, obs);
-    obs.subscribe((words: string[]) => {
-      this.allWordsMap.set(code, words);
+    obs.subscribe((words2: string[]) => {
+      this.allWordsMap.set(code, words2);
     });
     return obs;
   }

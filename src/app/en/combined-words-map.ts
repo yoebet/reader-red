@@ -1,5 +1,5 @@
-import {guestBaseForms, guestStem} from "./word-forms";
-import {UserWord} from "../models/user-word";
+import {guestBaseForms, guestStem} from './word-forms';
+import {UserWord} from '../models/user-word';
 
 export class CombinedWordsMap {
 

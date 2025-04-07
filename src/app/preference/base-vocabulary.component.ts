@@ -7,12 +7,12 @@ import {
   ViewContainerRef
 } from '@angular/core';
 
-import Drop from 'tether-drop'
+import Drop from 'tether-drop';
 
-import {WordCategoryService} from "../services/word-category.service";
-import {UserPreferenceService} from "../services/user-preference.service";
-import {WordCategory} from "../models/word-category";
-import {SimpleMeaningsComponent} from "../dict/simple-meanings.component";
+import {WordCategoryService} from '../services/word-category.service';
+import {UserPreferenceService} from '../services/user-preference.service';
+import {WordCategory} from '../models/word-category';
+import {SimpleMeaningsComponent} from '../dict/simple-meanings.component';
 
 @Component({
   selector: 'base-vocabulary',

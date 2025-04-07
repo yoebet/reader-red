@@ -54,7 +54,7 @@ export class ParaService extends BaseService<Para> {
     let url = `${this.baseUrl}/search/${word}?limit=${limit}`;
 
     return Observable.create(observer => {
-      this.list(url).subscribe(paras => {
+      this.list(url).subscribe((paras: Para[]) => {
         if (!paras || paras.length === 0) {
           observer.next([]);
           observer.complete();

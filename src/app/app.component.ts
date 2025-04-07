@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 
-import {AppService} from './services/app.service'
+import {AppService} from './services/app.service';
 import {OpResult} from './models/op-result';
-import {BookService} from "./services/book.service";
-import {ChapService} from "./services/chap.service";
-import {DictService} from "./services/dict.service";
-import {UserWordService} from "./services/user-word.service";
+import {BookService} from './services/book.service';
+import {ChapService} from './services/chap.service';
+import {DictService} from './services/dict.service';
+import {UserWordService} from './services/user-word.service';
 
 @Component({
   selector: 'app-root',

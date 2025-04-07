@@ -1,18 +1,18 @@
-import {Injectable} from "@angular/core";
+import {Injectable} from '@angular/core';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/combineLatest';
 import {groupBy} from 'lodash';
 
-import {UserWordService} from "./user-word.service";
-import {WordCategoryService} from "./word-category.service";
-import {UserPreferenceService} from "./user-preference.service";
-import {WordCategory} from "../models/word-category";
+import {UserWordService} from './user-word.service';
+import {WordCategoryService} from './word-category.service';
+import {UserPreferenceService} from './user-preference.service';
+import {WordCategory} from '../models/word-category';
 
-import {UserWord} from "../models/user-word";
-import {CombinedWordsMap} from "../en/combined-words-map";
-import {DictService} from "./dict.service";
+import {UserWord} from '../models/user-word';
+import {CombinedWordsMap} from '../en/combined-words-map';
+import {DictService} from './dict.service';
 
 @Injectable()
 export class UserVocabularyService {
@@ -70,7 +70,7 @@ export class UserVocabularyService {
               let codes = [];
               while (cat) {
                 if (codes.includes(cat.code)) {
-                  console.warn("CIRCULAR ..");
+                  console.warn('CIRCULAR ..');
                   break;
                 }
                 codes.push(cat.code);
@@ -149,7 +149,7 @@ export class UserVocabularyService {
     });
     obs = obs.share();
     this.combinedWordsMap$ = obs;
-    return obs
+    return obs;
   }
 
   statistic(): Observable<Object> {

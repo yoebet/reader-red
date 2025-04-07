@@ -112,7 +112,8 @@ export class WordTagsComponent implements OnInit {
       if (code === 'haici') {
         tag = `海词 ${rank}星`;
       } else if (['coca', 'bnc', 'anc'].indexOf(code) >= 0) {
-        let align3 = rank + (3 - rank % 3);
+        let mod = rank % 3;
+        let align3 = mod === 0 ? rank : rank + (3 - mod);
         tag = `${code.toUpperCase()} ${align3}000`;
       }
       tags.push(tag);

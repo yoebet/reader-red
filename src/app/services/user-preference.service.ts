@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map';
 
 import {OpResult} from '../models/op-result';
 import {BaseService} from './base.service';
-import {UserPreference} from "../models/user-preference";
+import {UserPreference} from '../models/user-preference';
 
 @Injectable()
 export class UserPreferenceService extends BaseService<UserPreference> {

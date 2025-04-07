@@ -5,9 +5,9 @@ import {UserBook} from './user-book';
 export class Book extends Model {
   code: string;
   name: string;
-  zhName: string = '';
-  author: string = '';
-  zhAuthor: string = '';
+  zhName = '';
+  author = '';
+  zhAuthor = '';
   langType: string;
   originalId: string;
   isFree: boolean;

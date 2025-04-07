@@ -1,14 +1,14 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnInit} from '@angular/core';
 
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 
-import {UserWordService} from "../services/user-word.service";
-import {UserWord} from "../models/user-word";
-import {OpResult} from "../models/op-result";
-import {UserVocabularyService} from "../services/user-vocabulary.service";
-import {WordCategoryService} from "../services/word-category.service";
-import {WordCategory} from "../models/word-category";
+import {UserWordService} from '../services/user-word.service';
+import {UserWord} from '../models/user-word';
+import {OpResult} from '../models/op-result';
+import {UserVocabularyService} from '../services/user-vocabulary.service';
+import {WordCategoryService} from '../services/word-category.service';
+import {WordCategory} from '../models/word-category';
 
 
 @Component({

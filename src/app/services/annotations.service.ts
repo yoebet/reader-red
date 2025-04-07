@@ -9,8 +9,8 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 import {BaseService} from './base.service';
-import {AnnotationFamily} from "../models/annotation-family";
-import {AnnotationSet} from "../anno/annotation-set";
+import {AnnotationFamily} from '../models/annotation-family';
+import {AnnotationSet} from '../anno/annotation-set';
 
 @Injectable()
 export class AnnotationsService extends BaseService<AnnotationFamily> {
@@ -34,9 +34,9 @@ export class AnnotationsService extends BaseService<AnnotationFamily> {
         return null;
       }
       let groups = family.groups;
-      let anns = new AnnotationSet(groups);
-      this.annotationsMap.set(familyId, anns);
-      return anns;
+      let anns2 = new AnnotationSet(groups);
+      this.annotationsMap.set(familyId, anns2);
+      return anns2;
     });
   }
 

@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {isEqual, sortBy} from 'lodash';
 
-import {WordCategoryService} from "../services/word-category.service";
-import {UserPreferenceService} from "../services/user-preference.service";
-import {WordCategory} from "../models/word-category";
-import {DictEntry} from "../models/dict-entry";
-import {DictService} from "../services/dict.service";
+import {WordCategoryService} from '../services/word-category.service';
+import {UserPreferenceService} from '../services/user-preference.service';
+import {WordCategory} from '../models/word-category';
+import {DictEntry} from '../models/dict-entry';
+import {DictService} from '../services/dict.service';
 
 @Component({
   selector: 'word-tags-setting',

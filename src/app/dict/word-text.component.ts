@@ -5,7 +5,7 @@ import {UIConstants} from '../config';
 import {DictEntry} from '../models/dict-entry';
 import {Para} from '../models/para';
 import {ParaService} from '../services/para.service';
-import {SafeHtml} from "@angular/platform-browser/src/security/dom_sanitization_service";
+import {SafeHtml} from '@angular/platform-browser/src/security/dom_sanitization_service';
 
 @Component({
   selector: 'word-text',
@@ -121,7 +121,7 @@ export class WordTextComponent implements OnChanges {
     for (let pattern of patterns) {
       let nodes = nodesToTry;
       nodesToTry = [];
-      for (let textNode of nodes) {
+      for (textNode of nodes) {
         let text = textNode.nodeValue;
         let element = textNode.parentNode;
         let matcher = text.match(pattern);

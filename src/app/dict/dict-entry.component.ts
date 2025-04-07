@@ -91,7 +91,7 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
         return;
       }
       this.entry.complete = complete;
-    })
+    });
   }
 
   loadMoreParas() {

@@ -11,7 +11,7 @@ import 'rxjs/add/operator/map';
 import {Book} from '../models/book';
 import {BaseService} from './base.service';
 import {ChapService} from './chap.service';
-import {UserBookService} from "./user-book.service";
+import {UserBookService} from './user-book.service';
 
 @Injectable()
 export class BookService extends BaseService<Book> {
@@ -35,9 +35,9 @@ export class BookService extends BaseService<Book> {
   }
 
   getDetail(id: string): Observable<Book> {
-    let book = this.booksDetailMap.get(id);
-    if (book) {
-      return Observable.of(book);
+    let book0 = this.booksDetailMap.get(id);
+    if (book0) {
+      return Observable.of(book0);
     }
 
     let obs = Observable.combineLatest(
@@ -60,9 +60,9 @@ export class BookService extends BaseService<Book> {
 
 
   getOne(id: string): Observable<Book> {
-    let book = this.booksDetailMap.get(id);
-    if (book) {
-      return Observable.of(book);
+    let book0 = this.booksDetailMap.get(id);
+    if (book0) {
+      return Observable.of(book0);
     }
     if (this.allBooks) {
       let book = this.allBooks.find(b => b._id === id);

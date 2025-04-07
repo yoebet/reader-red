@@ -11,7 +11,7 @@ import {Para} from '../models/para';
 import {AnnotationSet} from '../anno/annotation-set';
 import {BookService} from '../services/book.service';
 import {ChapService} from '../services/chap.service';
-import {AnnotationsService} from "../services/annotations.service";
+import {AnnotationsService} from '../services/annotations.service';
 import {DictRequest} from './dict-request';
 
 @Component({
@@ -82,7 +82,7 @@ export class ChapComponent implements OnInit {
         }
         this.closeDictPopup();
       }
-    }, true)
+    }, true);
   }
 
   private loadAnnotations() {
