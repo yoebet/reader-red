@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import * as moment from 'moment';
 import { groupBy, random, shuffle, sortBy, take } from 'lodash';
@@ -8,18 +8,16 @@ import { DictEntry } from '../models/dict-entry';
 import { UserWordService } from '../services/user-word.service';
 import { DictService } from '../services/dict.service';
 import { ChapService } from '../services/chap.service';
-import { SuiSearch } from 'ng2-semantic-ui/dist/modules/search/components/search';
 import { UserVocabularyService } from '../services/user-vocabulary.service';
+import { DictSearchComponent } from '../dict/dict-search.component';
 
 @Component({
   selector: 'vocabulary-main',
   templateUrl: './vocabulary.component.html',
   styleUrls: ['./vocabulary.component.css']
 })
-export class VocabularyComponent implements OnInit {
-  @ViewChild('searchInput', { read: SuiSearch }) searchInput: SuiSearch<any>;
+export class VocabularyComponent extends DictSearchComponent implements OnInit {
   userWords: UserWord[];
-  entry: DictEntry;
   mode = 'userWords';
 
   filteredUserWords: UserWord[];
@@ -41,53 +39,20 @@ export class VocabularyComponent implements OnInit {
   };
   grouping: any = { groupBy: '' };
 
-  phrase = false;
-  phraseOnly = false;
-  wordScope = 'All';
 
-  dictSearch = (key: string) => {
-    let options = {
-      phrase: this.phrase && !this.phraseOnly,
-      phraseOnly: this.phraseOnly
-    };
-    if (!this.phraseOnly) {
-      for (let category of ['basic', 'cet', 'ielts', 'gre']) {
-        if (this.wordScope === category) {
-          options[category] = true;
-          break;
-        }
-      }
-    }
-    let o = this.dictService.search(key.trim(), options);
-    return o.toPromise();
-  }
-
-
-  constructor(private userWordService: UserWordService,
-              private dictService: DictService,
-              private chapService: ChapService,
-              private userVocabularyService: UserVocabularyService) {
+  constructor(protected userWordService: UserWordService,
+              protected dictService: DictService,
+              protected chapService: ChapService,
+              protected userVocabularyService: UserVocabularyService) {
+    super(dictService);
   }
 
   ngOnInit() {
     this.refreshWordList();
   }
 
-  get entryHistory(): DictEntry[] {
-    return this.dictService.entryHistory;
-  }
-
   get latestAdded(): UserWord[] {
     return this.userWordService.latestAdded;
-  }
-
-  clearHistory() {
-    this.dictService.clearHistory();
-  }
-
-
-  selectHistoryEntry(entry) {
-    this.entry = entry;
   }
 
   selectWord(uw) {
@@ -95,30 +60,6 @@ export class VocabularyComponent implements OnInit {
       .subscribe(entry => {
         this.entry = entry;
       });
-  }
-
-  selectSearchResult(entrySimple) {
-    this.dictService.getEntry(entrySimple.word)
-      .subscribe(e => this.entry = e);
-  }
-
-  resetSearch() {
-    this.searchInput.optionsLookup = this.dictSearch;
-  }
-
-  onKeyup($event) {
-    if ($event.which !== 13) {
-      return;
-    }
-    let searchInput = this.searchInput;
-    let results = searchInput.results;
-    let query = searchInput.query;
-    for (let entry of results) {
-      if (entry.word === query) {
-        searchInput.select(entry);
-        break;
-      }
-    }
   }
 
   private filterUserWords() {

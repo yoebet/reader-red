@@ -33,11 +33,12 @@ import {DictEntryComponent} from './dict/dict-entry.component';
 import {VocabularyComponent} from './vocabulary/vocabulary.component';
 import {BaseVocabularyComponent} from './preference/base-vocabulary.component';
 import {SimpleMeaningsComponent} from './dict/simple-meanings.component';
-import {ApproximateNumberPipe} from "./pipes/approximate-number.pipe";
-import {WordTagsSettingComponent} from "./preference/word-tags-setting.component";
+import {ApproximateNumberPipe} from './pipes/approximate-number.pipe';
+import {WordTagsSettingComponent} from './preference/word-tags-setting.component';
 import {UserWordComponent} from './vocabulary/user-word.component';
 import {WordTagsComponent} from './dict/word-tags.component';
 import {WordTextComponent} from './dict/word-text.component';
+import { DictComponent } from './dict/dict.component';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import {WordTextComponent} from './dict/word-text.component';
     ChapComponent,
     ParaContentComponent,
     WordAnnosComponent,
+    DictComponent,
     DictEntryComponent,
     CreatedDatePipe,
     CreatedDateStringPipe,
