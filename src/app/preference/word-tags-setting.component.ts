@@ -23,7 +23,7 @@ export class WordTagsSettingComponent implements OnInit {
   groups: any[];
   changed = false;
 
-  sampleWords = ['help', 'summon', 'waiter', 'prosperity', 'obses', 'pottery', 'offish'];
+  sampleWords = ['help', 'summon', 'waiter', 'prosperity', 'obsess', 'pottery', 'offish'];
   sampleWordEntries: DictEntry[];
   showSamples = false;
 
@@ -45,7 +45,7 @@ export class WordTagsSettingComponent implements OnInit {
         };
         let group2 = {
           title: '高级',
-          codes: ['gre', 'yasi', 'pro'],
+          codes: ['gre', 'ielts', 'pro'],
           categories: null as WordCategory[]
         };
         let group3 = {

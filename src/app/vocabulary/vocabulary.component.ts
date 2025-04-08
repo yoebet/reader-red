@@ -51,7 +51,7 @@ export class VocabularyComponent implements OnInit {
       phraseOnly: this.phraseOnly
     };
     if (!this.phraseOnly) {
-      for (let category of ['basic', 'cet', 'gre']) {
+      for (let category of ['basic', 'cet', 'ielts', 'gre']) {
         if (this.wordScope === category) {
           options[category] = true;
           break;

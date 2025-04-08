@@ -17,7 +17,7 @@ export class WordCategoryService extends BaseService<WordCategory> {
   //categoryCode -> words
   private allWordsMap = new Map<string, string[]|Observable<string[]>>();
 
-  private cachedCategories = ['junior1', 'junior2', 'basic', 'cet4', 'cet6', 'cet', 'gre', 'yasi'];
+  private cachedCategories = ['junior1', 'junior2', 'basic', 'cet4', 'cet6', 'cet', 'gre', 'ielts'];
 
 
   constructor(protected http: HttpClient) {
@@ -87,8 +87,9 @@ export class WordCategoryService extends BaseService<WordCategory> {
       return ObservableOf([]);
     }
 
-    let url = `${this.baseUrl}/${code}/loadAll`;
-    let obs = this.http.post<string[]>(url, null, this.httpOptions).pipe(share());
+    let url = `${this.baseUrl}/word_book/${code}`;
+    let obs = this.http.get<{ code: string, version: number, words: string[] }>(url, this.httpOptions)
+      .pipe(map(wb => wb.words), share());
     this.allWordsMap.set(code, obs);
     obs.subscribe((words2: string[]) => {
       this.allWordsMap.set(code, words2);

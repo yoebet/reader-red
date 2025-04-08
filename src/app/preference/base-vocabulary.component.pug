@@ -1,8 +1,8 @@
 .ui.gray.header
-  .ui.right.floated.mini.button((click)='gypCollapse=!gypCollapse')
-    ng-template([ngIf]='gypCollapse') More
-    ng-template([ngIf]='!gypCollapse') Less
-  | Base Vocabulary
+  //.ui.right.floated.mini.button((click)='gypCollapse=!gypCollapse')
+    ng-template([ngIf]='gypCollapse') 更多
+    ng-template([ngIf]='!gypCollapse') 更少
+  | 选择基础词汇
 
 .ui
   .ui.stackable.steps.base-voca
@@ -16,7 +16,7 @@
 
 div
   .ui([suiCollapse]='gypCollapse')
-    ng-template(ngFor='', let-wc='', [ngForOf]="[gre,yasi]")
+    ng-template(ngFor='', let-wc='', [ngForOf]="[ielts,gre]")
       .ui.steps.base-voca
         .step([ngClass]='{active:wc===selected}', (click)='select(wc)')
           i.truck.icon
@@ -28,16 +28,16 @@ div
 
 .ui.clearing.hidden.divider
 .ui
-  | Selected:
+  | 选择:
   .selected-name
     ng-template([ngIf]='selected') {{selected.name}}
-  .ui.small.basic.button([ngClass]='{disabled: !changed}', (click)='save()') Save
+  .ui.small.basic.button([ngClass]='{disabled: !changed}', (click)='save()') 保存
 
   .clearing
 
   .ui.segment
     .ui
-      sui-checkbox([(ngModel)]='showSamples', (click)='processSamples()') Show Samples
+      sui-checkbox([(ngModel)]='showSamples', (click)='processSamples()') 随机例词
       .ui.right.floated.tiny.basic.button([ngClass]='{disabled: !showSamples || !sampleWords}', (click)='processSamples()') Change
     .ui.horizontal.list
       a.item(*ngFor='let word of sampleWords', (click)='onClickAWord(word,$event)') {{word}}

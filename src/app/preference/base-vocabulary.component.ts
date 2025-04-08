@@ -25,7 +25,7 @@ export class BaseVocabularyComponent implements OnInit {
   baseVocabulary: string;
   showSamples = false;
   sampleWords: string[];
-  gypCollapse = true;
+  gypCollapse = false;
 
   // junior1 = {code: 'junior1'} as WordCategory;
   // junior2 = {code: 'junior2'} as WordCategory;
@@ -33,10 +33,10 @@ export class BaseVocabularyComponent implements OnInit {
   cet4 = {code: 'cet4'} as WordCategory;
   cet6 = {code: 'cet6'} as WordCategory;
   gre = {code: 'gre'} as WordCategory;
-  yasi = {code: 'yasi'} as WordCategory;
+  ielts = {code: 'ielts'} as WordCategory;
   // pro = {code: 'pro'} as WordCategory;
 
-  allCats = [this.basic, this.cet4, this.cet6, this.gre, this.yasi/*, this.pro*/];
+  allCats = [this.basic, this.cet4, this.cet6, this.gre, this.ielts/*, this.pro*/];
 
   selected: WordCategory;
   changed = false;

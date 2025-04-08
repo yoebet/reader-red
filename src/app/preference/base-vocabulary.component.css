@@ -2,6 +2,10 @@
   cursor: pointer;
 }
 
+.steps.base-voca {
+  margin-right: 1em;
+}
+
 .selected-name {
   width: 5em;
   padding-left: 1em;
