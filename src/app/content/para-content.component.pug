@@ -1,13 +1,3 @@
 .para-text.content-text((mouseup)='onMouseup($event)', spellcheck='false', #contentText='')
 .para-text.trans-text([hidden]='!showTrans', spellcheck='false', #paraTrans='')
-//.ui.right.rail
-  //.ui.list([hidden]='!gotFocus')
-    .ui.item
-      button.ui.mini.primary.basic.button((click)='notifySave()', [ngClass]='{disabled: !contentChanged&&!transChanged}')
-        i.checkmark.icon
-        | 保存
-    .ui.item
-      button.ui.mini.primary.basic.button((click)='discard()', [ngClass]='{disabled: !contentChanged&&!transChanged}')
-        i.undo.icon
-        | 撤销
 ng-template(#wordAnnos='')

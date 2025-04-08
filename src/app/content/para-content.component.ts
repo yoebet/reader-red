@@ -203,6 +203,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
       return;
     }
     $event.stopPropagation();
+    $event.preventDefault();
     let ctrlKey = $event.ctrlKey || $event.metaKey;
     if ((!ctrlKey && this.lookupDict) || (ctrlKey && !this.lookupDict)) {
       if (!this.annotator) {

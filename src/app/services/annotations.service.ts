@@ -17,7 +17,7 @@ export class AnnotationsService extends BaseService<AnnotationFamily> {
   constructor(protected http: HttpClient) {
     super(http);
     let apiBase = environment.apiBase || '';
-    this.baseUrl = `${apiBase}/annotation_families`;
+    this.baseUrl = `${apiBase}/anno_families`;
   }
 
   getAnnotationSet(familyId: string): Observable<AnnotationSet> {

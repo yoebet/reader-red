@@ -119,8 +119,8 @@ export class DictService extends BaseService<DictEntry> {
       return ObservableOf(this.baseFormsMap);
     }
 
-    let url = `${this.baseUrl}/loadBaseForms`;
-    return this.http.post<any[]>(url, null, this.httpOptions)
+    let url = `${this.baseUrl}/baseForms/b6`;
+    return this.http.get<any[]>(url, this.httpOptions)
       .pipe(map((words: string[][]) => {
         this.baseFormsMap = new Map();
         for (let [word, base] of words) {
