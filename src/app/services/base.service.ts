@@ -1,7 +1,6 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import {Observable, throwError} from 'rxjs/';
-import { catchError } from 'rxjs/operators';
+import {Observable} from 'rxjs/';
 
 import {Model} from '../models/model';
 import {OpResult} from '../models/op-result';
@@ -11,7 +10,7 @@ export class BaseService<M extends Model> {
   protected httpOptions = {
     headers: new HttpHeaders({
       // 'Content-Type': 'application/json',
-      'X-Cli': 'PC-B'
+      'X-Cl': 'PC-B'
     }),
     withCredentials: true
   };
@@ -57,11 +56,6 @@ export class BaseService<M extends Model> {
 
   protected modelId(model: M | string): string {
     return typeof model === 'string' ? model : model._id;
-  }
-
-  protected handleError(error: any): Observable<any> {
-    console.error(error);
-    return Observable.throw(error);
   }
 
 }

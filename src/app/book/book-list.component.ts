@@ -14,7 +14,7 @@ export class BookListComponent implements OnInit {
   private allBooks: Book[];
   private myBooks: Book[];
   listAllBooks = false;
-  showZh = false;
+  showZh = true;
 
   constructor(private bookService: BookService,
               private router: Router) {
