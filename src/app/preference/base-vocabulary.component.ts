@@ -1,18 +1,11 @@
-import {
-  Component,
-  ComponentFactory,
-  ComponentFactoryResolver,
-  ComponentRef,
-  OnInit, ViewChild,
-  ViewContainerRef
-} from '@angular/core';
+import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 
 import * as Drop from 'tether-drop';
 
-import {WordCategoryService} from '../services/word-category.service';
-import {UserPreferenceService} from '../services/user-preference.service';
-import {WordCategory} from '../models/word-category';
-import {SimpleMeaningsComponent} from '../dict/simple-meanings.component';
+import { WordCategoryService } from '../services/word-category.service';
+import { UserPreferenceService } from '../services/user-preference.service';
+import { WordCategory } from '../models/word-category';
+import { SimpleMeaningsComponent } from '../dict/simple-meanings.component';
 
 @Component({
   selector: 'base-vocabulary',
@@ -20,7 +13,7 @@ import {SimpleMeaningsComponent} from '../dict/simple-meanings.component';
   styleUrls: ['./base-vocabulary.component.css']
 })
 export class BaseVocabularyComponent implements OnInit {
-  @ViewChild('wordMeanings', {read: ViewContainerRef}) wordMeanings: ViewContainerRef;
+  @ViewChild('wordMeanings', { read: ViewContainerRef }) wordMeanings: ViewContainerRef;
 
   baseVocabulary: string;
   showSamples = false;
@@ -32,11 +25,11 @@ export class BaseVocabularyComponent implements OnInit {
   basic = {code: 'basic'} as WordCategory;
   cet4 = {code: 'cet4'} as WordCategory;
   cet6 = {code: 'cet6'} as WordCategory;
-  gre = {code: 'gre'} as WordCategory;
   ielts = {code: 'ielts'} as WordCategory;
+  gre = {code: 'gre'} as WordCategory;
   // pro = {code: 'pro'} as WordCategory;
 
-  allCats = [this.basic, this.cet4, this.cet6, this.gre, this.ielts/*, this.pro*/];
+  allCats = [this.basic, this.cet4, this.cet6, this.ielts, this.gre/*, this.pro*/];
 
   selected: WordCategory;
   changed = false;

@@ -5,7 +5,7 @@ div(*ngIf='book')
   .ui.header
     .ui.right.floated.header
       sui-checkbox([(ngModel)]='listAllChaps', (click)='changeList()') 全部
-    | Chapters
+    | 章节
   .ui.celled.list
     .item(*ngFor='let chap of chaps; trackBy: chapTracker; first as first; last as last')
       i.ui.right.floated.checkmark.icon(*ngIf='chap.isMyChap')

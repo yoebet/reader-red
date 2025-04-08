@@ -4,16 +4,20 @@
     a.item(routerLink='/books', routerLinkActive='active') 阅读
     ng-template([ngIf]='currentUser')
       a.item(routerLink='/vocabulary', routerLinkActive='active') 我的词汇
-      a.item(routerLink='/base-vocabulary', routerLinkActive='active') 基础词汇
-      a.item(routerLink='/word-tags', routerLinkActive='active') 词汇标签
     .right.menu
-      a.item(*ngIf='!currentUser', href='javascript:', (click)='gotoLogin()') Login
+      a.item(*ngIf='!currentUser', href='javascript:', (click)='gotoLogin()') 登录
       .item(*ngIf='currentUser')
         | {{currentUser.name}} &nbsp;&nbsp;
-        a((click)='logout()', href='#') Logout
+      .ui.dropdown.item(suiDropdown='')
+        | 设置
+        i.dropdown.icon
+        .menu(suiDropdownMenu='')
+          a.item(routerLink='/base-vocabulary', routerLinkActive='active') 基础词汇
+          a.item(routerLink='/word-tags', routerLinkActive='active') 词频标签
+      a.item((click)='logout()', href='#') 退出
 
   .ui.small.form.login(*ngIf='loginForm')
-    h3 Login
+    h3 登录
     p(*ngIf='loginMessage')
       | {{loginMessage}}
     .field

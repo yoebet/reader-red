@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {isEqual, sortBy} from 'lodash';
+import { Component, OnInit } from '@angular/core';
+import { isEqual, sortBy } from 'lodash';
 
-import {WordCategoryService} from '../services/word-category.service';
-import {UserPreferenceService} from '../services/user-preference.service';
-import {WordCategory} from '../models/word-category';
-import {DictEntry} from '../models/dict-entry';
-import {DictService} from '../services/dict.service';
+import { WordCategoryService } from '../services/word-category.service';
+import { UserPreferenceService } from '../services/user-preference.service';
+import { WordCategory } from '../models/word-category';
+import { DictEntry } from '../models/dict-entry';
+import { DictService } from '../services/dict.service';
 
 @Component({
   selector: 'word-tags-setting',
@@ -40,17 +40,17 @@ export class WordTagsSettingComponent implements OnInit {
 
         let group1 = {
           title: '普通',
-          codes: [/*'junior1', 'junior2', */'basic', 'cet4', 'cet6', 'cet'],
+          codes: [/*'junior1', 'junior2', */'basic', 'cet4', 'cet6'/*, 'cet'*/],
           categories: null as WordCategory[]
         };
         let group2 = {
           title: '高级',
-          codes: ['gre', 'ielts', 'pro'],
+          codes: ['ielts', 'gre', 'pro'],
           categories: null as WordCategory[]
         };
         let group3 = {
           title: '词频',
-          codes: ['coca', 'bnc', 'anc', 'haici'],
+          codes: ['coca', 'anc', 'bnc'/*, 'haici'*/],
           categories: null as WordCategory[]
         };
 
