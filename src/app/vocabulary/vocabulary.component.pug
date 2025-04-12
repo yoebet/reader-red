@@ -63,6 +63,7 @@
             span.ui.mini.circular.label {{group.userWords.length}}
           .ui.horizontal.list
             a.item(*ngFor='let uw of group.userWords',
+              [ngClass]='{"current-uw":entry&&entry.word===uw.word}',
               (click)='showUserWord($event,uw)',
               (contextmenu)='showUserWord($event,uw)') {{uw.word}}
 
@@ -101,8 +102,8 @@
         .ui.clearing.hidden.divider
         .ui.cards
           .link.card.word-card(*ngFor='let cw of cardWords',
-            (click)='showUserWord($event,uw)',
-            (contextmenu)='showUserWord($event,uw)',
+            (click)='showUserWord($event,cw.userWord)',
+            (contextmenu)='showUserWord($event,cw.userWord)',
             [ngClass]='{teal:entry&&entry.word===cw.userWord.word}')
             .content
               .header {{cw.userWord.word}}

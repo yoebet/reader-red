@@ -211,4 +211,8 @@ export class WordTextComponent implements OnChanges {
     return {content, trans};
   }
 
+  clickContent($event){
+
+  }
+
 }

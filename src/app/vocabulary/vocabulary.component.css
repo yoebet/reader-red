@@ -44,3 +44,6 @@
   cursor: pointer;
 }
 
+.current-uw {
+  border-bottom: red 2px double;
+}
