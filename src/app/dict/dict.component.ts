@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ComponentFactoryResolver } from '@angular/core';
 import { DictSearchComponent } from './dict-search.component';
 import { DictService } from '../services/dict.service';
 
@@ -9,7 +9,8 @@ import { DictService } from '../services/dict.service';
 })
 export class DictComponent extends DictSearchComponent {
 
-  constructor(protected dictService: DictService) {
-    super(dictService);
+  constructor(protected dictService: DictService,
+              protected resolver: ComponentFactoryResolver) {
+    super(dictService, resolver);
   }
 }

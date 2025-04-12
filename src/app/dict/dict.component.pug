@@ -6,7 +6,9 @@
           i.dropdown.icon
           | 查词历史
         .ui.link.list.words-history(content='')
-          a.item(*ngFor='let entry of entryHistory', (click)='selectHistoryEntry(entry)')
+          a.item(*ngFor='let entry of entryHistory',
+            (click)='showEntry($event,entry)',
+            (contextmenu)='showEntry($event,entry)')
             | {{entry.word}}
           .item
             a.operation(*ngIf='entryHistory.length>0', (click)='clearHistory()') ^^ 清空
@@ -38,3 +40,5 @@
 
     .ui.clearing.hidden.divider
     dict-entry(*ngIf='entry', [entry]='entry')
+
+ng-template(#dictSimple='')

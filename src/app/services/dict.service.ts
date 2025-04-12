@@ -76,7 +76,7 @@ export class DictService extends BaseService<DictEntry> {
       url += switches.join('&');
     }
 
-    return this.cacheOne(this.getOneByUrl(url));
+    return this.cacheOne(this.getOneByUrl(url), options.pushHistory);
   }
 
   getCompleteMeanings(idOrWord: string): Observable<PosMeanings[]> {

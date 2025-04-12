@@ -4,11 +4,11 @@ import {DictEntry} from '../models/dict-entry';
 import {DictService} from '../services/dict.service';
 
 @Component({
-  selector: 'simple-meanings',
-  templateUrl: './simple-meanings.component.html',
-  styleUrls: ['./simple-meanings.component.css']
+  selector: 'dict-simple',
+  templateUrl: './dict-simple.component.html'
 })
-export class SimpleMeaningsComponent {
+export class DictSimpleComponent {
+  // tslint:disable-next-line:variable-name
   private _entry: DictEntry;
   @Input() set entry(entry: DictEntry) {
     this._entry = entry;
@@ -19,6 +19,7 @@ export class SimpleMeaningsComponent {
     return this._entry;
   }
 
+  // tslint:disable-next-line:variable-name
   private _word: string;
 
   get word() {
@@ -30,12 +31,11 @@ export class SimpleMeaningsComponent {
       return;
     }
     this._word = word;
-    this.dictService.getEntry(word)
+    this.dictService.getEntry(word, {base: true, stem: true})
       .subscribe((entry: DictEntry) => {
         this._entry = entry;
       });
   }
-
 
   constructor(private dictService: DictService) {
   }

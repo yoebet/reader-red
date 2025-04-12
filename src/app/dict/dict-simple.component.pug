@@ -1,0 +1,6 @@
+.ui.small.header
+  | {{word}} &nbsp;&nbsp;
+  dict-phonetics(*ngIf='entry&&entry.phonetics', [entry]='entry')
+.ui.list(*ngIf='entry')
+  .ui.item(*ngFor='let item of entry.simple')
+    | {{item.pos}} {{item.exp}}

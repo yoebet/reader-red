@@ -41,6 +41,6 @@ div
       sui-checkbox([(ngModel)]='showSamples', (click)='processSamples()') 随机例词
       .ui.right.floated.tiny.basic.button([ngClass]='{disabled: !showSamples || !sampleWords}', (click)='processSamples()') Change
     .ui.horizontal.list
-      a.item(*ngFor='let word of sampleWords', (click)='onClickAWord(word,$event)') {{word}}
+      a.item(*ngFor='let word of sampleWords', (click)='clickAWord($event,word)') {{word}}
 
-ng-template(#wordMeanings='')
+ng-template(#dictSimple='')

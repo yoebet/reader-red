@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
 
 import * as moment from 'moment';
 import { groupBy, random, shuffle, sortBy, take } from 'lodash';
@@ -43,8 +43,9 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
   constructor(protected userWordService: UserWordService,
               protected dictService: DictService,
               protected chapService: ChapService,
-              protected userVocabularyService: UserVocabularyService) {
-    super(dictService);
+              protected userVocabularyService: UserVocabularyService,
+              protected resolver: ComponentFactoryResolver) {
+    super(dictService, resolver);
   }
 
   ngOnInit() {
@@ -53,13 +54,6 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
 
   get latestAdded(): UserWord[] {
     return this.userWordService.latestAdded;
-  }
-
-  selectWord(uw) {
-    this.dictService.getEntry(uw.word)
-      .subscribe(entry => {
-        this.entry = entry;
-      });
   }
 
   private filterUserWords() {

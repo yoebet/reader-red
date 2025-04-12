@@ -6,7 +6,9 @@
           i.dropdown.icon
           | 查词历史
         .ui.link.list.words-history(content='')
-          a.item(*ngFor='let entry of entryHistory', (click)='selectHistoryEntry(entry)')
+          a.item(*ngFor='let entry of entryHistory',
+            (click)='showEntry($event,entry)',
+            (contextmenu)='showEntry($event,entry)')
             | {{entry.word}}
           .item
             a.operation(*ngIf='entryHistory.length>0', (click)='clearHistory()') ^^ 清空
@@ -15,7 +17,9 @@
           i.dropdown.icon
           | 最新加入
         .ui.link.list.latest-added(content='')
-          a.item(*ngFor='let uw of latestAdded', (click)='selectWord(uw)')
+          a.item(*ngFor='let uw of latestAdded',
+            (click)='showUserWord($event,uw)',
+            (contextmenu)='showUserWord($event,uw)')
             | {{uw.word}}
 
   .thirteen.wide.column
@@ -34,7 +38,7 @@
             span.label.field-name 熟悉度
             sui-checkbox([(ngModel)]="filter.familiarityAll") 全部
             sui-checkbox(*ngFor='let fam of familiarities', [(ngModel)]='filter["familiarity"+fam.value]',
-            [isDisabled]='filter.familiarityAll') {{fam.label}}
+              [isDisabled]='filter.familiarityAll') {{fam.label}}
           .grouped.fields
             span.label.field-name 加入日期
             sui-radio-button(name="filterAddOn", value="All", [(ngModel)]="filter.addOn") 全部
@@ -58,7 +62,9 @@
             | {{group.title}} &nbsp;
             span.ui.mini.circular.label {{group.userWords.length}}
           .ui.horizontal.list
-            a.item(*ngFor='let uw of group.userWords', (click)='selectWord(uw)') {{uw.word}}
+            a.item(*ngFor='let uw of group.userWords',
+              (click)='showUserWord($event,uw)',
+              (contextmenu)='showUserWord($event,uw)') {{uw.word}}
 
     div.user-vocabulary(*ngIf='mode==="wordCards"')
       .ui.segment.small.form.filter-group
@@ -68,7 +74,7 @@
             span.label.field-name 熟悉度
             sui-checkbox([(ngModel)]="filter.familiarityAll") 全部
             sui-checkbox(*ngFor='let fam of familiarities', [(ngModel)]='filter["familiarity"+fam.value]',
-            [isDisabled]='filter.familiarityAll') {{fam.label}}
+              [isDisabled]='filter.familiarityAll') {{fam.label}}
           .grouped.fields
             span.label.field-name 加入日期
             sui-radio-button(name="filterAddOn", value="All", [(ngModel)]="filter.addOn") 全部
@@ -94,8 +100,10 @@
             i.right.arrow.icon
         .ui.clearing.hidden.divider
         .ui.cards
-          .link.card.word-card(*ngFor='let cw of cardWords', (click)='selectWord(cw.userWord)',
-          [ngClass]='{teal:entry&&entry.word===cw.userWord.word}')
+          .link.card.word-card(*ngFor='let cw of cardWords',
+            (click)='showUserWord($event,uw)',
+            (contextmenu)='showUserWord($event,uw)',
+            [ngClass]='{teal:entry&&entry.word===cw.userWord.word}')
             .content
               .header {{cw.userWord.word}}
               //.meta
@@ -111,8 +119,8 @@
         .field
           .grouped.fields.search
             sui-search([optionsLookup]="dictSearch", optionsField="word", searchDelay="400",
-            (resultSelected)="selectSearchResult($event)", (keyup)='onSearchKeyup($event)', [retainSelectedResult]="false",
-            placeholder='单词、短语...', #searchInput='')
+              (resultSelected)="selectSearchResult($event)", (keyup)='onSearchKeyup($event)', [retainSelectedResult]="false",
+              placeholder='单词、短语...', #searchInput='')
           //label.title 词典
           .grouped.fields
             sui-checkbox([(ngModel)]='phrase', [isDisabled]='phraseOnly', (click)='resetSearch()') 短语
@@ -173,3 +181,5 @@
 
     .ui.clearing.hidden.divider
     dict-entry(*ngIf='entry', [entry]='entry')
+
+ng-template(#dictSimple='')

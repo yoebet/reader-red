@@ -5,7 +5,7 @@ import * as Drop from 'tether-drop';
 import { WordCategoryService } from '../services/word-category.service';
 import { UserPreferenceService } from '../services/user-preference.service';
 import { WordCategory } from '../models/word-category';
-import { SimpleMeaningsComponent } from '../dict/simple-meanings.component';
+import { DictSimpleComponent } from '../dict/dict-simple.component';
 
 @Component({
   selector: 'base-vocabulary',
@@ -13,7 +13,7 @@ import { SimpleMeaningsComponent } from '../dict/simple-meanings.component';
   styleUrls: ['./base-vocabulary.component.css']
 })
 export class BaseVocabularyComponent implements OnInit {
-  @ViewChild('wordMeanings', { read: ViewContainerRef }) wordMeanings: ViewContainerRef;
+  @ViewChild('dictSimple', { read: ViewContainerRef }) dictSimple: ViewContainerRef;
 
   baseVocabulary: string;
   showSamples = false;
@@ -33,7 +33,7 @@ export class BaseVocabularyComponent implements OnInit {
 
   selected: WordCategory;
   changed = false;
-  wordMeaningsComponentRef: ComponentRef<SimpleMeaningsComponent>;
+  simpleDictComponentRef: ComponentRef<DictSimpleComponent>;
   wordDrops = new Map<string, Drop>();
 
 
@@ -105,17 +105,17 @@ export class BaseVocabularyComponent implements OnInit {
   }
 
 
-  onClickAWord(word, $event) {
+  clickAWord($event,word) {
     let drop = this.wordDrops.get(word);
     if (drop) {
       return;
     }
-    if (!this.wordMeaningsComponentRef) {
-      let factory: ComponentFactory<SimpleMeaningsComponent> = this.resolver.resolveComponentFactory(SimpleMeaningsComponent);
-      this.wordMeanings.clear();
-      this.wordMeaningsComponentRef = this.wordMeanings.createComponent(factory);
+    if (!this.simpleDictComponentRef) {
+      let factory: ComponentFactory<DictSimpleComponent> = this.resolver.resolveComponentFactory(DictSimpleComponent);
+      this.dictSimple.clear();
+      this.simpleDictComponentRef = this.dictSimple.createComponent(factory);
     }
-    let wmcr = this.wordMeaningsComponentRef;
+    let wmcr = this.simpleDictComponentRef;
 
     let content = function () {
       wmcr.instance.word = word;
