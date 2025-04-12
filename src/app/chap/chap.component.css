@@ -91,3 +91,8 @@
 .paragraph > .selected.para-content {
   border-color: lightskyblue;
 }
+
+.ui.statistic.selected.para-no .value {
+  /*color: rgba(9, 187, 7, 1);*/
+  color: blue;
+}

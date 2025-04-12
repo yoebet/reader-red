@@ -19,7 +19,7 @@ div(*ngIf='chap')
 
   .ui.list.items
     .item.paragraph(*ngFor='let para of chap.paras; trackBy: paraTracker; index as index')
-      .ui.left.floated.mini.statistic.para-no((click)='selectPara2(para)')
+      .ui.left.floated.mini.statistic.para-no((click)='selectPara2(para)', [ngClass]='{"selected": para===selectedPara}')
         .value {{index+1}}
       para-content.para-content(
       [para]='para',
@@ -32,6 +32,7 @@ div(*ngIf='chap')
       [annotatedWordsHover]='annotatedWordsHover',
       [annotationSet]='annotationSet',
       [ngClass]='{"selected": para===selectedPara, "left-right": leftRight, "up-down": !leftRight}',
+      (mouseover)='selectPara(para)',
       (click)='selectPara(para)',
       (dictRequest)="onDictRequest($event)")
 
