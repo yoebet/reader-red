@@ -39,6 +39,7 @@ import {UserWordComponent} from './vocabulary/user-word.component';
 import {WordTagsComponent} from './dict/word-tags.component';
 import {WordTextComponent} from './dict/word-text.component';
 import { DictComponent } from './dict/dict.component';
+import { DictPhoneticsComponent } from './dict/dict-phonetics.component';
 
 @NgModule({
   imports: [
@@ -57,6 +58,7 @@ import { DictComponent } from './dict/dict.component';
     WordAnnosComponent,
     DictComponent,
     DictEntryComponent,
+    DictPhoneticsComponent,
     CreatedDatePipe,
     CreatedDateStringPipe,
     WordFamiliarityPipe,

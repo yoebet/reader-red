@@ -10,6 +10,7 @@ import { BaseService } from './base.service';
 
 @Injectable()
 export class DictService extends BaseService<DictEntry> {
+  readonly pronsBase: string;
 
   private _entryHistory: DictEntry[] = [];
   private entryCache: Map<string, DictEntry> = new Map();
@@ -21,6 +22,8 @@ export class DictService extends BaseService<DictEntry> {
     super(http);
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/dict`;
+    // this.pronsBase = `${staticBase}/pron`;
+    this.pronsBase = `${apiBase}/dict/pron`;
   }
 
   clearCache() {
