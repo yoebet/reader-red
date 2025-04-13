@@ -28,6 +28,8 @@ import { WordAnnosComponent } from './word-annos.component';
 import { UserWord } from '../models/user-word';
 import { UserVocabularyService } from '../services/user-vocabulary.service';
 import { CombinedWordsMap } from '../en/combined-words-map';
+import { Book } from '../models/book';
+import { AnnotatorHelper } from '../anno/annotator-helper';
 
 @Component({
   selector: 'para-content',
@@ -110,41 +112,6 @@ export class ParaContentComponent implements OnInit, OnChanges {
     return els.map((el: Element) => el.textContent).join(' ');
   }
 
-  private removeTagIfDummy(el) {
-    let result = { changed: false, removed: false };
-    if (el.tagName !== Annotator.annotationTagName.toUpperCase()) {
-      return result;
-    }
-    if (el.className === '') {
-      el.removeAttribute('class');
-      result.changed = true;
-    } else if (el.attributes.length === 1 && el.hasAttributes('class')) {
-      let cns = el.className.split(' ')
-        .filter(n => !n.startsWith(UIConstants.dropClassPrefix)
-          && !n.startsWith(UIConstants.tetherClassPrefix)
-          && n !== UIConstants.highlightClass);
-      if (cns.length === 0) {
-        el.removeAttribute('class');
-        result.changed = true;
-      }
-    }
-    if (!el.hasAttributes()) {
-      //remove tag
-      let pp = el.parentNode;
-      if (!pp) {
-        return result;
-      }
-      while (el.firstChild) {
-        pp.insertBefore(el.firstChild, el);
-      }
-      pp.removeChild(el);
-      pp.normalize();
-      result.changed = true;
-      result.removed = true;
-    }
-    return result;
-  }
-
   lookupWordsMeaning() {
     this.annotator.switchAnnotation(this.annotationSet.wordMeaningAnnotation);
     let ar: AnnotateResult = this.annotator.annotate();
@@ -167,7 +134,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
     this.dictService.getEntry(oriForWord, { base: true, stem: true })
       .subscribe((entry: DictEntry) => {
         if (entry == null) {
-          this.removeTagIfDummy(element);
+          AnnotatorHelper.removeDropTagIfDummy(element);
           return;
         }
         let dr = new DictRequest();
@@ -185,7 +152,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
           }
         }
         dr.onClose = () => {
-          this.removeTagIfDummy(element);
+          AnnotatorHelper.removeDropTagIfDummy(element);
         };
         if (oriForWord !== word) {
           dr.relatedWords = [word];
@@ -219,7 +186,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
     if (lookupDict) {
       if (!this.annotator) {
         let contentEl = this.contentText.element.nativeElement;
-        this.annotator = new Annotator(contentEl);
+        this.annotator = new Annotator(contentEl, Book.LangCodeEn);
       }
       $event.stopPropagation();
       $event.preventDefault();

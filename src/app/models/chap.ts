@@ -7,9 +7,29 @@ export class Chap extends Model {
   zhName = '';
   bookId: string;
   no: number;
+
+  status: string;
+
+  isFree: boolean;
+  price: number; // cents
+  priceLabel: string;
+
+  contentPack: ChapContentPack;
+
   paras: Para[];
 
   book: Book;
 
   isMyChap = false;
+
+  paraCommentsCountLoaded = false;
+}
+
+export class ChapContentPack {
+  bookId: string;
+  // file: string;
+  srcFile: string;
+  // hash: string;
+  // size: number;
+  // builtAt: Date;
 }

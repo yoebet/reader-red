@@ -17,15 +17,15 @@ import { Para } from '../models/para';
 import { DictService } from '../services/dict.service';
 import { UserWordService } from '../services/user-word.service';
 import { ParaService } from '../services/para.service';
-import { AnnotationSet } from '../anno/annotation-set';
 import { AnnotationsService } from '../services/annotations.service';
+import { PopupDictSupportComponent } from './popup-dict-support.component';
 
 @Component({
   selector: 'dict-entry',
   templateUrl: './dict-entry.component.html',
   styleUrls: ['./dict-entry.component.css']
 })
-export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
+export class DictEntryComponent extends PopupDictSupportComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() entry: DictEntry;
   @Input() initialSelectedItemId: number;
   @Input() relatedWords: string[];
@@ -51,27 +51,19 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
   textLookupDict = false;
   selectedPara: Para;
 
-  // TODO:
-  annotationSet = new AnnotationSet([]);
-
-
   constructor(private cdr: ChangeDetectorRef,
               private dictService: DictService,
               private vocaService: UserWordService,
               private paraService: ParaService,
-              private annotationsService: AnnotationsService,) {
+              protected annotationsService: AnnotationsService) {
+    super(annotationsService);
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.initialWord = this.entry.word;
     this.selectedItemId = this.initialSelectedItemId;
     this.loadParas();
-    this.annotationsService.getDefaultAnnotationSet()
-      .subscribe(annoSet => {
-        if (annoSet) {
-          this.annotationSet = annoSet;
-        }
-      });
   }
 
   ngAfterViewChecked() {

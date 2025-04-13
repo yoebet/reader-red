@@ -1,4 +1,4 @@
-import { Model } from './model';
+import {Model} from './model';
 
 import * as moment from 'moment';
 
@@ -15,14 +15,13 @@ export class UserWord extends Model {
   markRemoved = false;
 
   static Familiarities = [
-    { value: 1, label: '很陌生' },
-    { value: 2, label: '熟悉中' },
-    { value: 3, label: '已掌握' }
+    {value: 1, label: '很陌生'},
+    {value: 2, label: '熟悉中'},
+    {value: 3, label: '已掌握'}
   ];
 
   static FamiliarityLowest = 1;
   static FamiliarityHighest = 3;
-
 
   static ensureCreatedDate(userWord) {
     if (userWord.createdMoment) {
@@ -33,10 +32,10 @@ export class UserWord extends Model {
     let date = userWord.createdMoment;
     let dayOfWeek = date.day();
     let weekOfYear = date.week();
-    let dayOfMonth = date.date();//1-31
-    let month = date.month();//0-11
+    let dayOfMonth = date.date(); // 1-31
+    let month = date.month(); // 0-11
     let year = date.year();
     let dateString = `${year}-${month + 1}-${dayOfMonth}`;
-    userWord.createdDateParts = { year, month, dayOfMonth, weekOfYear, dayOfWeek, dateString };
+    userWord.createdDateParts = {year, month, dayOfMonth, weekOfYear, dayOfWeek, dateString};
   }
 }

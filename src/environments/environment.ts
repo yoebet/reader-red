@@ -5,5 +5,9 @@
 
 export const environment = {
   production: false,
-  apiBase: 'http://localhost:3000/api-b'
+  apiBase: 'http://localhost:3000/api-b',
+  staticBase: 'http://localhost:3000',
+  httpHeaders: {
+    'X-XS': 'grMmqX5wDJsQKDs2oF7KxK'
+  }
 };

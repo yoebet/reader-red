@@ -67,3 +67,12 @@
 
         ng-template([ngIf]='wordSource.paras.length===0')
           | No More.
+
+  #dictPopup.ui.basic.popup
+    dict-entry(*ngIf='dictRequest',
+      [entry]='dictRequest.dictEntry',
+      [initialSelectedItemId]='dictRequest.meaningItemId',
+      [relatedWords]='dictRequest.relatedWords',
+      [context]='dictRequest.context',
+      (viewReady)='onDictPopupReady()')
+

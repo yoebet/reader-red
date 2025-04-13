@@ -1,78 +1,34 @@
+import {UIConstants} from '../config';
 import {Annotation} from '../models/annotation';
+import {Book} from '../models/book';
 import {AnnotateResult} from './annotate-result';
+import {AnnotatorHelper} from './annotator-helper';
+import {ZhPhrases} from './zh-phrases';
+
 
 export class Annotator {
-  static annotationTagName = 'y-o';
-
-  charPattern = /[-a-zA-Z']/;
-  wordAtCursorIfNoSelection = true;
-  isExtendWholeWord = true;
   // element or selector,
   container: Element | string = null;
+  lang: string;
+  zhPhrases: ZhPhrases;
+
+  wordAtCursorIfNoSelection = true;
+  isExtendWholeWord = true;
+  charPattern = /[a-zA-Z­']/; // ­ soft hyphen
 
   current: Annotation;
 
-  constructor(container) {
+  constructor(container, lang) {
     this.container = container;
+    this.lang = lang;
+    if (Book.isChineseText(this.lang)) {
+      this.charPattern = /[\u4E00-\u9FA5]/;
+    }
   }
 
-  switchAnnotation(annotation: Annotation) {
+  switchAnnotation(annotation: Annotation): Annotator {
     this.current = annotation;
-  }
-
-  private extendWholeWord(text, wordStart, wordEnd) {
-    let trimLeft = false, trimRight = false;
-    let cp = this.charPattern;
-    if (wordStart < wordEnd) {
-      if (!cp.test(text.charAt(wordStart))) {
-        wordStart++;
-        while (wordStart < text.length) {
-          let c = text.charAt(wordStart);
-          if (!cp.test(c)) {
-            wordStart++;
-          } else {
-            break;
-          }
-        }
-        trimLeft = true;
-      }
-      if (!cp.test(text.charAt(wordEnd - 1))) {
-        wordEnd--;
-        while (wordEnd > 0) {
-          let c = text.charAt(wordEnd - 1);
-          if (!cp.test(c)) {
-            wordEnd--;
-          } else {
-            break;
-          }
-        }
-        trimRight = true;
-      }
-    }
-    if (!trimLeft) {
-      while (wordStart > 0) {
-        let c = text.charAt(wordStart - 1);
-        if (cp.test(c)) {
-          wordStart--;
-        } else {
-          break;
-        }
-      }
-    }
-    if (!trimRight) {
-      while (wordEnd < text.length) {
-        let c = text.charAt(wordEnd);
-        if (cp.test(c)) {
-          wordEnd++;
-        } else {
-          break;
-        }
-      }
-    }
-    if (wordStart > wordEnd) {
-      wordStart = wordEnd;
-    }
-    return [wordStart, wordEnd];
+    return this;
   }
 
   private createWrappingTag() {
@@ -81,43 +37,13 @@ export class Annotator {
     if (ann.tagName) {
       wrapping = document.createElement(ann.tagName);
     } else {
-      wrapping = document.createElement(Annotator.annotationTagName);
+      wrapping = document.createElement(UIConstants.annotationTagName);
       if (ann.cssClass) {
         wrapping.className = ann.cssClass;
       }
     }
     this.setDataAttribute(wrapping);
     return wrapping;
-  }
-
-  private checkIsContainer(element: Element): boolean {
-    if (!this.container) {
-      return false;
-    }
-    if (typeof this.container === 'string') {
-      if (element.matches(this.container as string)) {
-        return true;
-      }
-    } else if (this.container === element) {
-      return true;
-    }
-    return false;
-  }
-
-  private lookupElement(element, selector) {
-    while (element) {
-      if (element.nodeType !== Node.ELEMENT_NODE) {
-        return null;
-      }
-      if (this.checkIsContainer(element)) {
-        return null;
-      }
-      if (element.matches(selector)) {
-        return element;
-      }
-      element = element.parentNode;
-    }
-    return null;
   }
 
   private setDataAttribute(element) {
@@ -152,24 +78,6 @@ export class Annotator {
     return selector;
   }
 
-  private removeTagIfDummy(element) {
-    if (element.tagName !== Annotator.annotationTagName.toUpperCase()) {
-      return false;
-    }
-    if (element.classList.length === 0) {
-      element.removeAttribute('class');
-    }
-    if (!element.hasAttributes()) {
-      //remove tag
-      let pp = element.parentNode;
-      while (element.firstChild) {
-        pp.insertBefore(element.firstChild, element);
-      }
-      pp.removeChild(element);
-      pp.normalize();
-    }
-  }
-
   private resetAnnotation(element, type, match?) {
     //type: add, remove, toggle
     if (element.nodeType !== Node.ELEMENT_NODE) {
@@ -183,15 +91,21 @@ export class Annotator {
     if (match) {
       if (type === 'add') {
         this.setDataAttribute(element);
+        if (element.tagName !== ann.tagName && ann.cssClass) {
+          element.classList.add(ann.cssClass);
+        }
         return;
       }
       // remove,toggle
       if (ann.dataName) {
         delete element.dataset[ann.dataName];
       }
-      element.classList.remove(ann.cssClass);
+      let cc = ann.cssClass || ann.group.cssClass;
+      if (cc) {
+        element.classList.remove(cc);
+      }
       if (element.tagName === ann.tagName && element.hasAttributes()) {
-        let wrapping = document.createElement(Annotator.annotationTagName);
+        let wrapping = document.createElement(UIConstants.annotationTagName);
         wrapping.className = element.className;
 
         //for (let item of element.childNodes)
@@ -202,7 +116,7 @@ export class Annotator {
         pp.replaceChild(wrapping, element);
         return;
       }
-      this.removeTagIfDummy(element);
+      AnnotatorHelper.removeTagIfDummy(element);
     } else {
       if (type === 'add' || type === 'toggle') {
         this.setDataAttribute(element);
@@ -215,8 +129,11 @@ export class Annotator {
       if (ann.dataName) {
         delete element.dataset[ann.dataName];
       }
-      element.classList.remove(ann.cssClass);
-      this.removeTagIfDummy(element);
+      let cc = ann.cssClass || ann.group.cssClass;
+      if (cc) {
+        element.classList.remove(cc);
+      }
+      AnnotatorHelper.removeTagIfDummy(element);
     }
   }
 
@@ -230,7 +147,7 @@ export class Annotator {
 
   private lookupAndProcess(element) {
     let selector = this.annotationSelector();
-    let annotatedNode = this.lookupElement(element, selector);
+    let annotatedNode = AnnotatorHelper.lookupElement(element, selector, this.container);
     if (!annotatedNode) {
       return null;
     }
@@ -247,6 +164,7 @@ export class Annotator {
     }
   }
 
+
   private doInOneTextNode(textNode: Text, offset1, offset2): AnnotateResult {
 
     let nodeText = textNode.textContent;
@@ -261,7 +179,18 @@ export class Annotator {
 
     let [wordStart, wordEnd] = [offset1, offset2];
     if (this.isExtendWholeWord) {
-      [wordStart, wordEnd] = this.extendWholeWord(nodeText, wordStart, wordEnd);
+      if (this.lang === Book.LangCodeEn) {
+        [wordStart, wordEnd] = AnnotatorHelper.extendWholeWord(
+          nodeText, this.charPattern, wordStart, wordEnd);
+      } else if (Book.isChineseText(this.lang)) {
+        if (wordStart === wordEnd) {
+          [wordStart, wordEnd] = AnnotatorHelper.extendZhPhrases(
+            nodeText, this.charPattern, wordStart, wordEnd, this.zhPhrases);
+        }
+        if (wordStart === wordEnd) {
+          wordEnd += 1;
+        }
+      }
     }
     if (wordStart === wordEnd) {
       return null;
@@ -345,8 +274,13 @@ export class Annotator {
     let text1 = textNode1.textContent, text2 = textNode2.textContent;
 
     if (this.isExtendWholeWord) {
-      [wordStart1,] = this.extendWholeWord(text1, wordStart1, text1.length);
-      [, wordEnd2] = this.extendWholeWord(text2, 0, wordEnd2);
+      if (this.lang === Book.LangCodeEn) {
+        [wordStart1,] = AnnotatorHelper.extendWholeWord(text1, this.charPattern, wordStart1, text1.length);
+        [, wordEnd2] = AnnotatorHelper.extendWholeWord(text2, this.charPattern, 0, wordEnd2);
+      } else if (Book.isChineseText(this.lang)) {
+        [wordStart1,] = AnnotatorHelper.extendZhPhrases(text1, this.charPattern, wordStart1, text1.length, this.zhPhrases);
+        [, wordEnd2] = AnnotatorHelper.extendZhPhrases(text2, this.charPattern, 0, wordEnd2, this.zhPhrases);
+      }
     }
 
     let beginingNode = textNode1;
@@ -409,7 +343,7 @@ export class Annotator {
       return null;
     }
 
-    if (!this.inContainer(node1, node2)) {
+    if (!AnnotatorHelper.inContainer(node1, node2, this.container)) {
       return null;
     }
 
@@ -424,55 +358,6 @@ export class Annotator {
     // textNode1.parentNode === textNode2.parentNode
     let parent = textNode1.parentNode as Element;
     return this.doInSameParent(parent, textNode1, offset1, textNode2, offset2);
-  }
-
-  private inContainer(node1, node2): boolean {
-
-    if (!this.container) {
-      return true;
-    }
-
-    if (typeof this.container === 'string') {
-      let lookupContainer = (node) => {
-        do {
-          if (node instanceof Element) {
-            let el = node as Element;
-            if (el.matches(this.container as string)) {
-              return el;
-            }
-          }
-          node = node.parentNode;
-        } while (node);
-        return null;
-      };
-
-      let container1 = lookupContainer(node1);
-      if (!container1) {
-        return false;
-      }
-      if (node1 !== node2) {
-        let container2 = lookupContainer(node2);
-        if (!container2) {
-          return false;
-        }
-        if (container1 !== container2) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    if (this.container instanceof Element) {
-      let ct = this.container as Element;
-      if (!ct.contains(node1)) {
-        return false;
-      }
-      if (node1 !== node2 && !ct.contains(node2)) {
-        return false;
-      }
-    }
-
-    return true;
   }
 
 }

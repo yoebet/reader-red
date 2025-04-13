@@ -1,29 +1,23 @@
 import * as moment from 'moment';
 
 export class Model {
+  // tslint:disable-next-line:variable-name
   _id: string;
   createdAt?: string;
   updatedAt?: string;
+  version: number;
   no?: number;
 
 
-  static sequenceNo(_id: string, bytes: number = 3): number {
-    if (!_id) {
-      return parseInt('' + (1 << bytes * 8) * Math.random());
-    }
-    let hexChars = bytes * 2;
-    return parseInt(_id.substr(_id.length - hexChars, hexChars), 16);
-  }
-
-  static timestampOfObjectId(_id: string): Date {
-    if (!_id) {
+  static timestampOfObjectId(id: string): Date {
+    if (!id) {
       return null;
     }
-    let seconds = parseInt(_id.substr(0, 8), 16);
+    let seconds = parseInt(id.substr(0, 8), 16);
     return new Date(seconds * 1000);
   }
 
-  static createdTime(model: Model) {
+  static createdTime(model: Model): Date {
     if (!model) {
       return null;
     }
@@ -34,11 +28,11 @@ export class Model {
   }
 
   static createdTimeString(model: Model, precise: string = 'date'): string {
-    let time = Model.createdTime(model);
-    if (!time) {
+    let ct = Model.createdTime(model);
+    if (!ct) {
       return '';
     }
-    return Model.timeString(time, precise);
+    return Model.timeString(ct, precise);
   }
 
   static updatedTimeString(model: Model, precise: string = 'date'): string {

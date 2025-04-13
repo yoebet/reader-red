@@ -1,5 +1,5 @@
 import {Model} from './model';
-import {AnnotationGroup} from "./annotation-group";
+import {AnnotationGroup} from './annotation-group';
 
 export class Annotation extends Model {
 
@@ -10,7 +10,8 @@ export class Annotation extends Model {
   group: AnnotationGroup;
 
   get cssClass() {
-    return this.group.cssClass;
+    // return this.group.cssClass;
+    return null;
   }
 
   get tagName() {

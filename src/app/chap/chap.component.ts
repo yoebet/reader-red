@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
-import * as Tether from 'tether';
 
 import { UIConstants } from '../config';
 import { Book } from '../models/book';
@@ -12,14 +11,14 @@ import { AnnotationSet } from '../anno/annotation-set';
 import { BookService } from '../services/book.service';
 import { ChapService } from '../services/chap.service';
 import { AnnotationsService } from '../services/annotations.service';
-import { DictRequest } from './dict-request';
+import { PopupDictSupportComponent } from '../dict/popup-dict-support.component';
 
 @Component({
   selector: 'chap-detail',
   templateUrl: './chap.component.html',
   styleUrls: ['./chap.component.css']
 })
-export class ChapComponent implements OnInit {
+export class ChapComponent extends PopupDictSupportComponent implements OnInit {
   book: Book;
   chap: Chap;
   selectedPara: Para;
@@ -30,20 +29,17 @@ export class ChapComponent implements OnInit {
   markNewWords = true;
   lookupDict = false;
 
-  annotationSet = new AnnotationSet([]);
-
-  dictRequest: DictRequest = null;
-  dictTether = null;
-
 
   constructor(private bookService: BookService,
               private chapService: ChapService,
-              private annoService: AnnotationsService,
               private route: ActivatedRoute,
-              private location: Location) {
+              private location: Location,
+              protected annoService: AnnotationsService) {
+    super(annoService);
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
         this.chapService.getDetail(params.get('id')))
@@ -66,24 +62,6 @@ export class ChapComponent implements OnInit {
           this.loadAnnotations();
         });
     });
-
-    document.addEventListener('click', (event) => {
-      if (this.dictRequest && this.dictTether) {
-        let dictPopup = document.getElementById('dictPopup');
-        if (event.target) {
-          let target = event.target as Element;
-          if (target.contains(this.dictRequest.wordElement)) {
-            if (target.closest(`${UIConstants.sentenceTagName}, .para-text, .paragraph`)) {
-              return;
-            }
-          }
-          if (dictPopup.contains(target)) {
-            return;
-          }
-        }
-        this.closeDictPopup();
-      }
-    }, true);
   }
 
   private loadAnnotations() {
@@ -130,63 +108,6 @@ export class ChapComponent implements OnInit {
 
   onAnnotatedWordsHoverChange() {
     this.toggleBodyClass(UIConstants.annoDisabledBodyClass, this.annotatedWordsHover);
-  }
-
-  private removeTetherClass(el) {
-    el.className = el.className.split(' ')
-      .filter(n => !n.startsWith(UIConstants.tetherClassPrefix)).join(' ');
-    if (el.className === '') {
-      el.removeAttribute('class');
-    }
-  }
-
-  private closeDictPopup() {
-    if (this.dictRequest) {
-      this.dictRequest.onClose();
-      if (this.dictTether) {
-        this.dictTether.destroy();
-        this.dictTether = null;
-      }
-      let el = this.dictRequest.wordElement;
-      this.removeTetherClass(el);
-      this.dictRequest = null;
-    }
-  }
-
-  onDictRequest(dictRequest) {
-    if (this.dictRequest) {
-      if (this.dictRequest.wordElement === dictRequest.wordElement) {
-        this.closeDictPopup();
-        return;
-      } else {
-        this.closeDictPopup();
-      }
-    }
-    this.dictRequest = dictRequest;
-  }
-
-  onDictPopupReady() {
-    if (!this.dictRequest) {
-      return;
-    }
-    if (this.dictTether) {
-      this.dictTether.position();
-    } else {
-      let dictPopup = document.getElementById('dictPopup');
-      this.dictTether = new Tether({
-        element: dictPopup,
-        target: this.dictRequest.wordElement,
-        attachment: 'top center',
-        targetAttachment: 'bottom center',
-        constraints: [
-          {
-            to: 'window',
-            attachment: 'together'
-          }
-        ],
-        classPrefix: UIConstants.tetherClassPrefixNoHyphen
-      });
-    }
   }
 
   paraTracker(index, para) {

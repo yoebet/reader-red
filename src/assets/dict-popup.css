@@ -24,6 +24,8 @@
 #dictPopup {
   min-width: 300px;
   max-width: 550px;
+  max-height: 80vh;
+  overflow-y: scroll;
 }
 
 #dictPopup .word-source-text {
