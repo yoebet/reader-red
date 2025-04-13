@@ -26,7 +26,6 @@
     .ui.right.floated.small.compact.menu
       a.item((click)='mode="userWords"', [ngClass]='{active:mode==="userWords"}') 我的词表
       a.item((click)='mode="wordCards"', [ngClass]='{active:mode==="wordCards"}') 词汇卡片
-      a.item((click)='mode="search"', [ngClass]='{active:mode==="search"}') 搜索
       a.item((click)='clickStatistic()', [ngClass]='{active:mode==="statistic"}') 统计
     .ui.clearing.hidden.divider
 
@@ -115,29 +114,6 @@
 
       .ui.clearing.hidden.divider
 
-    div.searching(*ngIf='mode==="search"')
-      .ui.segment.small.form.filter-group
-        .field
-          .grouped.fields.search
-            sui-search([optionsLookup]="dictSearch", optionsField="word", searchDelay="400",
-              (resultSelected)="selectSearchResult($event)", (keyup)='onSearchKeyup($event)', [retainSelectedResult]="false",
-              placeholder='单词、短语...', #searchInput='')
-          //label.title 词典
-          .grouped.fields
-            sui-checkbox([(ngModel)]='phrase', [isDisabled]='phraseOnly', (click)='resetSearch()') 短语
-            sui-checkbox([(ngModel)]='phraseOnly', (click)='resetSearch()') 仅短语
-          .grouped.fields
-            label.title 范围 &nbsp;
-            sui-radio-button(name="wordScope", value="All", [(ngModel)]="wordScope", [isDisabled]='phraseOnly', (click)='resetSearch()') 不限
-            sui-radio-button(name="wordScope", value="basic", [(ngModel)]="wordScope", [isDisabled]='phraseOnly', (click)='resetSearch()') 基础
-            sui-radio-button(name="wordScope", value="cet", [(ngModel)]="wordScope", [isDisabled]='phraseOnly', (click)='resetSearch()') CET
-            sui-radio-button(name="wordScope", value="ielts", [(ngModel)]="wordScope", [isDisabled]='phraseOnly', (click)='resetSearch()') 雅思
-            sui-radio-button(name="wordScope", value="gre", [(ngModel)]="wordScope", [isDisabled]='phraseOnly', (click)='resetSearch()') GRE
-        //.field
-          label.title 文本
-          .grouped.fields
-            //span.label.field-name 范围
-        //.clearing
     div.statistic(*ngIf='mode==="statistic"')
       ng-template([ngIf]='wordStatistic')
         h4.ui.dividing.header 我的词表：

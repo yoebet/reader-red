@@ -45,5 +45,6 @@
 }
 
 .current-uw {
-  border-bottom: red 2px double;
+  /*border-bottom: red 2px double;*/
+  text-decoration: underline wavy red 1px;
 }
