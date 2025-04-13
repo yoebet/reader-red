@@ -202,14 +202,23 @@ export class ParaContentComponent implements OnInit, OnChanges {
     if (!this.active) {
       return;
     }
-    $event.stopPropagation();
-    $event.preventDefault();
+    let lookupDict = false;
     let ctrlKey = $event.ctrlKey || $event.metaKey;
     if ((!ctrlKey && this.lookupDict) || (ctrlKey && !this.lookupDict)) {
+      lookupDict = true;
+    } else {
+      let selection = window.getSelection();
+      if (selection && selection.anchorOffset !== selection.focusOffset) {
+        lookupDict = true;
+      }
+    }
+    if (lookupDict) {
       if (!this.annotator) {
         let contentEl = this.contentText.element.nativeElement;
         this.annotator = new Annotator(contentEl);
       }
+      $event.stopPropagation();
+      $event.preventDefault();
       this.lookupWordsMeaning();
     }
   }

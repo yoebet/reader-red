@@ -23,8 +23,8 @@ export class ChapComponent implements OnInit {
   book: Book;
   chap: Chap;
   selectedPara: Para;
-  showTrans = false;
-  leftRight = false;
+  showTrans = true;
+  leftRight = true;
   highlightSentence = true;
   annotatedWordsHover = true;
   markNewWords = true;
