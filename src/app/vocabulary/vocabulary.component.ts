@@ -10,6 +10,7 @@ import { DictService } from '../services/dict.service';
 import { ChapService } from '../services/chap.service';
 import { UserVocabularyService } from '../services/user-vocabulary.service';
 import { DictSearchComponent } from '../dict/dict-search.component';
+import { BookService } from '../services/book.service';
 
 @Component({
   selector: 'vocabulary-main',
@@ -42,6 +43,7 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
 
   constructor(protected userWordService: UserWordService,
               protected dictService: DictService,
+              protected bookService: BookService,
               protected chapService: ChapService,
               protected userVocabularyService: UserVocabularyService,
               protected resolver: ComponentFactoryResolver) {
@@ -84,7 +86,7 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
     }
   }
 
-  private groupUserWords() {
+  private async groupUserWords() {
     this.groupedUserWords = [];
     let gb = this.grouping.groupBy;
     if (!gb) {
@@ -100,34 +102,42 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
         }
         let userWords = grouped[chapId];
         let group: any = { key: chapId, userWords };
-        if (chapId && chapId !== 'null') {
-          this.chapService.getOne(chapId)
-            .subscribe(chap => {
-              if (!chap) {
-                group.title = '-';
-                return;
+        if (chapId && chapId !== 'null' && chapId !== 'undefined') {
+          const chap = await this.chapService.getOne(chapId).toPromise();
+          if (!chap) {
+            group.title = '-';
+            return;
+          }
+          group.chap = chap;
+          group.bookId = chap.bookId;
+          let title = chap.name;
+
+          if (chap.bookId) {
+            const book = await this.bookService.getOne(chap.bookId).toPromise();
+            if (book) {
+              title = `(${book.code}) ${title}`;
+            }
+          }
+
+          let truncate = 96;
+          if (title.length > truncate) {
+            for (let th = truncate - 16; truncate > th; truncate--) {
+              if (title.charAt(truncate) === ' ') {
+                break;
               }
-              group.chap = chap;
-              group.bookId = chap.bookId;
-              let title = chap.name;
-              let truncate = 96;
-              if (title.length > truncate) {
-                for (let th = truncate - 16; truncate > th; truncate--) {
-                  if (title.charAt(truncate) === ' ') {
-                    break;
-                  }
-                }
-                title = title.substring(0, truncate) + '...';
-              }
-              group.title = title;
-            });
+            }
+            title = title.substring(0, truncate) + '...';
+          }
+          group.title = title;
         } else {
           group.title = '- Other';
         }
         this.groupedUserWords.push(group);
       }
       this.groupedUserWords = sortBy(this.groupedUserWords, ['bookId', 'chap.no']);
-    } else if (gb === 'AddOn') {
+      return;
+    }
+    if (gb === 'AddOn') {
       for (let userWord of this.filteredUserWords) {
         UserWord.ensureCreatedDate(userWord);
       }
@@ -149,9 +159,15 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
 
   refreshWordList() {
     this.userWordService.list().subscribe(allWords => {
+      for (let userWord of allWords) {
+        const chapId = userWord.chapId;
+        if (chapId === '' || chapId === null || chapId === undefined) {
+          userWord.chapId = null;
+        }
+      }
       this.userWords = allWords;
       this.filterUserWords();
-      this.groupUserWords();
+      this.groupUserWords().catch();
     });
   }
 

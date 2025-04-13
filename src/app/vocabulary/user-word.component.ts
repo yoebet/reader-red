@@ -1,11 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
-import {UserWordService} from '../services/user-word.service';
-import {UserWord} from '../models/user-word';
-import {OpResult} from '../models/op-result';
-import {UserVocabularyService} from '../services/user-vocabulary.service';
-import {WordCategoryService} from '../services/word-category.service';
-import {WordCategory} from '../models/word-category';
+import { UserWordService } from '../services/user-word.service';
+import { UserWord } from '../models/user-word';
+import { OpResult } from '../models/op-result';
+import { UserVocabularyService } from '../services/user-vocabulary.service';
+import { WordCategoryService } from '../services/word-category.service';
+import { WordCategory } from '../models/word-category';
 
 
 @Component({
@@ -90,6 +90,7 @@ export class UserWordComponent implements OnInit {
     this.userWordService.remove(this.userWord.word)
       .subscribe((opr: OpResult) => {
         if (opr.ok === 1) {
+          this.userWord.markRemoved = true;
           this.userWord = null;
         }
       });

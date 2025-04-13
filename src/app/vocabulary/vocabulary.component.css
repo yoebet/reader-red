@@ -48,3 +48,8 @@
   /*border-bottom: red 2px double;*/
   text-decoration: underline wavy red 1px;
 }
+
+.removed-uw {
+  /*border-bottom: red 2px double;*/
+  text-decoration: line-through solid red 1px;
+}

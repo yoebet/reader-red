@@ -62,7 +62,7 @@
             span.ui.mini.circular.label {{group.userWords.length}}
           .ui.horizontal.list
             a.item(*ngFor='let uw of group.userWords',
-              [ngClass]='{"current-uw":entry&&entry.word===uw.word}',
+              [ngClass]='{"current-uw":entry&&entry.word===uw.word, "removed-uw":uw.markRemoved}',
               (click)='showUserWord($event,uw)',
               (contextmenu)='showUserWord($event,uw)') {{uw.word}}
 

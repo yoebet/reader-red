@@ -66,7 +66,7 @@ export class BookService extends BaseService<Book> {
         return ObservableOf(book);
       }
     }
-    return super.getOne(id) as Observable<Book>;
+    return super.getOne(id);
   }
 
   list(): Observable<Book[]> {
