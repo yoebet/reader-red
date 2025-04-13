@@ -67,9 +67,9 @@ export class ParaContentComponent implements OnInit, OnChanges {
   combinedWordsMap: CombinedWordsMap;
 
 
-  constructor(private dictService: DictService,
-              private userVocabularyService: UserVocabularyService,
-              private resolver: ComponentFactoryResolver) {
+  constructor(protected dictService: DictService,
+              protected userVocabularyService: UserVocabularyService,
+              protected resolver: ComponentFactoryResolver) {
   }
 
   get active() {
@@ -177,9 +177,13 @@ export class ParaContentComponent implements OnInit, OnChanges {
         dr.relatedWords = null;
         let paraId = this.para._id;
         let chap = this.para.chap;
-        let chapId = chap._id;
-        let bookId = chap.book._id;
-        dr.context = { bookId, chapId, paraId };
+        if (chap) {
+          let chapId = chap._id;
+          if (chap.book) {
+            let bookId = chap.book._id;
+            dr.context = { bookId, chapId, paraId };
+          }
+        }
         dr.onClose = () => {
           this.removeTagIfDummy(element);
         };

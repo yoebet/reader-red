@@ -38,36 +38,32 @@
               | {{pm.pos}}
             .ui.ordered.selection.divided.list.meaning-items(content='')
               .ui.item(*ngFor='let item of pm.items', [ngClass]='{"selected-item":item.id===selectedItemId}')
-                span.meaning-item
-                  //span.ui.small.label(*ngFor='let tag of item.tags') {{tagLabelMap[tag]}}
-                  | {{item.exp}}
+                span.meaning-item {{item.exp}}
     .ui.bottom.attached.segment(suiTabContent='te')
       .ui.right.floated.header
         sui-checkbox([(ngModel)]='textShowTitle') 标题
-        sui-checkbox([(ngModel)]='textTrans') 中文
+        sui-checkbox([(ngModel)]='textShowTrans') 中文
       .clearing
-      ng-template([ngIf]='!userWordSource')
-        .ui.right.floated.mini.button((click)='loadMoreParas()') 加载文本...
+      ng-template([ngIf]='!wordSource')
+        .ui.right.floated.mini.button((click)='loadParas()') 加载文本...
         .ui.clearing.hidden.divider
+      .word-sources(*ngIf='wordSource&&wordSource.paras')
+        ng-template(ngFor='', let-para='', [ngForOf]="wordSource.paras", let-first="first", let-last="last")
+          word-text([entry]='entry',
+            [para]='para',
+            [showTrans]='textShowTrans',
+            [showTitle]='textShowTitle',
+            [activeAlways]='true',
+            [lookupDict]='textLookupDict',
+            [highlightSentence]='para===selectedPara && highlightSentence',
+            [markNewWords]='textMarkNewWords',
+            [annotatedWordsHover]='annotatedWordsHover',
+            [annotationSet]='annotationSet',
+            (mouseover)='selectPara(para)',
+            (click)='selectPara(para)',
+            (dictRequest)="onDictRequest($event)"
+            )
+          .ui.clearing.divider(*ngIf='!last')
 
-      .word-sources(*ngIf='userWordSource')
-        div(*ngIf='userWordSource.isCurrentPara')
-          | 来源：当前段落
-
-        ng-template([ngIf]='userWordSource.para')
-          word-text([entry]='entry', [para]='userWordSource.para', [textTrans]='textTrans', [showTitle]='textShowTitle')
-          .ui.clearing.divider
-
-        ng-template([ngIf]='!userWordSource.moreParas')
-          .ui.right.floated.mini.button((click)='loadMoreParas()') 更多文本...
-          .ui.clearing.hidden.divider
-
-        ng-template([ngIf]='userWordSource.moreParas')
-          ng-template(ngFor='', let-para='', [ngForOf]="userWordSource.moreParas", let-first="first", let-last="last")
-
-            word-text([entry]='entry', [para]='para', [textTrans]='textTrans', [showTitle]='textShowTitle')
-
-            .ui.clearing.divider(*ngIf='!last')
-
-          ng-template([ngIf]='userWordSource.moreParas.length===0')
-            | No More.
+        ng-template([ngIf]='wordSource.paras.length===0')
+          | No More.

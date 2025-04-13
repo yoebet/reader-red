@@ -1,45 +1,38 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {DomSanitizer} from '@angular/platform-browser';
+import { Component, ComponentFactoryResolver, Input } from '@angular/core';
 
-import {UIConstants} from '../config';
-import {DictEntry} from '../models/dict-entry';
-import {Para} from '../models/para';
-import {ParaService} from '../services/para.service';
-import {SafeHtml} from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { UIConstants } from '../config';
+import { DictEntry } from '../models/dict-entry';
+import { DictService } from '../services/dict.service';
+import { UserVocabularyService } from '../services/user-vocabulary.service';
+import { ParaContentComponent } from '../content/para-content.component';
 
 @Component({
   selector: 'word-text',
   templateUrl: './word-text.component.html',
   styleUrls: ['./word-text.component.css']
 })
-export class WordTextComponent implements OnChanges {
-
+export class WordTextComponent extends ParaContentComponent {
   @Input() entry: DictEntry;
-  @Input() para: Para;
-  @Input() textTrans: boolean;
   @Input() showTitle: boolean;
 
-  sanitizedContent: SafeHtml;
-  sanitizedTrans: SafeHtml;
-
-  constructor(private paraService: ParaService,
-              private sanitizer: DomSanitizer) {
+  constructor(protected dictService: DictService,
+              protected userVocabularyService: UserVocabularyService,
+              protected resolver: ComponentFactoryResolver) {
+    super(dictService, userVocabularyService, resolver);
   }
 
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.entry || changes.para) {
-      this.trySetup();
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges) {
+  //   if (changes.entry || changes.para) {
+  //     this.trySetup();
+  //   }
+  // }
 
   trySetup() {
     if (!this.para || !this.entry) {
       return;
     }
     let {content, trans} = this.highlightTheWord(this.para);
-    this.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(content);
-    this.sanitizedTrans = this.sanitizer.bypassSecurityTrustHtml(trans);
   }
 
 
@@ -211,8 +204,5 @@ export class WordTextComponent implements OnChanges {
     return {content, trans};
   }
 
-  clickContent($event){
-
-  }
 
 }

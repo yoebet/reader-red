@@ -1,15 +1,24 @@
 import {
-  Component, Input, Output, OnInit, EventEmitter, OnChanges,
-  SimpleChanges, ChangeDetectorRef, AfterViewChecked
+  AfterViewChecked,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
 } from '@angular/core';
-import {union, last} from 'lodash';
+import { last, union } from 'lodash';
 
-import {DictEntry, TagLabelMap} from '../models/dict-entry';
-import {UserWord} from '../models/user-word';
-import {Para} from '../models/para';
-import {DictService} from '../services/dict.service';
-import {UserWordService} from '../services/user-word.service';
-import {ParaService} from '../services/para.service';
+import { DictEntry } from '../models/dict-entry';
+import { UserWord } from '../models/user-word';
+import { Para } from '../models/para';
+import { DictService } from '../services/dict.service';
+import { UserWordService } from '../services/user-word.service';
+import { ParaService } from '../services/para.service';
+import { AnnotationSet } from '../anno/annotation-set';
+import { AnnotationsService } from '../services/annotations.service';
 
 @Component({
   selector: 'dict-entry',
@@ -26,31 +35,43 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
 
   refWords: string[];
   userWord: UserWord;
-  userWordSource: { isCurrentPara?: boolean, para?: Para, moreParas?: Para[] };
+  wordSource: { isCurrentPara?: boolean, selectedPara?: Para, paras?: Para[] };
 
   entryStack = [];
   initialWord: string;
   selectedItemId: number;
   selectMeaningItem = true;
-  textTrans = false;
+  textShowTrans = false;
   textShowTitle = false;
   textTabActive = false;
+
+  highlightSentence = true;
+  annotatedWordsHover = true;
+  textMarkNewWords = true;
+  textLookupDict = false;
+  selectedPara: Para;
+
+  // TODO:
+  annotationSet = new AnnotationSet([]);
 
 
   constructor(private cdr: ChangeDetectorRef,
               private dictService: DictService,
               private vocaService: UserWordService,
-              private paraService: ParaService) {
+              private paraService: ParaService,
+              private annotationsService: AnnotationsService,) {
   }
-
-
-  /*get tagLabelMap() {
-    return TagLabelMap;
-  }*/
 
   ngOnInit() {
     this.initialWord = this.entry.word;
     this.selectedItemId = this.initialSelectedItemId;
+    this.loadParas();
+    this.annotationsService.getDefaultAnnotationSet()
+      .subscribe(annoSet => {
+        if (annoSet) {
+          this.annotationSet = annoSet;
+        }
+      });
   }
 
   ngAfterViewChecked() {
@@ -94,21 +115,23 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
     });
   }
 
-  loadMoreParas() {
-    if (!this.userWordSource) {
-      this.userWordSource = {};
-    } else if (this.userWordSource.moreParas) {
+  loadParas() {
+    if (!this.wordSource) {
+      this.wordSource = {};
+    } else if (this.wordSource.paras) {
       return;
     }
-    this.paraService.textSearch(this.entry.word)
-      .subscribe(paras => {
-        let moreParas = paras;
-        let sourcePara = this.userWordSource.para;
-        if (sourcePara) {
-          moreParas = moreParas.filter(p => p._id !== sourcePara._id);
-        }
-        this.userWordSource.moreParas = moreParas;
-      });
+    this.paraService.textSearch(this.entry.word).subscribe(paras => {
+      if (this.wordSource) {
+        this.wordSource.paras = paras;
+      }
+    });
+  }
+
+  selectPara(para): void {
+    if (this.wordSource) {
+      this.wordSource.selectedPara = para;
+    }
   }
 
   textTabActivated() {
@@ -116,20 +139,21 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   setUserWordSource() {
-    if (this.userWordSource) {
+    if (this.wordSource) {
       return;
     }
-    if (!this.userWord || !this.userWord.paraId) {
-      return;
-    }
-    if (this.context && this.context.paraId === this.userWord.paraId) {
-      this.userWordSource = {isCurrentPara: true};
-      return;
-    }
-    this.paraService.loadPara(this.userWord.paraId)
-      .subscribe((para: Para) => {
-        this.userWordSource = {para};
-      });
+    // if (!this.userWord || !this.userWord.paraId) {
+    //   return;
+    // }
+    // if (this.context && this.context.paraId === this.userWord.paraId) {
+    //   this.wordSource = { isCurrentPara: true };
+    //   return;
+    // }
+    // this.paraService.loadPara(this.userWord.paraId)
+    //   .subscribe((para: Para) => {
+    //     this.wordSource = { para };
+    //   });
+    this.loadParas();
   }
 
   private onEntryChanged() {
@@ -151,7 +175,7 @@ export class DictEntryComponent implements OnInit, OnChanges, AfterViewChecked {
       this.selectedItemId = null;
     }
     this.userWord = null;
-    this.userWordSource = null;
+    this.wordSource = null;
     this.vocaService.getOne(entry.word)
       .subscribe(userWord => {
         this.userWord = userWord;

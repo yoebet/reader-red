@@ -30,7 +30,7 @@ export class ChapComponent implements OnInit {
   markNewWords = true;
   lookupDict = false;
 
-  annotationSet: AnnotationSet;
+  annotationSet = new AnnotationSet([]);
 
   dictRequest: DictRequest = null;
   dictTether = null;

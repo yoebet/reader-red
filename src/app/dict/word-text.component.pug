@@ -1,11 +1,17 @@
-.word-source(*ngIf='para')
+.word-source
   .text-title([suiCollapse]='!showTitle')
     .book-title(*ngIf='para.book') ({{para.book.code}}) {{para.book.name}}
     ng-template([ngIf]='para.chap')
       .chap-title.pre-wrap {{para.chap.name}}
-      .chap-title-zh.pre-wrap([suiCollapse]='!textTrans') {{para.chap.zhName}}
+      .chap-title-zh.pre-wrap([suiCollapse]='!showTrans') {{para.chap.zhName}}
   .word-source-text
-    .content-text([innerHTML]='sanitizedContent', (click)='clickContent($event)')
-    div([suiCollapse]='!textTrans')
+    .para-text.content-text((mouseup)='onMouseup($event)', spellcheck='false', #contentText='')
+    div([suiCollapse]='!showTrans')
       .ui.small.clearing.hidden.divider
-      .trans-text([innerHTML]='sanitizedTrans')
+      .para-text.trans-text([hidden]='!showTrans', spellcheck='false', #paraTrans='')
+    ng-template(#wordAnnos='')
+
+    //.content-text([innerHTML]='sanitizedContent')
+    //div([suiCollapse]='!showTrans')
+    //  .ui.small.clearing.hidden.divider
+    //  .trans-text([innerHTML]='sanitizedTrans')
