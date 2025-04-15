@@ -62,9 +62,8 @@ export class Book extends Model {
 
   chapsComplete: boolean;
 
-  isFree: boolean;
-  price: number; // cents
-  priceLabel: string;
+  // price: number; // cents
+  // priceLabel: string;
 
   slogan: string;
   introduction: string;
