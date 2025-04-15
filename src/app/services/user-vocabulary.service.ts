@@ -12,6 +12,8 @@ import { WordCategory } from '../models/word-category';
 import { UserWord } from '../models/user-word';
 import { CombinedWordsMap } from '../en/combined-words-map';
 import { DictService } from './dict.service';
+import { SessionService } from './session.service';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class UserVocabularyService {
@@ -26,7 +28,9 @@ export class UserVocabularyService {
   constructor(private preferenceService: UserPreferenceService,
               private userWordService: UserWordService,
               private wordCategoryService: WordCategoryService,
-              private dictService: DictService) {
+              private dictService: DictService,
+              protected sessionService: SessionService,
+              protected modalService: SuiModalService) {
 
     preferenceService.onBaseVocabularyChanged
       .subscribe(code => {

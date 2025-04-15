@@ -40,6 +40,9 @@ import {WordTextComponent} from './dict/word-text.component';
 import { DictComponent } from './dict/dict.component';
 import { DictPhoneticsComponent } from './dict/dict-phonetics.component';
 import { DictSimpleComponent } from './dict/dict-simple.component';
+import { LoginPopupComponent } from './account/login-popup.component';
+import { LoginComponent } from './account/login.component';
+import { SessionService } from './services/session.service';
 
 @NgModule({
   imports: [
@@ -51,6 +54,8 @@ import { DictSimpleComponent } from './dict/dict-simple.component';
   ],
   declarations: [
     AppComponent,
+    LoginComponent,
+    LoginPopupComponent,
     BookListComponent,
     BookComponent,
     ChapComponent,
@@ -82,9 +87,11 @@ import { DictSimpleComponent } from './dict/dict-simple.component';
     WordCategoryService,
     UserVocabularyService,
     UserPreferenceService,
-    AnnotationsService
+    AnnotationsService,
+    SessionService
   ],
   entryComponents: [
+    LoginPopupComponent,
     WordAnnosComponent,
     DictSimpleComponent
   ],

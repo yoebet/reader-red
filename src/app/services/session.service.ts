@@ -20,22 +20,10 @@ export class SessionService {
 
   readonly sessionEventEmitter = new EventEmitter<string>();
 
-  private digestMap = new Map<string, string>();
-
   constructor(private http: HttpClient) {
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/login`;
   }
-
-  // private getMd5(str): string {
-  //   let hash = this.digestMap.get(str);
-  //   if (hash) {
-  //     return hash;
-  //   }
-  //   hash = md5(str);
-  //   this.digestMap.set(str, hash);
-  //   return hash;
-  // }
 
   getHttpOptions() {
     let headers = new HttpHeaders(DefaultHttpHeaders)

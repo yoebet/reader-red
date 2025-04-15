@@ -1,0 +1,11 @@
+.form.login {
+  max-width: 300px;
+}
+
+.header.login-header {
+  margin-bottom: 2em;
+}
+
+.list.login-methods {
+  font-weight: normal;
+}

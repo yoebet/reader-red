@@ -9,6 +9,8 @@ import { Book } from '../models/book';
 import { BaseService } from './base.service';
 import { ChapService } from './chap.service';
 import { UserBookService } from './user-book.service';
+import { SessionService } from './session.service';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class BookService extends BaseService<Book> {
@@ -16,8 +18,12 @@ export class BookService extends BaseService<Book> {
   allBooks: Book[];
   booksDetailMap = new Map<string, Book>();
 
-  constructor(protected http: HttpClient, private chapService: ChapService, private userBookService: UserBookService) {
-    super(http);
+  constructor(protected http: HttpClient,
+              private chapService: ChapService,
+              private userBookService: UserBookService,
+              protected sessionService: SessionService,
+              protected modalService: SuiModalService) {
+    super(http, sessionService, modalService);
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/books`;
   }

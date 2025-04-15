@@ -8,6 +8,8 @@ import { share } from 'rxjs/operators';
 import {Book} from '../models/book';
 import {Chap} from '../models/chap';
 import {BaseService} from './base.service';
+import { SessionService } from './session.service';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class ChapService extends BaseService<Chap> {
@@ -16,8 +18,10 @@ export class ChapService extends BaseService<Chap> {
 
   protected bookBaseUrl: string;
 
-  constructor(protected http: HttpClient) {
-    super(http);
+  constructor(protected http: HttpClient,
+              protected sessionService: SessionService,
+              protected modalService: SuiModalService) {
+    super(http, sessionService, modalService);
     let apiBase = environment.apiBase || '';
     this.bookBaseUrl = `${apiBase}/books`;
     this.baseUrl = `${apiBase}/chaps`;

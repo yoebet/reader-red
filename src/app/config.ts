@@ -91,7 +91,7 @@ const HeaderNames = {
 };
 
 const HeaderValues = {
-  Client: 'R'/*,
+  Client: 'B'/*,
   Client_Agent: 'M'*/
 };
 
@@ -105,7 +105,7 @@ const LocalStorageKey = {
   readerLeftRight: 'RLR'
 };
 
-const DefaultHttpHeaders = environment.httpHeaders || {};
+const DefaultHttpHeaders = Object.assign({'X-CL': 'E'}, environment.httpHeaders);
 
 export {
   UIConstants,

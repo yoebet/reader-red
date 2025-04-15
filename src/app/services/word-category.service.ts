@@ -7,6 +7,8 @@ import { map, share } from 'rxjs/operators';
 
 import { BaseService } from './base.service';
 import { WordCategory } from '../models/word-category';
+import { SessionService } from './session.service';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class WordCategoryService extends BaseService<WordCategory> {
@@ -20,8 +22,10 @@ export class WordCategoryService extends BaseService<WordCategory> {
   private cachedCategories = ['junior1', 'junior2', 'basic', 'cet4', 'cet6', 'cet', 'gre', 'ielts'];
 
 
-  constructor(protected http: HttpClient) {
-    super(http);
+  constructor(protected http: HttpClient,
+              protected sessionService: SessionService,
+              protected modalService: SuiModalService) {
+    super(http, sessionService, modalService);
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/word_categories`;
   }

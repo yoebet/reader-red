@@ -10,14 +10,18 @@ import { Para } from '../models/para';
 import { BaseService } from './base.service';
 import { ChapService } from './chap.service';
 import { BookService } from './book.service';
+import { SessionService } from './session.service';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class ParaService extends BaseService<Para> {
 
   constructor(protected http: HttpClient,
               private bookService: BookService,
-              private chapService: ChapService) {
-    super(http);
+              private chapService: ChapService,
+              protected sessionService: SessionService,
+              protected modalService: SuiModalService) {
+    super(http, sessionService, modalService);
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/paras`;
   }

@@ -7,6 +7,8 @@ import { share } from 'rxjs/operators';
 
 import { User } from '../models/user';
 import { OpResult } from '../models/op-result';
+import { SessionService } from './session.service';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class AppService {
@@ -21,7 +23,9 @@ export class AppService {
 
   readonly onCurrentUserChanged = new EventEmitter<{ from, to }>();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              protected sessionService: SessionService,
+              protected modalService: SuiModalService) {
     let apiBase = environment.apiBase || '';
     this.loginUrl = `${apiBase}/login`;
   }

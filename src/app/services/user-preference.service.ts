@@ -8,6 +8,8 @@ import { map, share } from 'rxjs/operators';
 import { OpResult } from '../models/op-result';
 import { BaseService } from './base.service';
 import { UserPreference } from '../models/user-preference';
+import { SessionService } from './session.service';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class UserPreferenceService extends BaseService<UserPreference> {
@@ -17,8 +19,10 @@ export class UserPreferenceService extends BaseService<UserPreference> {
 
   readonly onBaseVocabularyChanged = new EventEmitter<string>();
 
-  constructor(protected http: HttpClient) {
-    super(http);
+  constructor(protected http: HttpClient,
+              protected sessionService: SessionService,
+              protected modalService: SuiModalService) {
+    super(http, sessionService, modalService);
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/user_preferences`;
   }

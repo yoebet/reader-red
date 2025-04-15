@@ -9,6 +9,8 @@ import { DictZh } from '../models/dict-zh';
 import { ZhPhrases } from '../anno/zh-phrases';
 
 import { BaseService } from './base.service';
+import { SessionService } from './session.service';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class DictZhService extends BaseService<DictZh> {
@@ -18,8 +20,10 @@ export class DictZhService extends BaseService<DictZh> {
 
   private staticBase;
 
-  constructor(protected http: HttpClient) {
-    super(http);
+  constructor(protected http: HttpClient,
+              protected sessionService: SessionService,
+              protected modalService: SuiModalService) {
+    super(http, sessionService, modalService);
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/dict_zh`;
     this.staticBase = environment.staticBase;
