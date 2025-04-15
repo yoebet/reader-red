@@ -164,9 +164,16 @@ export class UserVocabularyService {
           let uwsByFamiliarity = groupBy<UserWord>(uws, 'familiarity');
 
           let $word = (uw: UserWord) => uw.word;
-          let wordsFamiliarity1: string[] = uwsByFamiliarity['1'].map($word);
-          let wordsFamiliarity2: string[] = uwsByFamiliarity['2'].map($word);
-          let wordsFamiliarity3: string[] = uwsByFamiliarity['3'].map($word);
+          let groupWords = (key: string) => {
+            const group = uwsByFamiliarity[key];
+            if (!group) {
+              return [];
+            }
+            return group.map((uw: UserWord) => uw.word);
+          };
+          let wordsFamiliarity1: string[] = groupWords('1');
+          let wordsFamiliarity2: string[] = groupWords('2');
+          let wordsFamiliarity3: string[] = groupWords('3');
 
           let unfamiliarCountInBV = 0;
 
