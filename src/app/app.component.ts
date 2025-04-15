@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
       this.dictService.clearHistory();
       this.userWordService.clearCache();
     });
-    this.sessionService.checkLogin();
+    this.sessionService.checkLogin().subscribe();
   }
 
   gotoLogin() {

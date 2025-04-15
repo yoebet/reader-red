@@ -30,6 +30,7 @@ import { UserVocabularyService } from '../services/user-vocabulary.service';
 import { CombinedWordsMap } from '../en/combined-words-map';
 import { Book } from '../models/book';
 import { AnnotatorHelper } from '../anno/annotator-helper';
+import { DictSimpleComponent } from '../dict/dict-simple.component';
 
 @Component({
   selector: 'para-content',
@@ -40,6 +41,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
   @ViewChild('contentText', { read: ViewContainerRef }) contentText: ViewContainerRef;
   @ViewChild('paraTrans', { read: ViewContainerRef }) paraTrans: ViewContainerRef;
   @ViewChild('wordAnnos', { read: ViewContainerRef }) wordAnnos: ViewContainerRef;
+  @ViewChild('dictSimple', { read: ViewContainerRef }) dictSimple: ViewContainerRef;
   @Input() para: Para;
   @Input() showTrans: boolean;
   @Input() gotFocus: boolean;
@@ -67,6 +69,9 @@ export class ParaContentComponent implements OnInit, OnChanges {
   annotator: Annotator;
 
   combinedWordsMap: CombinedWordsMap;
+
+  simpleDictComponentRef: ComponentRef<DictSimpleComponent>;
+  lastWordDrop = null;
 
 
   constructor(protected dictService: DictService,
@@ -112,6 +117,52 @@ export class ParaContentComponent implements OnInit, OnChanges {
     return els.map((el: Element) => el.textContent).join(' ');
   }
 
+  private getSimpleDictComponentRef() {
+    if (!this.simpleDictComponentRef) {
+      let factory: ComponentFactory<DictSimpleComponent> = this.resolver.resolveComponentFactory(DictSimpleComponent);
+      this.dictSimple.clear();
+      this.simpleDictComponentRef = this.dictSimple.createComponent(factory);
+    }
+    return this.simpleDictComponentRef;
+  }
+
+  showDictSimplePopup(el, entry) {
+    if (this.lastWordDrop) {
+      this.lastWordDrop.destroy();
+      this.lastWordDrop = null;
+    }
+    let dscr = this.getSimpleDictComponentRef();
+    let content = function () {
+      dscr.instance.entry = entry;
+      return dscr.location.nativeElement;
+    };
+    let drop = new Drop({
+      target: el,
+      content,
+      classes: `${UIConstants.dropClassPrefix}dict`,
+      constrainToScrollParent: false,
+      remove: true,
+      openOn: 'click', // click,hover,always
+      tetherOptions: {
+        attachment: 'top center',
+        constraints: [
+          {
+            to: 'window',
+            attachment: 'together',
+            pin: true
+          }
+        ]
+      }
+    });
+    drop.open();
+    drop.once('close', () => {
+      if (this.lastWordDrop === drop) {
+        this.lastWordDrop = null;
+      }
+    });
+    this.lastWordDrop = drop;
+  }
+
   lookupWordsMeaning() {
     this.annotator.switchAnnotation(this.annotationSet.wordMeaningAnnotation);
     let ar: AnnotateResult = this.annotator.annotate();
@@ -137,6 +188,14 @@ export class ParaContentComponent implements OnInit, OnChanges {
           AnnotatorHelper.removeDropTagIfDummy(element);
           return;
         }
+
+        let dictPopup = document.getElementById('dictPopup');
+        let contentEl = this.contentText.element.nativeElement;
+        if (dictPopup.contains(contentEl)) {
+          this.showDictSimplePopup(element, entry);
+          return;
+        }
+
         let dr = new DictRequest();
         dr.wordElement = element;
         dr.dictEntry = entry;

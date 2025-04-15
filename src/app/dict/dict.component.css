@@ -1,3 +1,8 @@
+.sticky {
+  position: sticky;
+  top: 0;
+}
+
 .item a.operation {
   font-size: 0.9em;
   color: #606060 !important;

@@ -1,17 +1,18 @@
 .ui.grid
   .three.wide.column
-    sui-accordion([closeOthers]='false')
-      sui-accordion-panel([isOpen]='true')
-        .column-header(title='')
-          i.dropdown.icon
-          | 查词历史
-        .ui.link.list.words-history(content='')
-          a.item(*ngFor='let entry of entryHistory',
-            (click)='showEntry($event,entry)',
-            (contextmenu)='showEntry($event,entry)')
-            | {{entry.word}}
-          .item
-            a.operation(*ngIf='entryHistory.length>0', (click)='clearHistory()') ^^ 清空
+    .sticky
+      sui-accordion([closeOthers]='false')
+        sui-accordion-panel([isOpen]='true')
+          .column-header(title='')
+            i.dropdown.icon
+            | 查词历史
+          .ui.link.list.words-history(content='')
+            a.item(*ngFor='let entry of entryHistory',
+              (click)='showEntry($event,entry)',
+              (contextmenu)='showEntry($event,entry)')
+              | {{entry.word}}
+            .item
+              a.operation(*ngIf='entryHistory.length>0', (click)='clearHistory()') ^^ 清空
 
   .thirteen.wide.column
 
