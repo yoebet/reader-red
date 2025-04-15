@@ -1,11 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 
-import {AppService} from './services/app.service';
 import {OpResult} from './models/op-result';
 import {BookService} from './services/book.service';
-import {ChapService} from './services/chap.service';
 import {DictService} from './services/dict.service';
 import {UserWordService} from './services/user-word.service';
+import { SessionService } from './services/session.service';
 
 @Component({
   selector: 'app-root',
@@ -18,25 +17,23 @@ export class AppComponent implements OnInit {
   loginMessage: string;
 
   get currentUser() {
-    return this.appService.currentUser;
+    return this.sessionService.currentUser;
   }
 
-  constructor(private appService: AppService,
+  constructor(private sessionService: SessionService,
               private bookService: BookService,
-              private chapService: ChapService,
               private dictService: DictService,
               private userWordService: UserWordService) {
   }
 
   ngOnInit() {
-    this.appService.onCurrentUserChanged.subscribe(change => {
-      // console.log('User Changed: ' + change.from + ' -> ' + change.to);
+    this.sessionService.sessionEventEmitter.subscribe(change => {
       this.bookService.clearBookList();
       // this.chapService.clearCache();
       this.dictService.clearHistory();
       this.userWordService.clearCache();
     });
-    this.appService.checkLogin();
+    this.sessionService.checkLogin();
   }
 
   gotoLogin() {
@@ -50,7 +47,7 @@ export class AppComponent implements OnInit {
   }
 
   login(name, pass) {
-    this.appService.login(name, pass).subscribe((opr: OpResult) => {
+    this.sessionService.login(name, pass).subscribe((opr: OpResult) => {
       if (opr && opr.ok === 1) {
         this.loginMessage = null;
         this.loginForm = false;
@@ -61,6 +58,6 @@ export class AppComponent implements OnInit {
   }
 
   logout() {
-    this.appService.logout();
+    this.sessionService.logout();
   }
 }

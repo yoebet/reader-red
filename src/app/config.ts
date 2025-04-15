@@ -90,11 +90,6 @@ const HeaderNames = {
   Client: HeaderPrefix + 'CL'
 };
 
-const HeaderValues = {
-  Client: 'B'/*,
-  Client_Agent: 'M'*/
-};
-
 const LocalStorageKey = {
   frc: 'FRC',
   readerBG: 'RBG',
@@ -115,7 +110,6 @@ export {
   ReaderStyles,
   StaticResource,
   HeaderNames,
-  HeaderValues,
   DefaultHttpHeaders,
   LocalStorageKey
 };

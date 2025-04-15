@@ -7,7 +7,7 @@ import {map} from 'rxjs/operators';
 // import md5 from 'md5';
 
 import {environment} from '../../environments/environment';
-import {DefaultHttpHeaders, HeaderNames, HeaderValues} from '../config';
+import {DefaultHttpHeaders, HeaderNames} from '../config';
 import {User} from '../models/user';
 import {OpResult} from '../models/op-result';
 
@@ -26,8 +26,7 @@ export class SessionService {
   }
 
   getHttpOptions() {
-    let headers = new HttpHeaders(DefaultHttpHeaders)
-      .set(HeaderNames.Client, HeaderValues.Client);
+    let headers = new HttpHeaders(DefaultHttpHeaders);
     let UN = HeaderNames.UserName;
     let UT = HeaderNames.UserToken;
     // let NTD = HeaderNames.NameTokenDigest;
@@ -106,7 +105,7 @@ export class SessionService {
     Object.assign(cu, ui);
     if (cu.accessToken) {
       let storage = window.localStorage;
-      storage.setItem(HeaderNames.UserName, ui.name);
+      storage.setItem(HeaderNames.UserName, cu.name);
       storage.setItem(HeaderNames.UserToken, cu.accessToken);
     }
     this.currentUser = cu;
