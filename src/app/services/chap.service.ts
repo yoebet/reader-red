@@ -1,15 +1,16 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 import { Observable, of as ObservableOf } from 'rxjs/';
-import { share } from 'rxjs/operators';
+import { catchError, map, share } from 'rxjs/operators';
 
-import {Book} from '../models/book';
-import {Chap} from '../models/chap';
-import {BaseService} from './base.service';
+import { Book } from '../models/book';
+import { Chap } from '../models/chap';
+import { BaseService } from './base.service';
 import { SessionService } from './session.service';
 import { SuiModalService } from 'ng2-semantic-ui';
+import { ParaIdCount } from '../models/para';
 
 @Injectable()
 export class ChapService extends BaseService<Chap> {
@@ -71,6 +72,35 @@ export class ChapService extends BaseService<Chap> {
       this.cacheChap(chap);
     });
     return obs;
+  }
+
+  loadCommentsCount(chap: Chap): Observable<number> {
+    if (!chap || !chap.paras || chap.paras.length === 0) {
+      return ObservableOf(0);
+    }
+
+    let url = `${this.baseUrl}/${chap._id}/paraCommentsCount`;
+    return this.http.get<ParaIdCount[]>(url, this.httpOptions)
+      .pipe(
+        map((idCounts: ParaIdCount[]) => {
+          let parasMap = new Map();
+          for (let p of chap.paras) {
+            p.commentsCount = 0;
+            parasMap.set(p._id, p);
+          }
+
+          let total = 0;
+          for (let { paraId, count } of idCounts) {
+            total += count;
+            let para = parasMap.get(paraId);
+            if (para) {
+              para.commentsCount = count;
+            }
+          }
+          chap.paraCommentsCountLoaded = true;
+          return total;
+        }),
+        catchError(this.handleError));
   }
 
 }

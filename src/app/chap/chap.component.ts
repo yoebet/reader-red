@@ -11,6 +11,9 @@ import { AnnotationsService } from '../services/annotations.service';
 import { PopupDictSupportComponent } from '../dict/popup-dict-support.component';
 import { UserVocabularyService } from '../services/user-vocabulary.service';
 import { DictZhService } from '../services/dict-zh.service';
+import { SuiModalService } from 'ng2-semantic-ui';
+import { ParaCommentsModal } from '../content/para-comments.component';
+import { ParaService } from '../services/para.service';
 
 @Component({
   selector: 'chap-detail',
@@ -24,12 +27,14 @@ export class ChapComponent extends PopupDictSupportComponent implements OnInit {
 
   constructor(private bookService: BookService,
               private chapService: ChapService,
+              private paraService: ParaService,
               private route: ActivatedRoute,
               private location: Location,
               protected annoService: AnnotationsService,
               protected vocabularyService: UserVocabularyService,
               protected dictZhService: DictZhService,
-              protected resolver: ComponentFactoryResolver) {
+              protected resolver: ComponentFactoryResolver,
+              protected modalService: SuiModalService) {
     super(annoService, vocabularyService, dictZhService, resolver);
   }
 
@@ -56,6 +61,7 @@ export class ChapComponent extends PopupDictSupportComponent implements OnInit {
           this.book = book;
           this.onBookChanged(book);
         });
+      this.checkCommentsCount();
     });
   }
 
@@ -80,6 +86,37 @@ export class ChapComponent extends PopupDictSupportComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+
+  private checkCommentsCount() {
+    if (!this.showCommentsCount) {
+      return;
+    }
+    let chap = this.chap;
+    if (chap && !chap.paraCommentsCountLoaded) {
+      this.chapService.loadCommentsCount(chap).subscribe();
+    }
+  }
+
+  private doShowComments(para) {
+    this.selectPara(para);
+    this.modalService
+      .open(new ParaCommentsModal(para));
+  }
+
+  showComments(para) {
+    if (para.commentsCount === 0) {
+      return;
+    }
+    if (para.comments) {
+      this.doShowComments(para);
+    } else {
+      this.paraService.loadComments(para)
+        .subscribe(cs => {
+          this.doShowComments(para);
+        });
+    }
   }
 
 }

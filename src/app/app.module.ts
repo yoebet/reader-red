@@ -45,6 +45,7 @@ import { LoginComponent } from './account/login.component';
 import { SessionService } from './services/session.service';
 import { DictZhEntrySmiComponent } from './dict-zh/dict-zh-entry-smi.component';
 import { DictZhService } from './services/dict-zh.service';
+import { ParaCommentsComponent } from './content/para-comments.component';
 
 @NgModule({
   imports: [
@@ -77,7 +78,8 @@ import { DictZhService } from './services/dict-zh.service';
     UserWordComponent,
     WordTagsComponent,
     WordTextComponent,
-    DictZhEntrySmiComponent
+    DictZhEntrySmiComponent,
+    ParaCommentsComponent
   ],
   providers: [
     AppService,
@@ -98,7 +100,8 @@ import { DictZhService } from './services/dict-zh.service';
     LoginPopupComponent,
     WordAnnosComponent,
     DictSimpleComponent,
-    DictZhEntrySmiComponent
+    DictZhEntrySmiComponent,
+    ParaCommentsComponent
   ],
   bootstrap: [AppComponent]
 })

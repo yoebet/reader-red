@@ -63,11 +63,11 @@ export abstract class PopupDictSupportComponent implements OnInit {
       }
       if (event.target) {
         let target = event.target as Element;
-        if (target.contains(this.dictRequest.wordElement)) {
-          if (target.closest(`${UIConstants.sentenceTagName}, .para-text, .paragraph`)) {
-            return;
-          }
-        }
+        // if (target.contains(this.dictRequest.wordElement)) {
+        //   if (target.closest(`${UIConstants.sentenceTagName}, .para-text, .paragraph`)) {
+        //     return;
+        //   }
+        // }
         let dictPopup = document.getElementById('dictPopup');
         if (dictPopup && dictPopup.contains(target)) {
           return;

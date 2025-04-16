@@ -1,0 +1,12 @@
+.ui.header 评论
+.ui.content.comments
+  .ui.divided.list(*ngIf='comments')
+    .ui.item(*ngFor='let comment of comments')
+      .title(*ngIf='comment.title') {{comment.title}}
+      .ui.content {{comment.content}}
+      .ui.right.floated.horizontal.list.footer
+        .item {{comment.userNickName}}
+        .item(*ngIf='comment.userName') {{comment | createdDateString:'minute'}}
+
+.actions
+  button.ui.tiny.button((click)="close()") 关闭

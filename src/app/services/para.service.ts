@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 import { combineLatest, Observable } from 'rxjs/';
+import { catchError, map } from 'rxjs/operators';
 import { uniq } from 'lodash';
 
 import { Chap } from '../models/chap';
@@ -12,6 +13,7 @@ import { ChapService } from './chap.service';
 import { BookService } from './book.service';
 import { SessionService } from './session.service';
 import { SuiModalService } from 'ng2-semantic-ui';
+import { ParaComment } from '../models/para-comment';
 
 @Injectable()
 export class ParaService extends BaseService<Para> {
@@ -79,6 +81,17 @@ export class ParaService extends BaseService<Para> {
         });
       });
     });
+  }
+
+  loadComments(para: Para): Observable<ParaComment[]> {
+    let url = `${this.baseUrl}/${para._id}/comments`;
+    return this.http.get<ParaComment[]>(url, this.httpOptions)
+      .pipe(
+        map((comments: ParaComment[]) => {
+          para.comments = comments;
+          return comments;
+        }),
+        catchError(this.handleError));
   }
 
 }
