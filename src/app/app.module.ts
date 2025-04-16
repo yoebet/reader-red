@@ -48,6 +48,7 @@ import { DictZhService } from './services/dict-zh.service';
 import { ParaCommentsComponent } from './content/para-comments.component';
 import { ParaCommentsExtComponent } from './content/para-comments-ext.component';
 import { ParaCommentContentComponent } from './content/para-comment-content.component';
+import { SoleContentComponent } from './content/sole-content.component';
 
 @NgModule({
   imports: [
@@ -83,7 +84,8 @@ import { ParaCommentContentComponent } from './content/para-comment-content.comp
     DictZhEntrySmiComponent,
     ParaCommentsComponent,
     ParaCommentsExtComponent,
-    ParaCommentContentComponent
+    ParaCommentContentComponent,
+    SoleContentComponent
   ],
   providers: [
     AppService,
