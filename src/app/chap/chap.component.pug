@@ -15,7 +15,7 @@ div(*ngIf='chap')
       sui-checkbox([(ngModel)]='lookupDict') 单击查词
       //sui-checkbox([(ngModel)]='highlightSentence') 句子高亮
       sui-checkbox([(ngModel)]='markNewWords', (ngModelChange)='toggleMarkNewWords()') 标记生词
-      sui-checkbox([(ngModel)]='annotationHover', (ngModelChange)='toggleWordsHover()') 显示标注
+      sui-checkbox([(ngModel)]='annotationHover', (ngModelChange)='toggleAnnotationHover()') 显示标注
 
   .ui.list.items
     .item.paragraph(*ngFor='let para of chap.paras; trackBy: paraTracker; index as index')

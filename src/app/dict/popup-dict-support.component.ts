@@ -143,7 +143,7 @@ export abstract class PopupDictSupportComponent implements OnInit {
     this.toggleBodyClass(UIConstants.userwordDisabledBodyClass, this.markNewWords);
   }
 
-  toggleWordsHover() {
+  toggleAnnotationHover() {
     this.annotationHover = !this.annotationHover;
     this.toggleBodyClass(UIConstants.annoDisabledBodyClass, this.annotationHover);
   }
