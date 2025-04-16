@@ -1,7 +1,7 @@
 import { ComponentFactory, ComponentFactoryResolver, ComponentRef, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import * as Tether from 'tether';
 import * as Drop from 'tether-drop';
-import { LocalStorageKey, UIConstants } from '../config';
+import { UIConstants } from '../config';
 import { DictRequest, SelectedItem, UserWordChange } from '../content-types/dict-request';
 import { AnnotationsService } from '../services/annotations.service';
 import { AnnotationSet } from '../anno/annotation-set';
@@ -53,25 +53,26 @@ export abstract class PopupDictSupportComponent implements OnInit {
       });
 
     document.addEventListener('click', (event) => {
-      if (this.dictRequest && this.dictTether) {
-        if (event.target) {
-          let target = event.target as Element;
-          if (target.contains(this.dictRequest.wordElement)) {
-            if (target.closest(`${UIConstants.sentenceTagName}, .para-text, .paragraph`)) {
-              return;
-            }
-          }
-          let dictPopup = document.getElementById('dictPopup');
-          if (dictPopup && dictPopup.contains(target)) {
-            return;
-          }
-          if (target.closest('.ui.modal')) {
+      if (!this.dictRequest || !this.dictTether) {
+        return;
+      }
+      if (event.target) {
+        let target = event.target as Element;
+        if (target.contains(this.dictRequest.wordElement)) {
+          if (target.closest(`${UIConstants.sentenceTagName}, .para-text, .paragraph`)) {
             return;
           }
         }
-        this.onDictItemSelect(null);
-        event.stopPropagation();
+        let dictPopup = document.getElementById('dictPopup');
+        if (dictPopup && dictPopup.contains(target)) {
+          return;
+        }
+        if (target.closest('.ui.modal')) {
+          return;
+        }
       }
+      this.onDictItemSelect(null);
+      event.stopPropagation();
     }, true);
 
     // const LSK = LocalStorageKey;

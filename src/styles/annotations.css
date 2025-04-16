@@ -1,97 +1,106 @@
 /* *** 词类 Parts of Speech *** */
 
-.para-content y-o, .yo {
+y-o, .yo {
   border-bottom: 1px dashed grey;
   /*border-bottom-width: 1px;*/
   /*border-bottom-color: grey;*/
   /*border-bottom-style: dashed;*/
 }
 
-.para-content .pos {
+.posc, [data-posc] {
   border-bottom-color: dimgrey;
 }
 
-/*.pos:before {
+/*.posc:before {
 }*/
 
-/*.pos:after {
+/*.posc:after {
 }*/
 
 /* *** 名词 Noun *** */
 
-.para-content .noun {
+.noun, [data-noun] {
   border-bottom-color: cadetblue;
 }
 
 /* *** 动词 Verb *** */
 
-.para-content .verb {
+.verb, [data-verb] {
   border-bottom-color: darkgreen;
 }
 
 /* *** 成分 Members of the Sentence *** */
 
-.para-content .memb {
+.memb, [data-memb] {
   border-bottom-color: darkolivegreen;
   border-bottom-style: solid;
 }
 
-.para-content .memb[data-memb=ms],
-.para-content .memb[data-memb=mp],
-.para-content .memb[data-memb=mo] {
-  border-bottom-color: darkgreen;
-  border-bottom-style: double;
-}
-
 /* *** 从句 Clauses *** */
 
-.para-content .clau {
+.clau, [data-clau] {
   border-bottom-color: silver;
-}
-
-.para-content .clau[data-clau=cc],
-.para-content .clau[data-clau=cr] {
-  border-bottom-color: palevioletred;
-  border-bottom-style: solid;
 }
 
 /* *** 时态 Tense *** */
 
-.para-content .tens {
+.tens, [data-tens] {
   border-bottom-color: olive;
   border-bottom-style: solid;
 }
 
 /* *** 短语 Phrases *** */
 
-.para-content .phra {
+.assoc, [data-assoc] {
   border-bottom-color: lightskyblue;
   border-bottom-style: solid;
 }
 
-.para-content .phra[data-phra=g1] {
+[data-assoc=phra1] {
   border-bottom-color: deepskyblue;
 }
 
-.para-content .phra[data-phra=g2] {
+[data-assoc=phra2] {
   border-bottom-color: lightsalmon;
 }
 
-.para-content .phra[data-phra=g3] {
+[data-assoc=phra3] {
   border-bottom-color: darkgreen;
+}
+
+[data-assoc=trunk] {
+  border-bottom-color: darkgreen;
+  border-bottom-style: double;
+}
+
+[data-assoc=antec] {
+  border-bottom-color: palevioletred;
+  border-bottom-style: solid;
+}
+
+[data-assoc=group1] {
+  border-bottom-color: deepskyblue;
+}
+
+[data-assoc=group2] {
+  border-bottom-color: lightsalmon;
+}
+
+[data-assoc=group3] {
+  border-bottom-color: darkgreen;
+}
+
+[data-mean]:not([data-fpg]) {
+  font-weight: bold;
 }
 
 /* *** 其他 Misc *** */
 
-.para-content .misc {
+.misc, [data-misc] {
   border-bottom-color: cornflowerblue;
   border-bottom-style: solid;
 }
 
-
-.para-text.content-text [data-mid] {
-  border-bottom: 1px dashed cadetblue;
-}
 
 .para-text.content-text [data-note]:after {
   content: '注';
@@ -103,8 +112,9 @@
 body.anno-disabled .para-content y-o {
   text-decoration: none !important;
   border-bottom: none !important;
+  font-weight: normal;
 }
 
 body.anno-disabled .para-content y-o[data-note]:after {
-  content:''
+  content:'';
 }

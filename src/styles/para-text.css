@@ -1,6 +1,20 @@
+.para-content {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  border: 1px solid transparent;
+  border-radius: 0.5em;
+  line-height: 1.4rem;
+  font-size: 1.1rem;
+}
+
 .para-text {
-  /*white-space: pre-wrap;*/
+  white-space: pre-wrap;
   flex: 1;
+}
+
+.para-text.content-text {
+  flex-grow: 1.5;
 }
 
 .para-content.left-right {
@@ -20,11 +34,26 @@
   margin-left: 1em;
 }
 
-.para-text s-st.highlight {
+/* Colors */
+
+.paragraph .selected.para-content {
+  /*border-color: rgba(9, 187, 7, 0.5);*/
+}
+
+/*.paragraph .selected.para-no {*/
+/*  color: rgba(9, 187, 7, 1);*/
+/*}*/
+
+
+.para-text s-st.highlight, .para-quote s-st.highlight {
   /*background: lightblue;*/
   background: rgba(173, 216, 230, 0.4)
 }
 
 .para-text y-o.highlight {
   border-bottom-width: 3px;
+}
+
+.para-text .highlight-word {
+  background: lightgoldenrodyellow;
 }

@@ -3,8 +3,9 @@
   font-size: 1.4em;
 }
 
-.entry-word, .categories, .phonetics {
+.entry-word, .phonetics {
   display: inline;
+  vertical-align: text-bottom;
 }
 
 .phonetics .pron-play {
@@ -14,6 +15,10 @@
 .phonetics {
   /*padding-right: 1em;*/
   display: inline-block;
+}
+
+span.pinyin {
+  margin-left: 0.8em;
 }
 
 .categories, .categories *, .phonetics, .phonetics * {
@@ -41,14 +46,13 @@
   margin-right: 0.2rem;
 }
 
-.pos-meanings {
-  margin-top: 0.5em;
-}
-
 .ui.list.meaning-items {
   margin-top: 0;
-  margin-left: 3em;
-  max-height: 300px;
+  margin-left: 2em !important;
+}
+
+.ui.list.meaning-items.smi {
+  max-height: 200px;
   overflow: auto;
 }
 
@@ -60,8 +64,16 @@
   font-weight: bold;
 }
 
+.pos-meanings {
+  margin-top: 0.5em;
+}
+
 .pos-meanings .pos-header .header .ui.mini.button {
   margin-top: -0.4em;
+}
+
+.new-pos {
+  margin-top: 1em;
 }
 
 input.ui.mini.input {
@@ -80,6 +92,18 @@ input.ui.mini.input {
   color: rgba(0, 0, 0, 1);
 }
 
-.meaning-items > .selected-item.item {
+.selected-item.item {
   color: #bf4040 !important;
+}
+
+.selected-tip {
+  display: inline-block;
+  color: silver;
+  font-size: 0.9em;
+}
+
+.selected-meaning {
+  display: inline-block;
+  color: rgba(0, 0, 0, 0.8);
+  margin-left: 1em;
 }

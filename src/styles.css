@@ -27,16 +27,16 @@
 @import url('styles/semantic/table.css');
 @import url('styles/semantic/step.css');
 @import url('styles/semantic/card.css');
-/*@import url('styles/semantic/image.css');*/
-/*@import url('styles/semantic/message.css');*/
-/*@import url('styles/semantic/sidebar.css');*/
+@import url('styles/semantic/image.css');
+@import url('styles/semantic/message.css');
+@import url('styles/semantic/sidebar.css');
 @import url('styles/dict-popup.css');
 @import url('styles/dict-entry.css');
 @import url('styles/vocabulary.css');
 @import url('styles/annos-popup.css');
 @import url('styles/annotations.css');
 @import url('styles/para-text.css');
-@import url('styles/word-markers.css');
+@import url('styles/reader.css');
 
 .pre-wrap {
   white-space: pre-wrap;

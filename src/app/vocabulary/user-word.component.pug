@@ -4,7 +4,7 @@
     .ui.mini.label {{wordCategory.name}}
   ng-template([ngIf]='userWord')
     .item
-      .ui.mini.label([ngClass]='"word-familiarity-"+userWord.familiarity') {{userWord.familiarity | wordFamiliarity}}
+      .ui.mini.label([ngClass]='"uwf-"+userWord.familiarity') {{userWord.familiarity | wordFamiliarity}}
       .ui.icon.mini.buttons
         .ui.button([ngClass]='{disabled:userWord.familiarity===3}', (click)='familiarityUp()')
           i.double.angle.up.icon

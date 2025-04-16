@@ -9,13 +9,9 @@ const UIConstants = {
   tetherClassPrefixNoHyphen: 'dp',
   highlightClass: 'highlight',
   highlightWordClass: 'highlight-word',
-  newwordDisabledBodyClass: 'newword-disabled',
   annoDisabledBodyClass: 'anno-disabled',
   userwordDisabledBodyClass: 'uwf-disabled',
-  userWordTagName: 'w-d',
-  userWordCommonClass: 'word',
-  userWordBeyondClass: 'beyond',
-  userWordFamiliarityClassPrefix: 'wf'
+  userWordTagName: 'w-d'
 };
 
 
