@@ -6,7 +6,6 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges
 } from '@angular/core';
@@ -29,7 +28,7 @@ import { DictZhService } from '../services/dict-zh.service';
   templateUrl: './dict-entry.component.html',
   styleUrls: ['./dict-entry.component.css']
 })
-export class DictEntryComponent extends PopupDictSupportComponent implements OnInit, OnChanges, AfterViewChecked {
+export class DictEntryComponent extends PopupDictSupportComponent implements OnChanges, AfterViewChecked {
   @Input() entry: DictEntry;
   @Input() relatedWords: string[];
   @Input() initialSelectedItem: SelectedItem;

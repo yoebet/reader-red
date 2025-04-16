@@ -1,12 +1,40 @@
 .ui.header 评论
 .ui.content.comments
-  .ui.divided.list(*ngIf='comments')
-    .ui.item(*ngFor='let comment of comments')
+  .ui.divided.list(*ngIf='fakeParas')
+    .ui.item(*ngFor='let comment of fakeParas')
       .title(*ngIf='comment.title') {{comment.title}}
-      .ui.content {{comment.content}}
+      para-comment-content.ui.content([para]='comment',
+        [contentContext]='contentContext',
+        [showTrans]='false',
+        [gotFocus]='true',
+        [activeAlways]='true',
+        [lookupDict]='true',
+        [highlightSentence]='false',
+        [markNewWords]='markNewWords',
+        [annotationHover]='false',
+        (dictRequest)="onDictRequest($event)"
+      )
       .ui.right.floated.horizontal.list.footer
         .item {{comment.userNickName}}
         .item(*ngIf='comment.userName') {{comment | createdDateString:'minute'}}
 
 .actions
   button.ui.tiny.button((click)="close()") 关闭
+
+#dictPopup.ui.basic.popup(*ngIf='dictRequest')
+  dict-entry(*ngIf='dictRequest.dictLang==="en"',
+    [entry]='dictRequest.dictEntry',
+    [initialSelectedItem]='dictRequest.initialSelected',
+    [relatedWords]='dictRequest.relatedWords',
+    [context]='dictRequest.context',
+    (viewReady)='onDictPopupReady()',
+    (userWordChanged)='onUserWordChange($event)',
+    (dictItemSelected)='onDictItemSelect($event)')
+  dict-zh-entry-smi(*ngIf='dictRequest.dictLang==="zh"',
+    [entry]='dictRequest.dictEntry',
+    [initialSelectedItem]='dictRequest.initialSelected',
+    [relatedWords]='dictRequest.relatedWords',
+    [context]='dictRequest.context',
+    (viewReady)='onDictPopupReady()',
+    (dictItemSelected)='onDictItemSelect($event)')
+ng-template(#dictSimple='')

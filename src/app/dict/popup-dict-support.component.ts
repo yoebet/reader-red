@@ -23,7 +23,6 @@ export abstract class PopupDictSupportComponent implements OnInit {
   markNewWords = true;
   lookupDict = false;
   loadZhPhrases = false;
-  showCommentsCount = true;
 
   contentContext: ContentContext;
 
@@ -58,26 +57,25 @@ export abstract class PopupDictSupportComponent implements OnInit {
     }
 
     document.addEventListener('click', (event) => {
-      if (!this.dictRequest || !this.dictTether) {
+      if (!this.dictRequest && !this.simpleDictRequest) {
         return;
       }
-      if (event.target) {
-        let target = event.target as Element;
-        // if (target.contains(this.dictRequest.wordElement)) {
-        //   if (target.closest(`${UIConstants.sentenceTagName}, .para-text, .paragraph`)) {
-        //     return;
-        //   }
-        // }
-        let dictPopup = document.getElementById('dictPopup');
-        if (dictPopup && dictPopup.contains(target)) {
+      let target = event.target as Element;
+      if (this.simpleDictDrop) {
+        if (target.closest('dict-simple')) {
           return;
         }
-        if (target.closest('.ui.modal')) {
-          return;
-        }
+        this.simpleDictDrop.close();
+        event.stopPropagation();
+        return;
       }
-      this.onDictItemSelect(null);
-      event.stopPropagation();
+      if (this.dictRequest) {
+        if (target.closest('dict-entry')) {
+          return;
+        }
+        this.onDictItemSelect(null);
+        event.stopPropagation();
+      }
     }, true);
 
     // const LSK = LocalStorageKey;
@@ -93,6 +91,11 @@ export abstract class PopupDictSupportComponent implements OnInit {
   keyEvent($event: KeyboardEvent) {
     // alert(`${$event.key} ${$event.code}`);
     if ($event.key === 'Escape') {
+      if (this.simpleDictDrop) {
+        this.simpleDictDrop.close();
+        event.stopPropagation();
+        return;
+      }
       if (this.dictRequest) {
         this.onDictItemSelect(null);
         $event.stopPropagation();
@@ -104,7 +107,7 @@ export abstract class PopupDictSupportComponent implements OnInit {
   @HostListener('window:popstate', ['$event'])
   onPopState($event: PopStateEvent) {
     if (this.dictRequest) {
-      this.closeDictPopup();
+      this.onDictItemSelect(null);
     }
   }
 
@@ -258,7 +261,6 @@ export abstract class PopupDictSupportComponent implements OnInit {
 
     let { dictEntry, wordElement } = dictRequest;
     let dscr = this.getSimpleDictComponentRef();
-    // tslint:disable-next-line:only-arrow-functions
     let content = function () {
       dscr.instance.entry = dictEntry as DictEntry;
       return dscr.location.nativeElement;
@@ -289,6 +291,8 @@ export abstract class PopupDictSupportComponent implements OnInit {
       });
       drop.open();
       drop.once('close', () => {
+        this.simpleDictRequest = null;
+        this.simpleDictDrop = null;
         AnnotatorHelper.removeDropTagIfDummy(wordElement);
         setTimeout(() => {
           drop.destroy();

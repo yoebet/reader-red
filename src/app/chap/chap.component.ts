@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
@@ -20,10 +20,11 @@ import { ParaService } from '../services/para.service';
   templateUrl: './chap.component.html',
   styleUrls: ['./chap.component.css']
 })
-export class ChapComponent extends PopupDictSupportComponent implements OnInit {
+export class ChapComponent extends PopupDictSupportComponent {
   book: Book;
   chap: Chap;
   selectedPara: Para;
+  showCommentsCount = true;
 
   constructor(private bookService: BookService,
               private chapService: ChapService,
