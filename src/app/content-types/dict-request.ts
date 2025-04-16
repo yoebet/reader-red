@@ -1,8 +1,9 @@
 import {DictEntry} from '../models/dict-entry';
 import {DictZh} from '../models/dict-zh';
+import { LangCode } from '../models/book';
 
 export class DictRequest {
-  dictLang: string; // en/zh
+  dictLang: LangCode;
   wordElement: Element;
   dictEntry: DictEntry | DictZh;
   initialSelected?: SelectedItem;

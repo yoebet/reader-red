@@ -22,7 +22,6 @@ import { AnnotationSet, HighlightGroups } from '../anno/annotation-set';
 import { CombinedWordsMap } from '../en/combined-words-map';
 
 import { DataAttrNames, DataAttrValues, SpecialAnnotations, UIConstants } from '../config';
-import { Para } from '../models/para';
 import { DictEntry } from '../models/dict-entry';
 import { DictZh } from '../models/dict-zh';
 import { Annotation } from '../models/annotation';
@@ -36,11 +35,6 @@ import { WordAnnosComponent } from './word-annos.component';
 import { ContentContext } from '../content-types/content-context';
 
 
-declare type Side = 'content'|'trans';
-
-const SideContent: Side = 'content';
-const SideTrans: Side = 'trans';
-
 // declare type TriggerMethod = Tap/Click/LongClick/RightClick/Selection
 
 @Component({
@@ -49,25 +43,21 @@ const SideTrans: Side = 'trans';
 })
 export class SoleContentComponent implements OnInit, OnChanges {
   @ViewChild('contentText', { read: ViewContainerRef }) contentText: ViewContainerRef;
-  @ViewChild('transText', { read: ViewContainerRef }) transText: ViewContainerRef;
   @ViewChild('wordAnnos', { read: ViewContainerRef }) wordAnnos: ViewContainerRef;
-  @Input() para: Para;
-  @Input() showTrans: boolean;
+  @Input() content: string;
   @Input() gotFocus: boolean;
   @Input() activeAlways: boolean;
-  @Input() lookupDict: boolean;
-  @Input() highlightSentence: boolean;
   @Input() markNewWords: boolean;
   @Input() annotationHover: boolean;
-  @Input() annotation: Annotation;
   @Input() contentContext: ContentContext;
   @Output() dictRequest = new EventEmitter<DictRequest>();
 
-  lookupDictSimple = false;
+  highlightSentence = false;
+  lookupDict = true;
+  lookupDictSimple = true;
 
+  annotation: Annotation;
   contentAnnotator: Annotator;
-  transAnnotator: Annotator;
-  transRendered = false;
   sentenceHoverSetup = false;
   associationsHoverSetup = false;
   annotationHoverSetup = false;
@@ -80,7 +70,6 @@ export class SoleContentComponent implements OnInit, OnChanges {
   wordAnnosComponentRef: ComponentRef<WordAnnosComponent>;
 
   contentSentenceMap: Map<string, Element>;
-  transSentenceMap: Map<string, Element>;
 
   combinedWordsMap: CombinedWordsMap;
 
@@ -89,6 +78,9 @@ export class SoleContentComponent implements OnInit, OnChanges {
               protected resolver: ComponentFactoryResolver) {
   }
 
+  get textLang() {
+    return this.contentContext && this.contentContext.contentLang || Book.LangCodeEn;
+  }
 
   get active() {
     return this.activeAlways || this.gotFocus;
@@ -104,12 +96,11 @@ export class SoleContentComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     let wmObs = this.contentContext.combinedWordsMapObs;
     if (wmObs) {
-      let contentLang = this.getTextLang(SideContent);
-      if (!contentLang || contentLang === Book.LangCodeEn) {
+      if (!this.textLang || this.textLang === Book.LangCodeEn) {
         wmObs.subscribe((map: CombinedWordsMap) => {
           this.combinedWordsMap = map;
           if (this.active) {
-            this.markUserWords(SideContent);
+            this.markUserWords();
           }
         });
       }
@@ -117,34 +108,16 @@ export class SoleContentComponent implements OnInit, OnChanges {
 
     if (this.activeAlways) {
       this.setupAssociationHover();
-      // TODO: if (!this.annotationSet)
       this.setupAnnotationsPopup();
     }
   }
 
-  getTextLang(side: Side): string {
-    let { contentLang, transLang } = this.contentContext;
-    return (side === SideContent) ? (contentLang || Book.LangCodeEn) : (transLang || Book.LangCodeZh);
-  }
-
-  getAnnotator(side: Side, annotation = null): Annotator {
-    let annt;
-    if (side === SideContent) {
-      annt = this.contentAnnotator;
-      if (!annt) {
-        let el = this.contentText.element.nativeElement;
-        let lang = this.getTextLang(side);
-        annt = new Annotator(el, lang);
-        this.contentAnnotator = annt;
-      }
-    } else {
-      annt = this.transAnnotator;
-      if (!annt) {
-        let el = this.transText.element.nativeElement;
-        let lang = this.getTextLang(side);
-        annt = new Annotator(el, lang);
-        this.transAnnotator = annt;
-      }
+  getAnnotator(annotation = null): Annotator {
+    let annt = this.contentAnnotator;
+    if (!annt) {
+      let el = this.getTextEl();
+      annt = new Annotator(el, this.textLang);
+      this.contentAnnotator = annt;
     }
     if (Book.isChineseText(annt.lang) && !annt.zhPhrases) {
       annt.zhPhrases = this.contentContext.zhPhrases;
@@ -153,22 +126,8 @@ export class SoleContentComponent implements OnInit, OnChanges {
     return annt;
   }
 
-  private getTextEl(side: Side) {
-    return side === SideContent ?
-      this.contentText.element.nativeElement :
-      this.transText.element.nativeElement;
-  }
-
-  private getTheSide(textEl): Side {
-    return textEl === this.contentText.element.nativeElement ?
-      SideContent :
-      SideTrans;
-  }
-
-  private getTheOtherSideText(textEl) {
-    return textEl === this.transText.element.nativeElement ?
-      this.contentText.element.nativeElement :
-      this.transText.element.nativeElement;
+  private getTextEl() {
+    return this.contentText.element.nativeElement;
   }
 
   private destroyAnnotatedWordsPopup(element) {
@@ -179,9 +138,9 @@ export class SoleContentComponent implements OnInit, OnChanges {
     }
   }
 
-  selectWordMeaning(side: Side, $event, triggerMethod = null) {
+  selectWordMeaning($event, triggerMethod = null) {
     let ann = AnnotationSet.selectMeaningAnnotation;
-    let ar: AnnotateResult = this.getAnnotator(side, ann).annotate($event);
+    let ar: AnnotateResult = this.getAnnotator(ann).annotate($event);
     if (!ar || !ar.wordEl) {
       return;
     }
@@ -192,7 +151,7 @@ export class SoleContentComponent implements OnInit, OnChanges {
     let oriMeaning = element.dataset[DataAttrNames.mean];
     let oriForWord = element.dataset[DataAttrNames.word] || word;
 
-    let textEl = this.getTextEl(side);
+    let textEl = this.getTextEl();
 
     let meaningItemCallback = (selected: SelectedItem) => {
 
@@ -229,26 +188,13 @@ export class SoleContentComponent implements OnInit, OnChanges {
         }
       }
 
-      this.notifyChange(side);
+      this.notifyChange();
       if (this.annotationHoverSetup) {
         this.setupPopup(element, textEl);
       }
     };
 
-    let textContext = {} as any;
-    if (this.para) {
-      textContext.paraId = this.para._id;
-      let chap = this.para.chap;
-      if (chap) {
-        textContext.chapId = chap._id;
-        if (chap.book) {
-          textContext.bookId = chap.book._id;
-        }
-      }
-    }
-
-    let lang = this.getTextLang(side);
-    if (!lang || lang === Book.LangCodeEn) {
+    if (!this.textLang || this.textLang === Book.LangCodeEn) {
       oriForWord = AnnotatorHelper.stripEnWord(oriForWord);
 
       this.dictService.getEntry(oriForWord, { base: true, stem: true })
@@ -258,12 +204,11 @@ export class SoleContentComponent implements OnInit, OnChanges {
             return;
           }
           let dr = new DictRequest();
-          dr.dictLang = 'en';
+          dr.dictLang = Book.LangCodeEn;
           dr.wordElement = element;
           dr.dictEntry = entry;
           dr.initialSelected = { pos: oriPos, meaning: oriMeaning } as SelectedItem;
           dr.relatedWords = null;
-          dr.context = textContext;
           if (oriForWord !== word) {
             dr.relatedWords = [word];
           }
@@ -278,7 +223,7 @@ export class SoleContentComponent implements OnInit, OnChanges {
 
 
           let dictPopup = document.getElementById('dictPopup');
-          let contentEl = this.contentText.element.nativeElement;
+          let contentEl = this.getTextEl();
           if (dictPopup && dictPopup.contains(contentEl)) {
             dr.simplePopup = this.lookupDictSimple;
           } else {
@@ -308,7 +253,7 @@ export class SoleContentComponent implements OnInit, OnChanges {
           };
           this.dictRequest.emit(dr);
         });
-    } else if (Book.isChineseText(lang)) {
+    } else if (Book.isChineseText(this.textLang)) {
 
       this.dictZhService.getEntry(oriForWord)
         .subscribe((entry: DictZh) => {
@@ -317,10 +262,9 @@ export class SoleContentComponent implements OnInit, OnChanges {
             return;
           }
           let dr = new DictRequest();
-          dr.dictLang = 'zh';
+          dr.dictLang = Book.LangCodeZh;
           dr.wordElement = element;
           dr.dictEntry = entry;
-          dr.context = textContext;
           dr.initialSelected = { pos: oriPos, meaning: oriMeaning } as SelectedItem;
           dr.meaningItemCallback = meaningItemCallback;
           this.dictRequest.emit(dr);
@@ -328,24 +272,20 @@ export class SoleContentComponent implements OnInit, OnChanges {
     }
   }
 
-  private doAnnotate(side: Side, $event, triggerMethod = null) {
+  private doAnnotate($event, triggerMethod = null) {
     if (this.annotation.nameEn === SpecialAnnotations.SelectMeaning.nameEn) {
-      this.selectWordMeaning(side, $event, triggerMethod);
+      this.selectWordMeaning($event, triggerMethod);
       return;
     }
-    /*if (this.annotation.nameEn === SpecialAnnotations.AddANote.nameEn) {
-      this.addANote(side, triggerMethod);
-      return;
-    }*/
-    let ar: AnnotateResult = this.getAnnotator(side).annotate($event);
+    let ar: AnnotateResult = this.getAnnotator().annotate($event);
     if (!ar) {
       return;
     }
     if (ar.wordEl) {
       if (ar.elCreated) {
-        let textEl = this.getTextEl(side);
+        let textEl = this.getTextEl();
         if (ar.wordEl.matches(HighlightGroups.HighlightSelectors)) {
-          this.highlightAssociatedWords(ar.wordEl, textEl, this.getTheOtherSideText(textEl));
+          this.highlightAssociatedWords(ar.wordEl, textEl);
         }
         if (this.annotationHoverSetup) {
           this.setupPopup(ar.wordEl, textEl);
@@ -357,11 +297,12 @@ export class SoleContentComponent implements OnInit, OnChanges {
           this.destroyAnnotatedWordsPopup(ar.wordEl);
         }
       }
-      this.notifyChange(side);
+      this.notifyChange();
     }
   }
 
-  onMouseup($event, side: Side) {
+  onMouseup($event) {
+    console.log(event);
     $event.stopPropagation();
     $event.preventDefault();
     if ($event.which === 3) {
@@ -374,16 +315,16 @@ export class SoleContentComponent implements OnInit, OnChanges {
       triggerMethod = 'Ctrl_' + triggerMethod;
     }
     if (this.lookupDict) {
-      this.selectWordMeaning(side, $event, triggerMethod);
+      this.selectWordMeaning($event, triggerMethod);
       return;
     }
     if (ctrl) {
-      this.selectWordMeaning(side, $event, triggerMethod);
+      this.selectWordMeaning($event, triggerMethod);
       return;
     }
     let selection = window.getSelection();
     if (selection && selection.anchorOffset !== selection.focusOffset) {
-      this.selectWordMeaning(side, $event, triggerMethod);
+      this.selectWordMeaning($event, triggerMethod);
       return;
     }
     if (!this.gotFocus) {
@@ -392,16 +333,16 @@ export class SoleContentComponent implements OnInit, OnChanges {
     if (!this.annotation) {
       return;
     }
-    this.doAnnotate(side, $event, triggerMethod);
+    this.doAnnotate($event, triggerMethod);
   }
 
-  onContextmenu($event, side: Side) {
-    this.selectWordMeaning(side, $event, 'RightClick');
+  onContextmenu($event) {
+    this.selectWordMeaning($event, 'RightClick');
     $event.stopPropagation();
     $event.preventDefault();
   }
 
-  private notifyChange(side: Side) {
+  private notifyChange() {
   }
 
   private clearSentenceHighlights() {
@@ -433,19 +374,15 @@ export class SoleContentComponent implements OnInit, OnChanges {
       return;
     }
     this.contentSentenceMap = new Map<string, Element>();
-    this.transSentenceMap = new Map<string, Element>();
-    let contentEl = this.contentText.element.nativeElement;
-    let transEl = this.transText.element.nativeElement;
-    for (let [textEl, selMap] of [[contentEl, this.contentSentenceMap], [transEl, this.transSentenceMap]]) {
-      let sentenceEls = textEl.querySelectorAll(UIConstants.sentenceTagName);
-      for (let stEl of sentenceEls) {
-        if (!stEl.dataset) {
-          continue;
-        }
-        let sid = stEl.dataset[UIConstants.sentenceIdAttrName];
-        if (sid) {
-          selMap.set(sid, stEl);
-        }
+    let contentEl = this.getTextEl();
+    let sentenceEls = contentEl.querySelectorAll(UIConstants.sentenceTagName);
+    for (let stEl of sentenceEls) {
+      if (!stEl.dataset) {
+        continue;
+      }
+      let sid = stEl.dataset[UIConstants.sentenceIdAttrName];
+      if (sid) {
+        this.contentSentenceMap.set(sid, stEl);
       }
     }
   }
@@ -474,38 +411,29 @@ export class SoleContentComponent implements OnInit, OnChanges {
       }
 
       component.clearSentenceHighlights();
-      for (let selMap of [component.contentSentenceMap, component.transSentenceMap]) {
-        let tsEl = selMap.get(sid);
-        if (tsEl) {
-          tsEl.classList.add(UIConstants.highlightClass);
-          if (!component.highlightedSentences) {
-            component.highlightedSentences = [];
-          }
-          component.highlightedSentences.push(tsEl);
+      let tsEl = component.contentSentenceMap.get(sid);
+      if (tsEl) {
+        tsEl.classList.add(UIConstants.highlightClass);
+        if (!component.highlightedSentences) {
+          component.highlightedSentences = [];
         }
+        component.highlightedSentences.push(tsEl);
       }
     };
 
-    let contentEl = this.contentText.element.nativeElement;
-    let transEl = this.transText.element.nativeElement;
-    for (let textEl of [contentEl, transEl]) {
-      let sentenceEls = textEl.querySelectorAll(UIConstants.sentenceTagName);
-      for (let sentenceEl of sentenceEls) {
-        sentenceEl.addEventListener('mouseover', sentenceMouseover);
-      }
+    let contentEl = this.getTextEl();
+    let sentenceEls = contentEl.querySelectorAll(UIConstants.sentenceTagName);
+    for (let sentenceEl of sentenceEls) {
+      sentenceEl.addEventListener('mouseover', sentenceMouseover);
     }
 
     this.sentenceHoverSetup = true;
   }
 
-  private highlightAssociatedWords(wordEl, textEl, theOtherTextEl) {
-
-    let theOtherSentenceMap = (textEl === this.contentText.element.nativeElement) ?
-      this.transSentenceMap : this.contentSentenceMap;
+  private highlightAssociatedWords(wordEl, textEl) {
 
     let component = this;
 
-    // tslint:disable-next-line:only-arrow-functions
     let wordsMouseleave = function (event) {
       component.clearWordHighlights();
     };
@@ -515,15 +443,8 @@ export class SoleContentComponent implements OnInit, OnChanges {
 
       let el = this;
       let stEl = AnnotatorHelper.findSentence(el, textEl);
-      let stEl2;
-      if (stEl) {
-        if (stEl.dataset) {
-          let sid = stEl.dataset[UIConstants.sentenceIdAttrName];
-          stEl2 = theOtherSentenceMap.get(sid);
-        }
-      } else {
+      if (!stEl) {
         stEl = textEl;
-        stEl2 = theOtherTextEl;
       }
 
       let groupSelector = HighlightGroups.matchGroup(el);
@@ -539,13 +460,6 @@ export class SoleContentComponent implements OnInit, OnChanges {
         annEl.classList.add(UIConstants.highlightClass);
         component.highlightedWords.push(annEl);
       }
-      if (stEl2) {
-        let annEls2 = stEl2.querySelectorAll(groupSelector);
-        for (let annEl of annEls2) {
-          annEl.classList.add(UIConstants.highlightClass);
-          component.highlightedWords.push(annEl);
-        }
-      }
     };
 
     wordEl.addEventListener('mouseover', wordsMouseover);
@@ -560,19 +474,13 @@ export class SoleContentComponent implements OnInit, OnChanges {
 
     this.setupSentenceIdMap();
 
-    let contentEl = this.contentText.element.nativeElement;
-    let transEl = this.transText.element.nativeElement;
+    let contentEl = this.getTextEl();
 
     let selector = HighlightGroups.HighlightSelectors;
 
     let annEls = contentEl.querySelectorAll(selector);
     for (let annEl of annEls) {
-      this.highlightAssociatedWords(annEl, contentEl, transEl);
-    }
-
-    let tAnnEls = transEl.querySelectorAll(selector);
-    for (let annEl of tAnnEls) {
-      this.highlightAssociatedWords(annEl, transEl, contentEl);
+      this.highlightAssociatedWords(annEl, contentEl);
     }
 
     this.associationsHoverSetup = true;
@@ -600,7 +508,6 @@ export class SoleContentComponent implements OnInit, OnChanges {
 
     let component = this;
 
-    // tslint:disable-next-line:only-arrow-functions
     let content = function () {
       wacr.instance.paraTextEl = textEl;
       wacr.instance.annotationSet = component.annotationSet;
@@ -641,28 +548,22 @@ export class SoleContentComponent implements OnInit, OnChanges {
 
     this.wordsPopupMap.clear();
 
-    let contentEl = this.contentText.element.nativeElement;
+    let contentEl = this.getTextEl();
     let annEls = contentEl.querySelectorAll(UIConstants.annotationTagName);
     for (let annEl of annEls) {
       this.setupPopup(annEl, contentEl);
     }
 
-    let transEl = this.transText.element.nativeElement;
-    let tAnnEls = transEl.querySelectorAll(UIConstants.annotationTagName);
-    for (let annEl of tAnnEls) {
-      this.setupPopup(annEl, transEl);
-    }
-
     this.annotationHoverSetup = true;
   }
 
-  private markUserWords(side: Side) {
+  private markUserWords() {
 
     if (this.userWordsMarked || !this.markNewWords || !this.combinedWordsMap || !this.active) {
       return;
     }
 
-    let contentHolder = this.contentText.element.nativeElement;
+    let contentHolder = this.getTextEl();
 
     let nodeIterator = document.createNodeIterator(
       contentHolder,
@@ -760,23 +661,6 @@ export class SoleContentComponent implements OnInit, OnChanges {
     this.userWordsMarked = true;
   }
 
-  refreshContent() {
-    if (!this.para) {
-      return;
-    }
-    let html = this.para.content || ' ';
-    this.contentText.element.nativeElement.innerHTML = html;
-  }
-
-  refreshTrans() {
-    if (!this.para) {
-      return;
-    }
-    let html = this.para.trans || ' ';
-    this.transText.element.nativeElement.innerHTML = html;
-    this.transRendered = true;
-  }
-
   private clearHovers() {
     this.contentSentenceMap = null;
     this.sentenceHoverSetup = false;
@@ -792,19 +676,15 @@ export class SoleContentComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     let textChanged = false;
-    if (changes.para) {
-      this.refreshContent();
-      textChanged = true;
-    }
-    if (this.showTrans && !this.transRendered) {
-      this.refreshTrans();
+    if (changes.content) {
+      this.getTextEl().innerHTML = this.content || ' ';
       textChanged = true;
     }
 
     if (this.highlightedSentences && (!this.gotFocus || !this.sentenceHoverSetup || !this.highlightSentence)) {
       this.clearSentenceHighlights();
     }
-    if (this.highlightedWords && (!this.gotFocus || changes.content || changes.trans)) {
+    if (this.highlightedWords && (!this.gotFocus || changes.content)) {
       this.clearWordHighlights();
     }
 

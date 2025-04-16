@@ -1,6 +1,6 @@
 import {UIConstants} from '../config';
 import {Annotation} from '../models/annotation';
-import {Book} from '../models/book';
+import { Book, LangCode } from '../models/book';
 import {AnnotateResult} from './annotate-result';
 import {AnnotatorHelper} from './annotator-helper';
 import {ZhPhrases} from './zh-phrases';
@@ -9,7 +9,7 @@ import {ZhPhrases} from './zh-phrases';
 export class Annotator {
   // element or selector,
   container: Element | string = null;
-  lang: string;
+  lang: LangCode;
   zhPhrases: ZhPhrases;
 
   wordAtCursorIfNoSelection = true;
@@ -18,7 +18,7 @@ export class Annotator {
 
   current: Annotation;
 
-  constructor(container, lang) {
+  constructor(container, lang: LangCode) {
     this.container = container;
     this.lang = lang;
     if (Book.isChineseText(this.lang)) {

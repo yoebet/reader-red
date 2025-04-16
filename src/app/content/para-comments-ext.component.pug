@@ -1,15 +1,12 @@
 .ui.header 评论
 .ui.content.comments
-  .ui.divided.list(*ngIf='fakeParas')
-    .ui.item(*ngFor='let comment of fakeParas')
+  .ui.divided.list(*ngIf='comments')
+    .ui.item(*ngFor='let comment of comments')
       .title(*ngIf='comment.title') {{comment.title}}
-      para-comment-content.ui.content([para]='comment',
+      sole-content.ui.content([content]='comment.content',
         [contentContext]='contentContext',
-        [showTrans]='false',
         [gotFocus]='true',
         [activeAlways]='true',
-        [lookupDict]='true',
-        [highlightSentence]='false',
         [markNewWords]='markNewWords',
         [annotationHover]='false',
         (dictRequest)="onDictRequest($event)"

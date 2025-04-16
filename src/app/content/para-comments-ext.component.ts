@@ -16,8 +16,6 @@ export class ParaCommentsExtComponent extends PopupDictSupportComponent {
   para: Para;
   comments: ParaComment[];
 
-  fakeParas: (Para&ParaComment)[];
-
   constructor(protected annoService: AnnotationsService,
               protected vocabularyService: UserVocabularyService,
               protected dictZhService: DictZhService,
@@ -26,10 +24,6 @@ export class ParaCommentsExtComponent extends PopupDictSupportComponent {
     super(annoService, vocabularyService, dictZhService, resolver);
     this.para = modal.context;
     this.comments = this.para.comments || [];
-    this.fakeParas = this.comments.map(c => {
-      const pc: (Para&ParaComment) = { ...this.para, ...c, trans: '' };
-      return pc;
-    });
   }
 
   ngOnInit() {

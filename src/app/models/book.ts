@@ -1,6 +1,8 @@
-import {Model} from './model';
-import {Chap} from './chap';
-import {UserBook} from './user-book';
+import { Model } from './model';
+import { Chap } from './chap';
+import { UserBook } from './user-book';
+
+export type LangCode = 'En'|'Zh'|'Zc';
 
 export class Book extends Model {
 
@@ -15,17 +17,17 @@ export class Book extends Model {
 
 
   static Categories = ['Nov', 'Tex', 'Kid', 'His', 'Poe', 'Oth'].map(k => {
-    return {value: k, label: Book.CategoryNames[k]};
+    return { value: k, label: Book.CategoryNames[k] };
   });
 
-  static LangCodeEn = 'En';
-  static LangCodeZh = 'Zh';
-  static LangCodeZc = 'Zc';
+  static LangCodeEn: LangCode = 'En';
+  static LangCodeZh: LangCode = 'Zh';
+  static LangCodeZc: LangCode = 'Zc';
 
   static LangTypes = [
-    {value: Book.LangCodeEn, label: '英文'},
-    {value: Book.LangCodeZh, label: '中文'},
-    {value: Book.LangCodeZc, label: '文言文/诗词'}
+    { value: Book.LangCodeEn, label: '英文' },
+    { value: Book.LangCodeZh, label: '中文' },
+    { value: Book.LangCodeZc, label: '文言文/诗词' }
   ];
 
   static StatusNames = {
@@ -36,7 +38,7 @@ export class Book extends Model {
   };
 
   static Statuses = ['E', 'C', 'R'].map(k => {
-    return {value: k, label: Book.StatusNames[k]};
+    return { value: k, label: Book.StatusNames[k] };
   });
 
 

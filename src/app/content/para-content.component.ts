@@ -26,7 +26,7 @@ import { Para } from '../models/para';
 import { DictEntry } from '../models/dict-entry';
 import { DictZh } from '../models/dict-zh';
 import { Annotation } from '../models/annotation';
-import { Book } from '../models/book';
+import { Book, LangCode } from '../models/book';
 import { UserWord } from '../models/user-word';
 
 import { DictService } from '../services/dict.service';
@@ -122,7 +122,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
     }
   }
 
-  getTextLang(side: Side): string {
+  getTextLang(side: Side): LangCode {
     let { contentLang, transLang } = this.contentContext;
     return (side === SideContent) ? (contentLang || Book.LangCodeEn) : (transLang || Book.LangCodeZh);
   }
@@ -258,7 +258,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
             return;
           }
           let dr = new DictRequest();
-          dr.dictLang = 'en';
+          dr.dictLang = Book.LangCodeEn;
           dr.wordElement = element;
           dr.dictEntry = entry;
           dr.initialSelected = { pos: oriPos, meaning: oriMeaning } as SelectedItem;
@@ -317,7 +317,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
             return;
           }
           let dr = new DictRequest();
-          dr.dictLang = 'zh';
+          dr.dictLang = Book.LangCodeZh;
           dr.wordElement = element;
           dr.dictEntry = entry;
           dr.context = textContext;
