@@ -3,8 +3,8 @@ import { Component, ComponentFactoryResolver, Input } from '@angular/core';
 import { UIConstants } from '../config';
 import { DictEntry } from '../models/dict-entry';
 import { DictService } from '../services/dict.service';
-import { UserVocabularyService } from '../services/user-vocabulary.service';
 import { ParaContentComponent } from '../content/para-content.component';
+import { DictZhService } from '../services/dict-zh.service';
 
 @Component({
   selector: 'word-text',
@@ -16,9 +16,9 @@ export class WordTextComponent extends ParaContentComponent {
   @Input() showTitle: boolean;
 
   constructor(protected dictService: DictService,
-              protected userVocabularyService: UserVocabularyService,
+              protected dictZhService: DictZhService,
               protected resolver: ComponentFactoryResolver) {
-    super(dictService, userVocabularyService, resolver);
+    super(dictService, dictZhService, resolver);
   }
 
 
@@ -32,7 +32,7 @@ export class WordTextComponent extends ParaContentComponent {
     if (!this.para || !this.entry) {
       return;
     }
-    let {content, trans} = this.highlightTheWord(this.para);
+    let { content, trans } = this.highlightTheWord(this.para);
   }
 
 
@@ -41,7 +41,7 @@ export class WordTextComponent extends ParaContentComponent {
     let commonLength = first.length;
     for (let i = 1; i < strings.length; ++i) {
       let si = strings[i];
-      if(commonLength > si.length){
+      if (commonLength > si.length) {
         commonLength = si.length;
       }
       for (let j = 0; j < commonLength; ++j) {
@@ -201,7 +201,7 @@ export class WordTextComponent extends ParaContentComponent {
       trans = contentHolder.innerHTML;
     }
 
-    return {content, trans};
+    return { content, trans };
   }
 
 

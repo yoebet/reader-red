@@ -1,17 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
-
-import { UIConstants } from '../config';
 import { Book } from '../models/book';
 import { Chap } from '../models/chap';
 import { Para } from '../models/para';
-import { AnnotationSet } from '../anno/annotation-set';
 import { BookService } from '../services/book.service';
 import { ChapService } from '../services/chap.service';
 import { AnnotationsService } from '../services/annotations.service';
 import { PopupDictSupportComponent } from '../dict/popup-dict-support.component';
+import { UserVocabularyService } from '../services/user-vocabulary.service';
+import { DictZhService } from '../services/dict-zh.service';
 
 @Component({
   selector: 'chap-detail',
@@ -22,24 +21,24 @@ export class ChapComponent extends PopupDictSupportComponent implements OnInit {
   book: Book;
   chap: Chap;
   selectedPara: Para;
-  showTrans = true;
-  leftRight = true;
-  highlightSentence = true;
-  annotatedWordsHover = true;
-  markNewWords = true;
-  lookupDict = false;
-
 
   constructor(private bookService: BookService,
               private chapService: ChapService,
+              private dictZhService: DictZhService,
               private route: ActivatedRoute,
               private location: Location,
-              protected annoService: AnnotationsService) {
-    super(annoService);
+              protected annoService: AnnotationsService,
+              protected vocabularyService: UserVocabularyService,
+              protected resolver: ComponentFactoryResolver) {
+    super(annoService, vocabularyService, resolver);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
+    if (this.loadZhPhrases) {
+      this.dictZhService.getPhrases()
+        .subscribe(ph => this.contentContext.zhPhrases = ph);
+    }
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
         this.chapService.getDetail(params.get('id')))
@@ -59,23 +58,9 @@ export class ChapComponent extends PopupDictSupportComponent implements OnInit {
         .subscribe(book => {
           chap.book = book;
           this.book = book;
-          this.loadAnnotations();
+          this.onBookChanged(book);
         });
     });
-  }
-
-  private loadAnnotations() {
-    let afId = this.book.annotationFamilyId;
-    if (!afId) {
-      return;
-    }
-    this.annoService.getAnnotationSet(afId)
-      .subscribe((annotationSet: AnnotationSet) => {
-        if (!annotationSet) {
-          return;
-        }
-        this.annotationSet = annotationSet;
-      });
   }
 
   selectPara(para): void {
@@ -91,23 +76,6 @@ export class ChapComponent extends PopupDictSupportComponent implements OnInit {
       return;
     }
     this.selectPara(para);
-  }
-
-  private toggleBodyClass(className: string, flag: boolean) {
-    let bodyClasses = document.body.classList;
-    if (flag) {
-      bodyClasses.remove(className);
-    } else {
-      bodyClasses.add(className);
-    }
-  }
-
-  onMarkNewWordsChange() {
-    this.toggleBodyClass(UIConstants.newwordDisabledBodyClass, this.markNewWords);
-  }
-
-  onAnnotatedWordsHoverChange() {
-    this.toggleBodyClass(UIConstants.annoDisabledBodyClass, this.annotatedWordsHover);
   }
 
   paraTracker(index, para) {

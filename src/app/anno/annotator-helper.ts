@@ -1,7 +1,15 @@
 import {DataAttrNames, DataAttrValues, UIConstants} from '../config';
 import {ZhPhrases} from './zh-phrases';
+import {ElAnnos} from './el-annos';
 
 export class AnnotatorHelper {
+
+  static stripEnWord(word: string): string {
+    if (word.indexOf('­') >= 0) {// 173, 0xAD, soft hyphen
+      word = word.replace(/­/, '');
+    }
+    return word;
+  }
 
   static trimSelected(text: string, charPattern: RegExp, wordStart: number, wordEnd: number) {
     let result = {trimLeft: false, trimRight: false, wordStart, wordEnd};
@@ -107,7 +115,7 @@ export class AnnotatorHelper {
         if (!charPattern.test(text.charAt(tryEnd))) {
           break;
         }
-        if(tryEnd - wordStart < 2){
+        if (tryEnd - wordStart < 2) {
           tryEnd++;
           continue;
         }
@@ -125,7 +133,7 @@ export class AnnotatorHelper {
         if (!charPattern.test(text.charAt(tryStart))) {
           break;
         }
-        if(wordEnd - tryStart < 2){
+        if (wordEnd - tryStart < 2) {
           tryStart--;
           continue;
         }
@@ -370,4 +378,128 @@ export class AnnotatorHelper {
 
     return true;
   }
+
+  static parseAnnotations(wordEl, annotationSet, paraTextEl): ElAnnos {
+    let annos = new ElAnnos();
+    if (!wordEl) {
+      return annos;
+    }
+    annos.word = wordEl.textContent;
+
+    let phraseWords = null;
+
+    let dataset = wordEl.dataset;
+    for (let name in dataset) {
+      if (!dataset.hasOwnProperty(name)) {
+        continue;
+      }
+      let value = dataset[name];
+      if (name === DataAttrNames.mean && !dataset[DataAttrNames.forPhraseGroup]) {
+        let mean = value;
+        let forWord = wordEl.dataset[DataAttrNames.word];
+        if (!forWord) {
+          forWord = annos.word;
+        }
+        let pos = wordEl.dataset[DataAttrNames.pos] || '';
+        let text0 = mean;
+        if (pos) {
+          text0 = `${pos} ${mean}`;
+        }
+        annos.meaning = {pos, mean, word: forWord, text: text0};
+        continue;
+      }
+
+      if (name === DataAttrNames.assoc) {
+
+        let group = value;
+
+        let stEl = AnnotatorHelper.findSentence(wordEl, paraTextEl);
+        if (!stEl) {
+          stEl = paraTextEl;
+        }
+        let groupSelector = `[data-${DataAttrNames.assoc}=${group}]`;
+        let groupEls = stEl.querySelectorAll(groupSelector);
+        let els = Array.from(groupEls);
+        let words = els.map((el: Element) => el.textContent).join(' ');
+        if (words.indexOf(' ') === -1) {
+          continue;
+        }
+
+        phraseWords = words;
+
+        if (DataAttrValues.phraPattern.test(group)) {
+
+          let mean = null;
+          let phraseWord = words;
+
+          for (let el0 of els) {
+            let el = el0 as HTMLElement;
+            let ds = el.dataset;
+            mean = ds[DataAttrNames.mean];
+            if (!mean) {
+              continue;
+            }
+            let phraseGroup = ds[DataAttrNames.forPhraseGroup];
+            let forWord = ds[DataAttrNames.word];
+            if (forWord !== words && phraseGroup !== group) {
+              continue;
+            }
+            if (forWord) {
+              phraseWord = forWord;
+            }
+            break;
+          }
+
+          if (mean) {
+            annos.phraseMeaning = {pos: '', mean, word: phraseWord, text: mean};
+          }
+          continue;
+        }
+
+      }
+
+      if (name === DataAttrNames.note) {
+        annos.note = value;
+        continue;
+      }
+      let text = annotationSet.annotationOutput(name, value);
+      if (!text) {
+        continue;
+      }
+      let item = {dataName: name, dataValue: value, text};
+      annos.items.push(item);
+    }
+
+    if (phraseWords && !annos.note && !annos.meaning && !annos.phraseMeaning && annos.items.length === 0) {
+      annos.word = phraseWords;
+    }
+
+    return annos;
+  }
+
+  static anyAnno(wordEl, annotationSet): boolean {
+    if (!wordEl) {
+      return false;
+    }
+    let dataset = wordEl.dataset;
+    for (let name in dataset) {
+      if (!dataset.hasOwnProperty(name)) {
+        continue;
+      }
+      let value = dataset[name];
+      if (name === DataAttrNames.mean) {
+        return true;
+      }
+      if (name === DataAttrNames.note) {
+        return true;
+      }
+      let text = annotationSet.annotationOutput(name, value);
+      if (text) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
 }

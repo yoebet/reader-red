@@ -43,6 +43,8 @@ import { DictSimpleComponent } from './dict/dict-simple.component';
 import { LoginPopupComponent } from './account/login-popup.component';
 import { LoginComponent } from './account/login.component';
 import { SessionService } from './services/session.service';
+import { DictZhEntrySmiComponent } from './dict-zh/dict-zh-entry-smi.component';
+import { DictZhService } from './services/dict-zh.service';
 
 @NgModule({
   imports: [
@@ -74,7 +76,8 @@ import { SessionService } from './services/session.service';
     WordTagsSettingComponent,
     UserWordComponent,
     WordTagsComponent,
-    WordTextComponent
+    WordTextComponent,
+    DictZhEntrySmiComponent
   ],
   providers: [
     AppService,
@@ -88,12 +91,14 @@ import { SessionService } from './services/session.service';
     UserVocabularyService,
     UserPreferenceService,
     AnnotationsService,
-    SessionService
+    SessionService,
+    DictZhService
   ],
   entryComponents: [
     LoginPopupComponent,
     WordAnnosComponent,
-    DictSimpleComponent
+    DictSimpleComponent,
+    DictZhEntrySmiComponent
   ],
   bootstrap: [AppComponent]
 })

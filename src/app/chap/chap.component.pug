@@ -14,8 +14,8 @@ div(*ngIf='chap')
       sui-checkbox([(ngModel)]='leftRight', [isDisabled]='!showTrans') 左右对照
       sui-checkbox([(ngModel)]='lookupDict') 单击查词
       //sui-checkbox([(ngModel)]='highlightSentence') 句子高亮
-      sui-checkbox([(ngModel)]='markNewWords', (ngModelChange)='onMarkNewWordsChange()') 标记生词
-      sui-checkbox([(ngModel)]='annotatedWordsHover', (ngModelChange)='onAnnotatedWordsHoverChange()') 显示标注
+      sui-checkbox([(ngModel)]='markNewWords', (ngModelChange)='toggleMarkNewWords()') 标记生词
+      sui-checkbox([(ngModel)]='annotationHover', (ngModelChange)='toggleWordsHover()') 显示标注
 
   .ui.list.items
     .item.paragraph(*ngFor='let para of chap.paras; trackBy: paraTracker; index as index')
@@ -23,26 +23,36 @@ div(*ngIf='chap')
         .value {{index+1}}
       para-content.para-content(
       [para]='para',
+      [contentContext]='contentContext',
       [showTrans]='showTrans',
       [gotFocus]='para===selectedPara',
       [activeAlways]='true',
       [lookupDict]='lookupDict',
-      [highlightSentence]='para===selectedPara && highlightSentence',
+      [highlightSentence]='highlightSentence',
       [markNewWords]='markNewWords',
-      [annotatedWordsHover]='annotatedWordsHover',
-      [annotationSet]='annotationSet',
+      [annotationHover]='annotationHover',
       [ngClass]='{"selected": para===selectedPara, "left-right": leftRight, "up-down": !leftRight}',
       (mouseover)='selectPara(para)',
       (click)='selectPara(para)',
       (dictRequest)="onDictRequest($event)")
 
-  #dictPopup.ui.basic.popup
-    dict-entry(*ngIf='dictRequest',
-    [entry]='dictRequest.dictEntry',
-    [initialSelectedItemId]='dictRequest.meaningItemId',
-    [relatedWords]='dictRequest.relatedWords',
-    [context]='dictRequest.context',
-    (viewReady)='onDictPopupReady()')
+  #dictPopup.ui.basic.popup(*ngIf='dictRequest')
+    dict-entry(*ngIf='dictRequest.dictLang==="en"',
+      [entry]='dictRequest.dictEntry',
+      [initialSelectedItem]='dictRequest.initialSelected',
+      [relatedWords]='dictRequest.relatedWords',
+      [context]='dictRequest.context',
+      (viewReady)='onDictPopupReady()',
+      (userWordChanged)='onUserWordChange($event)',
+      (dictItemSelected)='onDictItemSelect($event)')
+    dict-zh-entry-smi(*ngIf='dictRequest.dictLang==="zh"',
+      [entry]='dictRequest.dictEntry',
+      [initialSelectedItem]='dictRequest.initialSelected',
+      [relatedWords]='dictRequest.relatedWords',
+      [context]='dictRequest.context',
+      (viewReady)='onDictPopupReady()',
+      (dictItemSelected)='onDictItemSelect($event)')
+  ng-template(#dictSimple='')
 
 .ui.hidden.clearing.divider
 button.ui.tiny.button((click)='goBack()') 返回

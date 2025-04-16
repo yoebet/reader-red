@@ -16,32 +16,41 @@ import {
 import * as Drop from 'tether-drop';
 
 import { Annotator } from '../anno/annotator';
+import { AnnotatorHelper } from '../anno/annotator-helper';
 import { AnnotateResult } from '../anno/annotate-result';
 import { AnnotationSet, HighlightGroups } from '../anno/annotation-set';
+import { CombinedWordsMap } from '../en/combined-words-map';
 
-import { UIConstants } from '../config';
+import { DataAttrNames, DataAttrValues, SpecialAnnotations, UIConstants } from '../config';
 import { Para } from '../models/para';
 import { DictEntry } from '../models/dict-entry';
-import { DictService } from '../services/dict.service';
-import { DictRequest } from '../chap/dict-request';
-import { WordAnnosComponent } from './word-annos.component';
-import { UserWord } from '../models/user-word';
-import { UserVocabularyService } from '../services/user-vocabulary.service';
-import { CombinedWordsMap } from '../en/combined-words-map';
+import { DictZh } from '../models/dict-zh';
+import { Annotation } from '../models/annotation';
 import { Book } from '../models/book';
-import { AnnotatorHelper } from '../anno/annotator-helper';
-import { DictSimpleComponent } from '../dict/dict-simple.component';
+import { UserWord } from '../models/user-word';
+
+import { DictService } from '../services/dict.service';
+import { DictZhService } from '../services/dict-zh.service';
+import { DictRequest, SelectedItem, UserWordChange } from '../content-types/dict-request';
+import { WordAnnosComponent } from './word-annos.component';
+import { ContentContext } from '../content-types/content-context';
+
+
+declare type Side = 'content'|'trans';
+
+const SideContent: Side = 'content';
+const SideTrans: Side = 'trans';
+
+// declare type TriggerMethod = Tap/Click/LongClick/RightClick/Selection
 
 @Component({
   selector: 'para-content',
-  templateUrl: './para-content.component.html',
-  styleUrls: ['./para-content.component.css']
+  templateUrl: './para-content.component.html'
 })
 export class ParaContentComponent implements OnInit, OnChanges {
   @ViewChild('contentText', { read: ViewContainerRef }) contentText: ViewContainerRef;
-  @ViewChild('paraTrans', { read: ViewContainerRef }) paraTrans: ViewContainerRef;
+  @ViewChild('transText', { read: ViewContainerRef }) transText: ViewContainerRef;
   @ViewChild('wordAnnos', { read: ViewContainerRef }) wordAnnos: ViewContainerRef;
-  @ViewChild('dictSimple', { read: ViewContainerRef }) dictSimple: ViewContainerRef;
   @Input() para: Para;
   @Input() showTrans: boolean;
   @Input() gotFocus: boolean;
@@ -49,210 +58,343 @@ export class ParaContentComponent implements OnInit, OnChanges {
   @Input() lookupDict: boolean;
   @Input() highlightSentence: boolean;
   @Input() markNewWords: boolean;
-  @Input() annotatedWordsHover: boolean;
-  @Input() annotationSet: AnnotationSet;
-
+  @Input() annotationHover: boolean;
+  @Input() annotation: Annotation;
+  @Input() contentContext: ContentContext;
   @Output() dictRequest = new EventEmitter<DictRequest>();
 
+  lookupDictSimple = false;
+
+  contentAnnotator: Annotator;
+  transAnnotator: Annotator;
   transRendered = false;
   sentenceHoverSetup = false;
-  associatedWordsHoverSetup = false;
-  annotatedWordsHoverSetup = false;
-  wordMarked = false;
+  associationsHoverSetup = false;
+  wordsHoverSetup = false;
+  userWordsMarked = false;
 
   highlightedSentences: Element[];
   highlightedWords: Element[];
+
   wordsPopupMap = new Map<Element, Drop>();
   wordAnnosComponentRef: ComponentRef<WordAnnosComponent>;
 
-  static highlightWordsSelector = HighlightGroups.highlightAnnotationSelectors;
-  annotator: Annotator;
+  contentSentenceMap: Map<string, Element>;
+  transSentenceMap: Map<string, Element>;
 
   combinedWordsMap: CombinedWordsMap;
 
-  simpleDictComponentRef: ComponentRef<DictSimpleComponent>;
-  lastWordDrop = null;
-
-
   constructor(protected dictService: DictService,
-              protected userVocabularyService: UserVocabularyService,
+              protected dictZhService: DictZhService,
               protected resolver: ComponentFactoryResolver) {
   }
+
 
   get active() {
     return this.activeAlways || this.gotFocus;
   }
 
+  get annotationSet(): AnnotationSet {
+    if (!this.contentContext) {
+      return AnnotationSet.emptySet();
+    }
+    return this.contentContext.annotationSet;
+  }
+
   ngOnInit(): void {
-    this.userVocabularyService.getCombinedWordsMap()
-      .subscribe((map: CombinedWordsMap) => {
-        this.combinedWordsMap = map;
-        if (this.active) {
-          this.markUserNewWords();
-        }
-      });
+    let wmObs = this.contentContext.combinedWordsMapObs;
+    if (wmObs) {
+      let contentLang = this.getTextLang(SideContent);
+      if (!contentLang || contentLang === Book.LangCodeEn) {
+        wmObs.subscribe((map: CombinedWordsMap) => {
+          this.combinedWordsMap = map;
+          if (this.active) {
+            this.markUserWords(SideContent);
+          }
+        });
+      }
+    }
 
     if (this.activeAlways) {
-      this.setupAssociatedWordsHover();
-      this.setupAnnotatedWordsHover();
+      this.setupAssociationHover();
+      // TODO: if (!this.annotationSet)
+      this.setupAnnotationsPopup();
     }
   }
 
-  private currentPhrase(wordEl) {
-    let stEl = this.findSentence(wordEl);
-    if (!stEl) {
-      stEl = this.contentText.element.nativeElement;
-    }
-    let ds = wordEl.dataset;
-    let group = ds.phra;
-    if (!group) {
-      return null;
-    }
-    if (!/^g\d$/.test(group)) {
-      return null;
-    }
-    let groupSelector = `[data-phra=${group}]`;
-    let groupEls = stEl.querySelectorAll(groupSelector);
-    let els = Array.from(groupEls);
-    return els.map((el: Element) => el.textContent).join(' ');
+  getTextLang(side: Side): string {
+    let { contentLang, transLang } = this.contentContext;
+    return (side === SideContent) ? (contentLang || Book.LangCodeEn) : (transLang || Book.LangCodeZh);
   }
 
-  private getSimpleDictComponentRef() {
-    if (!this.simpleDictComponentRef) {
-      let factory: ComponentFactory<DictSimpleComponent> = this.resolver.resolveComponentFactory(DictSimpleComponent);
-      this.dictSimple.clear();
-      this.simpleDictComponentRef = this.dictSimple.createComponent(factory);
-    }
-    return this.simpleDictComponentRef;
-  }
-
-  showDictSimplePopup(el, entry) {
-    if (this.lastWordDrop) {
-      this.lastWordDrop.destroy();
-      this.lastWordDrop = null;
-    }
-    let dscr = this.getSimpleDictComponentRef();
-    let content = function () {
-      dscr.instance.entry = entry;
-      return dscr.location.nativeElement;
-    };
-    let drop = new Drop({
-      target: el,
-      content,
-      classes: `${UIConstants.dropClassPrefix}dict`,
-      constrainToScrollParent: false,
-      remove: true,
-      openOn: 'click', // click,hover,always
-      tetherOptions: {
-        attachment: 'top center',
-        constraints: [
-          {
-            to: 'window',
-            attachment: 'together',
-            pin: true
-          }
-        ]
+  getAnnotator(side: Side, annotation = null): Annotator {
+    let annt;
+    if (side === SideContent) {
+      annt = this.contentAnnotator;
+      if (!annt) {
+        let el = this.contentText.element.nativeElement;
+        let lang = this.getTextLang(side);
+        annt = new Annotator(el, lang);
+        this.contentAnnotator = annt;
       }
-    });
-    drop.open();
-    drop.once('close', () => {
-      if (this.lastWordDrop === drop) {
-        this.lastWordDrop = null;
+    } else {
+      annt = this.transAnnotator;
+      if (!annt) {
+        let el = this.transText.element.nativeElement;
+        let lang = this.getTextLang(side);
+        annt = new Annotator(el, lang);
+        this.transAnnotator = annt;
       }
-    });
-    this.lastWordDrop = drop;
+    }
+    if (Book.isChineseText(annt.lang) && !annt.zhPhrases) {
+      annt.zhPhrases = this.contentContext.zhPhrases;
+    }
+    annt.switchAnnotation(annotation || this.annotation);
+    return annt;
   }
 
-  lookupWordsMeaning() {
-    this.annotator.switchAnnotation(this.annotationSet.wordMeaningAnnotation);
-    let ar: AnnotateResult = this.annotator.annotate();
+  private getTextEl(side: Side) {
+    return side === SideContent ?
+      this.contentText.element.nativeElement :
+      this.transText.element.nativeElement;
+  }
+
+  private getTheSide(textEl): Side {
+    return textEl === this.contentText.element.nativeElement ?
+      SideContent :
+      SideTrans;
+  }
+
+  private getTheOtherSideText(textEl) {
+    return textEl === this.transText.element.nativeElement ?
+      this.contentText.element.nativeElement :
+      this.transText.element.nativeElement;
+  }
+
+  private destroyAnnotatedWordsPopup(element) {
+    let drop: any = this.wordsPopupMap.get(element);
+    if (drop) {
+      drop.destroy();
+      this.wordsPopupMap.delete(element);
+    }
+  }
+
+  selectWordMeaning(side: Side, $event, triggerMethod = null) {
+    let ann = AnnotationSet.selectMeaningAnnotation;
+    let ar: AnnotateResult = this.getAnnotator(side, ann).annotate($event);
     if (!ar || !ar.wordEl) {
       return;
     }
     let element: any = ar.wordEl;
     let word = element.textContent;
 
-    let oriMid = null;
-    let dataName = 'mid';
-    if (element.dataset[dataName]) {
-      let mid = parseInt(element.dataset[dataName]);
-      if (!isNaN(mid)) {
-        oriMid = mid;
+    let oriPos = element.dataset[DataAttrNames.pos];
+    let oriMeaning = element.dataset[DataAttrNames.mean];
+    let oriForWord = element.dataset[DataAttrNames.word] || word;
+
+    let textEl = this.getTextEl(side);
+
+    let meaningItemCallback = (selected: SelectedItem) => {
+
+      if (!selected) {
+        // cancel
+        let { changed, removed } = AnnotatorHelper.removeDropTagIfDummy(element);
+        if (changed) {
+          // this.onContentChange();
+          if (removed) {
+            this.destroyAnnotatedWordsPopup(element);
+          }
+        }
+        return;
+      }
+
+      if (!selected.meaning) {
+        // unset
+        delete element.dataset[DataAttrNames.pos];
+        delete element.dataset[DataAttrNames.mean];
+        delete element.dataset[DataAttrNames.word];
+        let { changed, removed } = AnnotatorHelper.removeDropTagIfDummy(element);
+        if (removed) {
+          this.destroyAnnotatedWordsPopup(element);
+        }
+      } else {
+        if (selected.pos !== oriPos) {
+          element.dataset[DataAttrNames.pos] = selected.pos || '';
+        }
+        if (selected.meaning !== oriMeaning) {
+          element.dataset[DataAttrNames.mean] = selected.meaning;
+        }
+        if (selected.word && selected.word !== oriForWord) {
+          element.dataset[DataAttrNames.word] = selected.word;
+        }
+      }
+
+      this.notifyChange(side);
+      if (this.wordsHoverSetup) {
+        this.setupPopup(element, textEl);
+      }
+    };
+
+    let textContext = {} as any;
+    if (this.para) {
+      textContext.paraId = this.para._id;
+      let chap = this.para.chap;
+      if (chap) {
+        textContext.chapId = chap._id;
+        if (chap.book) {
+          textContext.bookId = chap.book._id;
+        }
       }
     }
-    let oriForWord = element.dataset.word || word;
 
-    this.dictService.getEntry(oriForWord, { base: true, stem: true })
-      .subscribe((entry: DictEntry) => {
-        if (entry == null) {
-          AnnotatorHelper.removeDropTagIfDummy(element);
-          return;
-        }
+    let lang = this.getTextLang(side);
+    if (!lang || lang === Book.LangCodeEn) {
+      oriForWord = AnnotatorHelper.stripEnWord(oriForWord);
 
-        let dictPopup = document.getElementById('dictPopup');
-        let contentEl = this.contentText.element.nativeElement;
-        if (dictPopup.contains(contentEl)) {
-          this.showDictSimplePopup(element, entry);
-          return;
-        }
-
-        let dr = new DictRequest();
-        dr.wordElement = element;
-        dr.dictEntry = entry;
-        dr.meaningItemId = oriMid;
-        dr.relatedWords = null;
-        let paraId = this.para._id;
-        let chap = this.para.chap;
-        if (chap) {
-          let chapId = chap._id;
-          if (chap.book) {
-            let bookId = chap.book._id;
-            dr.context = { bookId, chapId, paraId };
+      this.dictService.getEntry(oriForWord, { base: true, stem: true })
+        .subscribe((entry: DictEntry) => {
+          if (entry == null) {
+            AnnotatorHelper.removeDropTagIfDummy(element);
+            return;
           }
-        }
-        dr.onClose = () => {
-          AnnotatorHelper.removeDropTagIfDummy(element);
-        };
-        if (oriForWord !== word) {
-          dr.relatedWords = [word];
-        }
-        let phrase = this.currentPhrase(element);
-        if (phrase && phrase !== word && phrase !== oriForWord) {
-          if (dr.relatedWords === null) {
-            dr.relatedWords = [phrase];
+          let dr = new DictRequest();
+          dr.dictLang = 'en';
+          dr.wordElement = element;
+          dr.dictEntry = entry;
+          dr.initialSelected = { pos: oriPos, meaning: oriMeaning } as SelectedItem;
+          dr.relatedWords = null;
+          dr.context = textContext;
+          if (oriForWord !== word) {
+            dr.relatedWords = [word];
+          }
+          let phrase = AnnotatorHelper.currentPhrase(element, textEl);
+          if (phrase && phrase !== word && phrase !== oriForWord) {
+            if (dr.relatedWords === null) {
+              dr.relatedWords = [phrase];
+            } else {
+              dr.relatedWords.push(phrase);
+            }
+          }
+          if (triggerMethod === 'Ctrl_Click') {
+            dr.simplePopup = !this.lookupDictSimple;
           } else {
-            dr.relatedWords.push(phrase);
+            dr.simplePopup = this.lookupDictSimple;
           }
-        }
-        this.dictRequest.emit(dr);
-      });
+          dr.meaningItemCallback = meaningItemCallback;
+          dr.userWordChangeCallback = (change: UserWordChange) => {
+            let { word: uwWord, dictEntry, op, familiarity } = change;
+            if (dictEntry !== entry) {
+              return;
+            }
+            const NAME_WF = DataAttrNames.wordFamiliarity;
+            if (op === 'removed') {
+              let codeOrUW = this.combinedWordsMap.get(uwWord);
+              if (codeOrUW) {
+                delete element.dataset[NAME_WF];
+              } else {
+                element.dataset[NAME_WF] = DataAttrValues.uwfBeyond;
+              }
+              return;
+            }
+            element.dataset[NAME_WF] = '' + familiarity;
+          };
+          this.dictRequest.emit(dr);
+        });
+    } else if (Book.isChineseText(lang)) {
+
+      this.dictZhService.getEntry(oriForWord)
+        .subscribe((entry: DictZh) => {
+          if (entry == null) {
+            AnnotatorHelper.removeDropTagIfDummy(element);
+            return;
+          }
+          let dr = new DictRequest();
+          dr.dictLang = 'zh';
+          dr.wordElement = element;
+          dr.dictEntry = entry;
+          dr.context = textContext;
+          dr.initialSelected = { pos: oriPos, meaning: oriMeaning } as SelectedItem;
+          dr.meaningItemCallback = meaningItemCallback;
+          this.dictRequest.emit(dr);
+        });
+    }
   }
 
-  onMouseup($event) {
-    if (!this.active) {
+  private doAnnotate(side: Side, $event, triggerMethod = null) {
+    if (this.annotation.nameEn === SpecialAnnotations.SelectMeaning.nameEn) {
+      this.selectWordMeaning(side, $event, triggerMethod);
       return;
     }
-    let lookupDict = false;
-    let ctrlKey = $event.ctrlKey || $event.metaKey;
-    if ((!ctrlKey && this.lookupDict) || (ctrlKey && !this.lookupDict)) {
-      lookupDict = true;
-    } else {
-      let selection = window.getSelection();
-      if (selection && selection.anchorOffset !== selection.focusOffset) {
-        lookupDict = true;
-      }
+    /*if (this.annotation.nameEn === SpecialAnnotations.AddANote.nameEn) {
+      this.addANote(side, triggerMethod);
+      return;
+    }*/
+    let ar: AnnotateResult = this.getAnnotator(side).annotate($event);
+    if (!ar) {
+      return;
     }
-    if (lookupDict) {
-      if (!this.annotator) {
-        let contentEl = this.contentText.element.nativeElement;
-        this.annotator = new Annotator(contentEl, Book.LangCodeEn);
+    if (ar.wordEl) {
+      if (ar.elCreated) {
+        let textEl = this.getTextEl(side);
+        if (ar.wordEl.matches(HighlightGroups.HighlightSelectors)) {
+          this.highlightAssociatedWords(ar.wordEl, textEl, this.getTheOtherSideText(textEl));
+        }
+        if (this.wordsHoverSetup) {
+          this.setupPopup(ar.wordEl, textEl);
+        }
       }
-      $event.stopPropagation();
-      $event.preventDefault();
-      this.lookupWordsMeaning();
+      if (ar.operation === 'remove') {
+        let { changed, removed } = AnnotatorHelper.removeDropTagIfDummy(ar.wordEl);
+        if (removed) {
+          this.destroyAnnotatedWordsPopup(ar.wordEl);
+        }
+      }
+      this.notifyChange(side);
     }
   }
 
+  onMouseup($event, side: Side) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    if ($event.which === 3) {
+      return;
+    }
+    let triggerMethod = 'Click';
+    /*if ($event.altKey) {
+      triggerMethod = 'Alt_' + triggerMethod;
+      this.addANote(side, triggerMethod);
+      return;
+    }*/
+
+    let ctrl = $event.ctrlKey || $event.metaKey;
+    if (ctrl) {
+      triggerMethod = 'Ctrl_' + triggerMethod;
+    }
+    if (this.lookupDict) {
+      this.selectWordMeaning(side, $event, triggerMethod);
+      return;
+    }
+    if ($event.ctrlKey || $event.metaKey) {
+      this.selectWordMeaning(side, $event, triggerMethod);
+      return;
+    }
+    if (!this.gotFocus) {
+      return;
+    }
+    if (!this.annotation) {
+      return;
+    }
+    this.doAnnotate(side, $event, triggerMethod);
+  }
+
+  onContextmenu($event, side: Side) {
+    this.selectWordMeaning(side, $event, 'RightClick');
+    $event.stopPropagation();
+    $event.preventDefault();
+  }
+
+  private notifyChange(side: Side) {
+  }
 
   private clearSentenceHighlights() {
     let hls = this.highlightedSentences;
@@ -278,46 +420,53 @@ export class ParaContentComponent implements OnInit, OnChanges {
     this.highlightedWords = null;
   }
 
-  private setupSentenceHover() {
-
-    if (this.sentenceHoverSetup || !this.highlightSentence || !this.gotFocus) {
+  private setupSentenceIdMap() {
+    if (this.contentSentenceMap != null) {
       return;
     }
-
+    this.contentSentenceMap = new Map<string, Element>();
+    this.transSentenceMap = new Map<string, Element>();
     let contentEl = this.contentText.element.nativeElement;
-    let transEl = this.paraTrans.element.nativeElement;
-    let contentMap = new Map<string, Element>();
-    let transMap = new Map<string, Element>();
-    for (let [textEl, selMap] of [[contentEl, contentMap], [transEl, transMap]]) {
+    let transEl = this.transText.element.nativeElement;
+    for (let [textEl, selMap] of [[contentEl, this.contentSentenceMap], [transEl, this.transSentenceMap]]) {
       let sentenceEls = textEl.querySelectorAll(UIConstants.sentenceTagName);
       for (let stEl of sentenceEls) {
         if (!stEl.dataset) {
           continue;
         }
-        let sid = stEl.dataset.sid;
+        let sid = stEl.dataset[UIConstants.sentenceIdAttrName];
         if (sid) {
           selMap.set(sid, stEl);
         }
       }
     }
+  }
+
+  private setupSentenceHover() {
+
+    if (this.sentenceHoverSetup || !this.highlightSentence) {
+      return;
+    }
+
+    this.setupSentenceIdMap();
 
     let component = this;
 
     let sentenceMouseover = function (event) {
-      if (!component.highlightSentence || !component.gotFocus) {
+      if (!component.highlightSentence) {
         return;
       }
       let el = this;
       if (!el.dataset) {
         return;
       }
-      let sid = el.dataset.sid;
+      let sid = el.dataset[UIConstants.sentenceIdAttrName];
       if (!sid) {
         return;
       }
 
       component.clearSentenceHighlights();
-      for (let selMap of [contentMap, transMap]) {
+      for (let selMap of [component.contentSentenceMap, component.transSentenceMap]) {
         let tsEl = selMap.get(sid);
         if (tsEl) {
           tsEl.classList.add(UIConstants.highlightClass);
@@ -329,6 +478,8 @@ export class ParaContentComponent implements OnInit, OnChanges {
       }
     };
 
+    let contentEl = this.contentText.element.nativeElement;
+    let transEl = this.transText.element.nativeElement;
     for (let textEl of [contentEl, transEl]) {
       let sentenceEls = textEl.querySelectorAll(UIConstants.sentenceTagName);
       for (let sentenceEl of sentenceEls) {
@@ -339,28 +490,14 @@ export class ParaContentComponent implements OnInit, OnChanges {
     this.sentenceHoverSetup = true;
   }
 
-  private findSentence(node): any {
-    let contentTextEl = this.contentText.element.nativeElement;
-    let sentenceSelector = UIConstants.sentenceTagName;
-    do {
-      if (node instanceof Element) {
-        let el = node as Element;
-        if (el === contentTextEl) {
-          return null;
-        }
-        if (el.matches(sentenceSelector)) {
-          return el;
-        }
-      }
-      node = node.parentNode;
-    } while (node);
-    return null;
-  }
+  private highlightAssociatedWords(wordEl, textEl, theOtherTextEl) {
 
-  private highlightAssociatedWords(wordEl) {
+    let theOtherSentenceMap = (textEl === this.contentText.element.nativeElement) ?
+      this.transSentenceMap : this.contentSentenceMap;
 
     let component = this;
 
+    // tslint:disable-next-line:only-arrow-functions
     let wordsMouseleave = function (event) {
       component.clearWordHighlights();
     };
@@ -369,22 +506,37 @@ export class ParaContentComponent implements OnInit, OnChanges {
       component.clearWordHighlights();
 
       let el = this;
-      let stEl = component.findSentence(el);
-      if (!stEl) {
-        stEl = component.contentText.element.nativeElement;
+      let stEl = AnnotatorHelper.findSentence(el, textEl);
+      let stEl2;
+      if (stEl) {
+        if (stEl.dataset) {
+          let sid = stEl.dataset[UIConstants.sentenceIdAttrName];
+          stEl2 = theOtherSentenceMap.get(sid);
+        }
+      } else {
+        stEl = textEl;
+        stEl2 = theOtherTextEl;
       }
 
       let groupSelector = HighlightGroups.matchGroup(el);
       if (!groupSelector) {
         return;
       }
+      if (!component.highlightedWords) {
+        component.highlightedWords = [];
+      }
+
       let annEls = stEl.querySelectorAll(groupSelector);
       for (let annEl of annEls) {
         annEl.classList.add(UIConstants.highlightClass);
-        if (!component.highlightedWords) {
-          component.highlightedWords = [];
-        }
         component.highlightedWords.push(annEl);
+      }
+      if (stEl2) {
+        let annEls2 = stEl2.querySelectorAll(groupSelector);
+        for (let annEl of annEls2) {
+          annEl.classList.add(UIConstants.highlightClass);
+          component.highlightedWords.push(annEl);
+        }
       }
     };
 
@@ -392,25 +544,43 @@ export class ParaContentComponent implements OnInit, OnChanges {
     wordEl.addEventListener('mouseleave', wordsMouseleave);
   }
 
-  private setupAssociatedWordsHover() {
+  private setupAssociationHover() {
 
-    if (this.associatedWordsHoverSetup || !this.active) {
+    if (this.associationsHoverSetup || !this.active) {
       return;
     }
 
+    this.setupSentenceIdMap();
+
     let contentEl = this.contentText.element.nativeElement;
-    let annEls = contentEl.querySelectorAll(ParaContentComponent.highlightWordsSelector);
+    let transEl = this.transText.element.nativeElement;
+
+    let selector = HighlightGroups.HighlightSelectors;
+
+    let annEls = contentEl.querySelectorAll(selector);
     for (let annEl of annEls) {
-      this.highlightAssociatedWords(annEl);
+      this.highlightAssociatedWords(annEl, contentEl, transEl);
     }
 
-    this.associatedWordsHoverSetup = true;
+    let tAnnEls = transEl.querySelectorAll(selector);
+    for (let annEl of tAnnEls) {
+      this.highlightAssociatedWords(annEl, transEl, contentEl);
+    }
+
+    this.associationsHoverSetup = true;
   }
 
 
-  private showAnnotationsHover(wordEl) {
+  private setupPopup(wordEl, textEl) {
     if (this.wordsPopupMap.has(wordEl)) {
       return;
+    }
+
+    if (this.annotationSet) {
+      let anyAnno = AnnotatorHelper.anyAnno(wordEl, this.annotationSet);
+      if (!anyAnno) {
+        return;
+      }
     }
 
     if (!this.wordAnnosComponentRef) {
@@ -419,33 +589,45 @@ export class ParaContentComponent implements OnInit, OnChanges {
       this.wordAnnosComponentRef = this.wordAnnos.createComponent(factory);
     }
     let wacr = this.wordAnnosComponentRef;
-    wacr.instance.paraTextEl = this.contentText.element.nativeElement;
+
     let component = this;
 
+    // tslint:disable-next-line:only-arrow-functions
     let content = function () {
-      wacr.instance.enabled = component.annotatedWordsHover;
-      wacr.instance.wordEl = wordEl;
+      wacr.instance.paraTextEl = textEl;
       wacr.instance.annotationSet = component.annotationSet;
+      wacr.instance.enabled = component.annotationHover;
+      wacr.instance.wordEl = wordEl;
       return wacr.location.nativeElement;
     };
     let drop = new Drop({
       target: wordEl,
-      content: content,
+      content,
       classes: `${UIConstants.dropClassPrefix}anno`,
-      position: 'bottom center',
+      // position: 'bottom center',
       constrainToScrollParent: false,
       remove: true,
       hoverOpenDelay: 100,
-      openOn: 'hover'//click,hover,always
+      openOn: 'hover', // click,hover,always
+      tetherOptions: {
+        attachment: 'top center',
+        constraints: [
+          {
+            to: 'window',
+            attachment: 'together',
+            pin: true
+          }
+        ]
+      }
     });
 
     this.wordsPopupMap.set(wordEl, drop);
   }
 
 
-  private setupAnnotatedWordsHover() {
+  private setupAnnotationsPopup() {
 
-    if (this.annotatedWordsHoverSetup || !this.annotatedWordsHover || !this.active) {
+    if (this.wordsHoverSetup || !this.annotationHover || !this.active) {
       return;
     }
 
@@ -454,15 +636,21 @@ export class ParaContentComponent implements OnInit, OnChanges {
     let contentEl = this.contentText.element.nativeElement;
     let annEls = contentEl.querySelectorAll(UIConstants.annotationTagName);
     for (let annEl of annEls) {
-      this.showAnnotationsHover(annEl);
+      this.setupPopup(annEl, contentEl);
     }
 
-    this.annotatedWordsHoverSetup = true;
+    let transEl = this.transText.element.nativeElement;
+    let tAnnEls = transEl.querySelectorAll(UIConstants.annotationTagName);
+    for (let annEl of tAnnEls) {
+      this.setupPopup(annEl, transEl);
+    }
+
+    this.wordsHoverSetup = true;
   }
 
-  markUserNewWords() {
+  private markUserWords(side: Side) {
 
-    if (this.wordMarked || !this.markNewWords || !this.combinedWordsMap || !this.active) {
+    if (this.userWordsMarked || !this.markNewWords || !this.combinedWordsMap || !this.active) {
       return;
     }
 
@@ -482,7 +670,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
 
     let wordsMap = this.combinedWordsMap;
 
-    let wordPattern = /\b\w{3,}\b/;
+    let wordPattern = /\b[\w­]{3,}\b/;
 
     for (let textNode of textNodes) {
       let text = textNode.nodeValue;
@@ -499,31 +687,32 @@ export class ParaContentComponent implements OnInit, OnChanges {
         let word = matcher[0];
         let offset = matcher.index;
 
-        let codeOrUW = wordsMap.get(word);
+        let tWord = AnnotatorHelper.stripEnWord(word);
+        let codeOrUW = wordsMap.get(tWord);
 
         if (!codeOrUW) {
-          if (/[A-Z]/.test(word)
+          if (/[A-Z0-9]/.test(word)
             || text.charAt(offset + word.length) === '’'
             || (offset > 0 && text.charAt(offset - 1) === '-')) {
             codeOrUW = 'ignore';
           }
         }
 
-        let wordClasses: string[];
+        let uwfValue: string = null;
         if (!codeOrUW) {
-          wordClasses = [UIConstants.userWordBeyondClass];
+          uwfValue = DataAttrValues.uwfBeyond;
         } else if (typeof codeOrUW === 'string') {
-          // base vocabulary
+          // base vocabulary / ignore
         } else {
           let uw = codeOrUW as UserWord;
           if (uw.familiarity === UserWord.FamiliarityHighest) {
             // grasped
           } else {
-            wordClasses = [UIConstants.userWordFamiliarityClassPrefix + uw.familiarity];
+            uwfValue = '' + uw.familiarity;
           }
         }
 
-        if (!wordClasses) {
+        if (!uwfValue) {
           if (word.length + 3 >= text.length) {
             break;
           }
@@ -533,10 +722,8 @@ export class ParaContentComponent implements OnInit, OnChanges {
           continue;
         }
 
-        wordClasses.unshift(UIConstants.userWordCommonClass);
-
         if (word === parentWholeText) {
-          element.classList.add(...wordClasses);
+          element.dataset[DataAttrNames.wordFamiliarity] = uwfValue;
           break;
         }
 
@@ -550,7 +737,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
         }
 
         let wrapping = document.createElement(UIConstants.userWordTagName);
-        wrapping.classList.add(...wordClasses);
+        wrapping.dataset[DataAttrNames.wordFamiliarity] = uwfValue;
         element.replaceChild(wrapping, wordNode);
         wrapping.appendChild(wordNode);
 
@@ -562,52 +749,60 @@ export class ParaContentComponent implements OnInit, OnChanges {
       }
     }
 
-    this.wordMarked = true;
+    this.userWordsMarked = true;
   }
 
   refreshContent() {
+    if (!this.para) {
+      return;
+    }
     let html = this.para.content || ' ';
     this.contentText.element.nativeElement.innerHTML = html;
-
-    this.sentenceHoverSetup = false;
-    this.associatedWordsHoverSetup = false;
-    this.annotatedWordsHoverSetup = false;
-    this.transRendered = false;
-
-    this.markUserNewWords();
   }
 
   refreshTrans() {
+    if (!this.para) {
+      return;
+    }
     let html = this.para.trans || ' ';
-    this.paraTrans.element.nativeElement.innerHTML = html;
+    this.transText.element.nativeElement.innerHTML = html;
     this.transRendered = true;
   }
 
+  private clearHovers() {
+    this.contentSentenceMap = null;
+    this.sentenceHoverSetup = false;
+    this.associationsHoverSetup = false;
+    this.wordsHoverSetup = false;
+  }
+
+  private setupHovers() {
+    this.setupSentenceHover();
+    this.setupAssociationHover();
+    this.setupAnnotationsPopup();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
+    let textChanged = false;
     if (changes.para) {
       this.refreshContent();
+      textChanged = true;
     }
     if (this.showTrans && !this.transRendered) {
       this.refreshTrans();
-      this.sentenceHoverSetup = false;
+      textChanged = true;
     }
 
     if (this.highlightedSentences && (!this.gotFocus || !this.sentenceHoverSetup || !this.highlightSentence)) {
       this.clearSentenceHighlights();
     }
-    if (this.highlightedWords && (!this.gotFocus || changes.content)) {
+    if (this.highlightedWords && (!this.gotFocus || changes.content || changes.trans)) {
       this.clearWordHighlights();
     }
 
-    if (changes.markNewWords && this.markNewWords) {
-      this.markUserNewWords();
-    }
-
-    if (this.gotFocus) {
-      this.markUserNewWords();
-      this.setupSentenceHover();
-      this.setupAssociatedWordsHover();
-      this.setupAnnotatedWordsHover();
+    if (textChanged) {
+      this.clearHovers();
+      this.setupHovers();
     }
   }
 }

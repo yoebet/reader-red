@@ -1,4 +1,4 @@
-function guestBaseForms(word) {
+function guestBaseForms(word:string) {
   let forms = [];
   let len = word.length;
   if (word.endsWith('s')) {
@@ -57,7 +57,7 @@ function guestBaseForms(word) {
   return forms;
 }
 
-function guestStem(word) {
+function guestStem(word:string) {
   let len = word.length;
   let affixes = ['ly', 'ness', 'ful', 'ment', 'less', 'or'];
   for (let affix of affixes) {
@@ -151,4 +151,4 @@ function regularPresentP(word) {
   return word + 'ing';
 }
 
-export {guestBaseForms, guestStem, regularPl, regularTPS, regularPast, regularPresentP};
+export {guestBaseForms, guestStem};

@@ -95,7 +95,7 @@ const LocalStorageKey = {
   readerBG: 'RBG',
   readerLookupDict: 'RLD',
   readerMarkNewWords: 'RNW',
-  readerWordsHover: 'RWH',
+  readerAnnotationHover: 'RAH',
   readerShowTrans: 'RST',
   readerLeftRight: 'RLR'
 };

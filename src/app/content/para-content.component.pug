@@ -1,4 +1,3 @@
-.para-text.content-text((mouseup)='onMouseup($event)', spellcheck='false', #contentText='')
-.para-text.trans-text([hidden]='!showTrans', spellcheck='false', #paraTrans='')
+.para-text.content-text((mouseup)='onMouseup($event)', (contextmenu)='onContextmenu($event,"content")', spellcheck='false', #contentText='')
+.para-text.trans-text([hidden]='!showTrans', (contextmenu)='onContextmenu($event,"trans")', spellcheck='false', #transText='')
 ng-template(#wordAnnos='')
-ng-template(#dictSimple='')

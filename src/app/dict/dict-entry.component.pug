@@ -15,13 +15,14 @@
     a.ui.item(*ngFor='let word of refWords||[]', (click)='goto(word)')
       | {{word}}
 
-  user-word([word]='entry.word', [userWord]='userWord', [context]='context')
+  user-word([word]='entry.word', [userWord]='userWord', [context]='context', (userWordChanged)='onUserWordChange($event)')
 
 
   .ui.clearing.divider
   sui-tabset
     .ui.top.attached.tabular.menu
       a.item(suiTabHeader='co') 释义
+      a.item(*ngIf='entry.phrases', suiTabHeader='ph') 短语
       a.item(suiTabHeader='te', [(isActive)]='textTabActive', (activate)='textTabActivated()') 文本
     .ui.bottom.attached.segment(suiTabContent='co')
       .ui.list
@@ -37,12 +38,18 @@
               i.dropdown.icon
               | {{pm.pos}}
             .ui.ordered.selection.divided.list.meaning-items(content='')
-              .ui.item(*ngFor='let item of pm.items', [ngClass]='{"selected-item":item.id===selectedItemId}')
+              .ui.item(*ngFor='let item of pm.items',
+              [ngClass]='{"selected-item":selectedItem&&pm.pos===selectedItem.pos&&item.exp===selectedItem.meaning}',
+              (click)='clickMeaningItem(pm.pos,item)')
                 span.meaning-item {{item.exp}}
+    .ui.bottom.attached.segment(*ngIf='entry.phrases', suiTabContent='ph')
+      .ui.ordered.list.meaning-items
+        a.ui.item(*ngFor='let phrase of entry.phrases', (click)='goto(phrase)')
+          | {{phrase}}
     .ui.bottom.attached.segment(suiTabContent='te')
       .ui.right.floated.header
         sui-checkbox([(ngModel)]='textShowTitle') 标题
-        sui-checkbox([(ngModel)]='textShowTrans') 中文
+        sui-checkbox([(ngModel)]='showTrans') 中文
       .clearing
       ng-template([ngIf]='!wordSource')
         .ui.right.floated.mini.button((click)='loadParas()') 加载文本...
@@ -51,14 +58,16 @@
         ng-template(ngFor='', let-para='', [ngForOf]="wordSource.paras", let-first="first", let-last="last")
           word-text([entry]='entry',
             [para]='para',
-            [showTrans]='textShowTrans',
+            [contentContext]='contentContext',
+            [showTrans]='showTrans',
             [showTitle]='textShowTitle',
+            [gotFocus]='para===wordSource?.selectedPara',
             [activeAlways]='true',
-            [lookupDict]='textLookupDict',
-            [highlightSentence]='para===selectedPara && highlightSentence',
-            [markNewWords]='textMarkNewWords',
-            [annotatedWordsHover]='annotatedWordsHover',
-            [annotationSet]='annotationSet',
+            [lookupDict]='lookupDict',
+            [highlightSentence]='highlightSentence',
+            [markNewWords]='markNewWords',
+            [annotationHover]='annotationHover',
+            [ngClass]='{"selected": para===wordSource?.selectedPara, "left-right": leftRight, "up-down": !leftRight}',
             (mouseover)='selectPara(para)',
             (click)='selectPara(para)',
             (dictRequest)="onDictRequest($event)"
@@ -68,11 +77,21 @@
         ng-template([ngIf]='wordSource.paras.length===0')
           | No More.
 
-  #dictPopup.ui.basic.popup
-    dict-entry(*ngIf='dictRequest',
+  #dictPopup.ui.basic.popup(*ngIf='dictRequest')
+    dict-entry(*ngIf='dictRequest.dictLang==="en"',
       [entry]='dictRequest.dictEntry',
-      [initialSelectedItemId]='dictRequest.meaningItemId',
+      [initialSelectedItem]='dictRequest.initialSelected',
       [relatedWords]='dictRequest.relatedWords',
       [context]='dictRequest.context',
-      (viewReady)='onDictPopupReady()')
+      (viewReady)='onDictPopupReady()',
+      (userWordChanged)='onUserWordChange($event)',
+      (dictItemSelected)='onDictItemSelect($event)')
+    dict-zh-entry-smi(*ngIf='dictRequest.dictLang==="zh"',
+      [entry]='dictRequest.dictEntry',
+      [initialSelectedItem]='dictRequest.initialSelected',
+      [relatedWords]='dictRequest.relatedWords',
+      [context]='dictRequest.context',
+      (viewReady)='onDictPopupReady()',
+      (dictItemSelected)='onDictItemSelect($event)')
+  ng-template(#dictSimple='')
 

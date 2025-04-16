@@ -2,6 +2,7 @@ import {
   AfterViewChecked,
   ChangeDetectorRef,
   Component,
+  ComponentFactoryResolver,
   EventEmitter,
   Input,
   OnChanges,
@@ -19,6 +20,8 @@ import { UserWordService } from '../services/user-word.service';
 import { ParaService } from '../services/para.service';
 import { AnnotationsService } from '../services/annotations.service';
 import { PopupDictSupportComponent } from './popup-dict-support.component';
+import { UserVocabularyService } from '../services/user-vocabulary.service';
+import { SelectedItem, UserWordChange } from '../content-types/dict-request';
 
 @Component({
   selector: 'dict-entry',
@@ -27,42 +30,49 @@ import { PopupDictSupportComponent } from './popup-dict-support.component';
 })
 export class DictEntryComponent extends PopupDictSupportComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() entry: DictEntry;
-  @Input() initialSelectedItemId: number;
   @Input() relatedWords: string[];
+  @Input() initialSelectedItem: SelectedItem;
   @Input() context: any;
+
   @Output() viewReady = new EventEmitter();
+  @Output() userWordChanged = new EventEmitter<UserWordChange>();
+  @Output() dictItemSelected = new EventEmitter<SelectedItem>();
+
+  showTrans = false;
+  leftRight = false;
+
   viewReadyEntry = null;
 
   refWords: string[];
   userWord: UserWord;
-  wordSource: { isCurrentPara?: boolean, selectedPara?: Para, paras?: Para[] };
+  wordSource: { selectedPara?: Para, paras?: Para[] };
 
   entryStack = [];
   initialWord: string;
-  selectedItemId: number;
-  selectMeaningItem = true;
-  textShowTrans = false;
+  selectedItem: SelectedItem;
+
   textShowTitle = false;
   textTabActive = false;
-
-  highlightSentence = true;
-  annotatedWordsHover = true;
-  textMarkNewWords = true;
-  textLookupDict = false;
-  selectedPara: Para;
 
   constructor(private cdr: ChangeDetectorRef,
               private dictService: DictService,
               private vocaService: UserWordService,
               private paraService: ParaService,
-              protected annotationsService: AnnotationsService) {
-    super(annotationsService);
+              protected annotationsService: AnnotationsService,
+              protected vocabularyService: UserVocabularyService,
+              protected resolver: ComponentFactoryResolver) {
+    super(annotationsService, vocabularyService, resolver);
   }
 
   ngOnInit() {
     super.ngOnInit();
     this.initialWord = this.entry.word;
-    this.selectedItemId = this.initialSelectedItemId;
+    let isi = this.initialSelectedItem;
+    if (isi) {
+      this.selectedItem = { pos: isi.pos, meaning: isi.meaning };
+    } else {
+      this.selectedItem = null;
+    }
     this.loadParas();
   }
 
@@ -72,6 +82,21 @@ export class DictEntryComponent extends PopupDictSupportComponent implements OnI
     }
     this.viewReady.emit();
     this.viewReadyEntry = this.entry;
+  }
+
+  protected resetRefWords() {
+    this.refWords = null;
+    let entry = this.entry;
+    let refWords = union(entry.baseForm ? [entry.baseForm] : null, this.relatedWords);
+    if (refWords.length > 0) {
+      let previous = last(this.entryStack);
+      if (previous) {
+        refWords = refWords.filter(w => w !== previous);
+      }
+      if (refWords.length > 0) {
+        this.refWords = refWords;
+      }
+    }
   }
 
   goto(word: string) {
@@ -120,9 +145,15 @@ export class DictEntryComponent extends PopupDictSupportComponent implements OnI
     });
   }
 
-  selectPara(para): void {
-    if (this.wordSource) {
-      this.wordSource.selectedPara = para;
+  selectPara(para: Para): void {
+    const wordSource = this.wordSource;
+    if (!wordSource) {
+      return;
+    }
+    const bookChanged = !wordSource.selectedPara || wordSource.selectedPara.book !== para.book;
+    wordSource.selectedPara = para;
+    if (bookChanged) {
+      this.onBookChanged(para.book);
     }
   }
 
@@ -134,38 +165,23 @@ export class DictEntryComponent extends PopupDictSupportComponent implements OnI
     if (this.wordSource) {
       return;
     }
-    // if (!this.userWord || !this.userWord.paraId) {
-    //   return;
-    // }
-    // if (this.context && this.context.paraId === this.userWord.paraId) {
-    //   this.wordSource = { isCurrentPara: true };
-    //   return;
-    // }
-    // this.paraService.loadPara(this.userWord.paraId)
-    //   .subscribe((para: Para) => {
-    //     this.wordSource = { para };
-    //   });
     this.loadParas();
   }
 
-  private onEntryChanged() {
+  onEntryChanged() {
     let entry = this.entry;
-    this.refWords = null;
-    let refWords = union<string>(entry.baseForm ? [entry.baseForm] : null, this.relatedWords);
-    if (refWords.length > 0) {
-      let previous = last(this.entryStack);
-      if (previous) {
-        refWords = refWords.filter(w => w !== previous);
-      }
-      if (refWords.length > 0) {
-        this.refWords = refWords;
-      }
-    }
+    this.resetRefWords();
     if (entry.word === this.initialWord) {
-      this.selectedItemId = this.initialSelectedItemId;
+      let isi = this.initialSelectedItem;
+      if (isi) {
+        this.selectedItem = { pos: isi.pos, meaning: isi.meaning };
+      } else {
+        this.selectedItem = null;
+      }
     } else {
-      this.selectedItemId = null;
+      this.selectedItem = null;
     }
+
     this.userWord = null;
     this.wordSource = null;
     this.vocaService.getOne(entry.word)
@@ -175,21 +191,19 @@ export class DictEntryComponent extends PopupDictSupportComponent implements OnI
           this.setUserWordSource();
         }
       });
+
     this.cdr.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.entry) {
-      if (this.selectMeaningItem) {
-        this.entryStack = [];
-      } else {
-        let pre = changes.entry.previousValue;
-        if (pre) {
-          this.entryStack.push(pre);
-        }
+      this.entryStack = [];
+      let pre = changes.entry.previousValue;
+      if (pre) {
+        this.entryStack.push(pre);
       }
-      this.onEntryChanged();
     }
+    this.onEntryChanged();
   }
 
 
