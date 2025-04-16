@@ -19,19 +19,12 @@
   button.ui.tiny.button((click)="close()") 关闭
 
 #dictPopup.ui.basic.popup(*ngIf='dictRequest')
-  dict-entry(*ngIf='dictRequest.dictLang==="en"',
+  dict-entry(*ngIf='dictRequest.dictLang==="En"',
     [entry]='dictRequest.dictEntry',
     [initialSelectedItem]='dictRequest.initialSelected',
     [relatedWords]='dictRequest.relatedWords',
     [context]='dictRequest.context',
     (viewReady)='onDictPopupReady()',
     (userWordChanged)='onUserWordChange($event)',
-    (dictItemSelected)='onDictItemSelect($event)')
-  dict-zh-entry-smi(*ngIf='dictRequest.dictLang==="zh"',
-    [entry]='dictRequest.dictEntry',
-    [initialSelectedItem]='dictRequest.initialSelected',
-    [relatedWords]='dictRequest.relatedWords',
-    [context]='dictRequest.context',
-    (viewReady)='onDictPopupReady()',
     (dictItemSelected)='onDictItemSelect($event)')
 ng-template(#dictSimple='')

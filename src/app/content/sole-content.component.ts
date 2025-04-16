@@ -302,7 +302,6 @@ export class SoleContentComponent implements OnInit, OnChanges {
   }
 
   onMouseup($event) {
-    console.log(event);
     $event.stopPropagation();
     $event.preventDefault();
     if ($event.which === 3) {

@@ -42,7 +42,7 @@ div(*ngIf='chap')
             | 评论({{para.commentsCount}})
 
   #dictPopup.ui.basic.popup(*ngIf='dictRequest')
-    dict-entry(*ngIf='dictRequest.dictLang==="en"',
+    dict-entry(*ngIf='dictRequest.dictLang==="En"',
       [entry]='dictRequest.dictEntry',
       [initialSelectedItem]='dictRequest.initialSelected',
       [relatedWords]='dictRequest.relatedWords',
@@ -50,7 +50,7 @@ div(*ngIf='chap')
       (viewReady)='onDictPopupReady()',
       (userWordChanged)='onUserWordChange($event)',
       (dictItemSelected)='onDictItemSelect($event)')
-    dict-zh-entry-smi(*ngIf='dictRequest.dictLang==="zh"',
+    dict-zh-entry-smi(*ngIf='dictRequest.dictLang==="Zh"',
       [entry]='dictRequest.dictEntry',
       [initialSelectedItem]='dictRequest.initialSelected',
       [relatedWords]='dictRequest.relatedWords',
