@@ -46,6 +46,7 @@ import { SessionService } from './services/session.service';
 import { DictZhEntrySmiComponent } from './dict-zh/dict-zh-entry-smi.component';
 import { DictZhService } from './services/dict-zh.service';
 import { ParaCommentsComponent } from './content/para-comments.component';
+import { ParaCommentsExtComponent } from './content/para-comments-ext.component';
 
 @NgModule({
   imports: [
@@ -79,7 +80,8 @@ import { ParaCommentsComponent } from './content/para-comments.component';
     WordTagsComponent,
     WordTextComponent,
     DictZhEntrySmiComponent,
-    ParaCommentsComponent
+    ParaCommentsComponent,
+    ParaCommentsExtComponent
   ],
   providers: [
     AppService,
@@ -101,7 +103,8 @@ import { ParaCommentsComponent } from './content/para-comments.component';
     WordAnnosComponent,
     DictSimpleComponent,
     DictZhEntrySmiComponent,
-    ParaCommentsComponent
+    ParaCommentsComponent,
+    ParaCommentsExtComponent
   ],
   bootstrap: [AppComponent]
 })

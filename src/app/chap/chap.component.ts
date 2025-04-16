@@ -12,7 +12,7 @@ import { PopupDictSupportComponent } from '../dict/popup-dict-support.component'
 import { UserVocabularyService } from '../services/user-vocabulary.service';
 import { DictZhService } from '../services/dict-zh.service';
 import { SuiModalService } from 'ng2-semantic-ui';
-import { ParaCommentsModal } from '../content/para-comments.component';
+import { ParaCommentsExtModal } from '../content/para-comments-ext.component';
 import { ParaService } from '../services/para.service';
 
 @Component({
@@ -102,7 +102,7 @@ export class ChapComponent extends PopupDictSupportComponent implements OnInit {
   private doShowComments(para) {
     this.selectPara(para);
     this.modalService
-      .open(new ParaCommentsModal(para));
+      .open(new ParaCommentsExtModal(para));
   }
 
   showComments(para) {

@@ -58,7 +58,8 @@
 }
 
 .item.paragraph {
-  margin: 0;
+  margin: 1em 0 !important;
+  flex-direction: row !important;
 }
 
 .item.paragraph .ui.form {
@@ -85,11 +86,6 @@
   border-radius: 0.5em;
   line-height: 1.4rem;
   font-size: 1.1rem;
-}
-
-
-.paragraph > .selected.para-content {
-  border-color: lightskyblue;
 }
 
 .ui.statistic.selected.para-no .value {

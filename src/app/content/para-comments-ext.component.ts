@@ -5,10 +5,10 @@ import {Para} from '../models/para';
 import {ParaComment} from '../models/para-comment';
 
 @Component({
-  selector: 'para-comments',
-  templateUrl: './para-comments.component.html'
+  selector: 'para-comments-ext',
+  templateUrl: './para-comments-ext.component.html'
 })
-export class ParaCommentsComponent {
+export class ParaCommentsExtComponent {
   para: Para;
   comments: ParaComment[];
 
@@ -22,9 +22,9 @@ export class ParaCommentsComponent {
   }
 }
 
-export class ParaCommentsModal extends ComponentModalConfig<Para> {
+export class ParaCommentsExtModal extends ComponentModalConfig<Para> {
   constructor(context: Para) {
-    super(ParaCommentsComponent, context, true);
+    super(ParaCommentsExtComponent, context, true);
     this.size = ModalSize.Tiny;
     this.mustScroll = true;
   }

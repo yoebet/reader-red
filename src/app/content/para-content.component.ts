@@ -70,7 +70,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
   transRendered = false;
   sentenceHoverSetup = false;
   associationsHoverSetup = false;
-  wordsHoverSetup = false;
+  annotationHoverSetup = false;
   userWordsMarked = false;
 
   highlightedSentences: Element[];
@@ -230,7 +230,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
       }
 
       this.notifyChange(side);
-      if (this.wordsHoverSetup) {
+      if (this.annotationHoverSetup) {
         this.setupPopup(element, textEl);
       }
     };
@@ -347,7 +347,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
         if (ar.wordEl.matches(HighlightGroups.HighlightSelectors)) {
           this.highlightAssociatedWords(ar.wordEl, textEl, this.getTheOtherSideText(textEl));
         }
-        if (this.wordsHoverSetup) {
+        if (this.annotationHoverSetup) {
           this.setupPopup(ar.wordEl, textEl);
         }
       }
@@ -378,6 +378,11 @@ export class ParaContentComponent implements OnInit, OnChanges {
       return;
     }
     if (ctrl) {
+      this.selectWordMeaning(side, $event, triggerMethod);
+      return;
+    }
+    let selection = window.getSelection();
+    if (selection && selection.anchorOffset !== selection.focusOffset) {
       this.selectWordMeaning(side, $event, triggerMethod);
       return;
     }
@@ -630,7 +635,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
 
   private setupAnnotationsPopup() {
 
-    if (this.wordsHoverSetup || !this.annotationHover || !this.active) {
+    if (this.annotationHoverSetup || !this.annotationHover || !this.active) {
       return;
     }
 
@@ -648,7 +653,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
       this.setupPopup(annEl, transEl);
     }
 
-    this.wordsHoverSetup = true;
+    this.annotationHoverSetup = true;
   }
 
   private markUserWords(side: Side) {
@@ -776,7 +781,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
     this.contentSentenceMap = null;
     this.sentenceHoverSetup = false;
     this.associationsHoverSetup = false;
-    this.wordsHoverSetup = false;
+    this.annotationHoverSetup = false;
   }
 
   private setupHovers() {
