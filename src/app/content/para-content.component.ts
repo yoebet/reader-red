@@ -374,7 +374,7 @@ export class ParaContentComponent implements OnInit, OnChanges {
       this.selectWordMeaning(side, $event, triggerMethod);
       return;
     }
-    if ($event.ctrlKey || $event.metaKey) {
+    if (ctrl) {
       this.selectWordMeaning(side, $event, triggerMethod);
       return;
     }
