@@ -11,6 +11,7 @@ import { DictEntry } from '../models/dict-entry';
 import { AnnotatorHelper } from '../anno/annotator-helper';
 import { UserVocabularyService } from '../services/user-vocabulary.service';
 import { Book } from '../models/book';
+import { DictZhService } from '../services/dict-zh.service';
 
 
 export abstract class PopupDictSupportComponent implements OnInit {
@@ -21,7 +22,7 @@ export abstract class PopupDictSupportComponent implements OnInit {
   annotationHover = true;
   markNewWords = true;
   lookupDict = false;
-  loadZhPhrases = true;
+  loadZhPhrases = false;
   showCommentsCount = true;
 
   contentContext: ContentContext;
@@ -32,10 +33,10 @@ export abstract class PopupDictSupportComponent implements OnInit {
   simpleDictRequest: DictRequest = null;
   simpleDictDrop: Drop;
   simpleDictComponentRef: ComponentRef<DictSimpleComponent>;
-  lastWordDrop = null;
 
   protected constructor(protected annoService: AnnotationsService,
                         protected vocabularyService: UserVocabularyService,
+                        protected dictZhService: DictZhService,
                         protected resolver: ComponentFactoryResolver) {
   }
 
@@ -51,6 +52,10 @@ export abstract class PopupDictSupportComponent implements OnInit {
           this.contentContext.annotationSet = annoSet;
         }
       });
+    if (this.loadZhPhrases) {
+      this.dictZhService.getPhrases()
+        .subscribe(ph => this.contentContext.zhPhrases = ph);
+    }
 
     document.addEventListener('click', (event) => {
       if (!this.dictRequest || !this.dictTether) {
@@ -293,43 +298,5 @@ export abstract class PopupDictSupportComponent implements OnInit {
       this.simpleDictRequest = dictRequest;
       this.simpleDictDrop = drop;
     }, 10);
-  }
-
-  showDictSimplePopup(el, entry) {
-    if (this.lastWordDrop) {
-      this.lastWordDrop.destroy();
-      this.lastWordDrop = null;
-    }
-    let dscr = this.getSimpleDictComponentRef();
-    // tslint:disable-next-line:only-arrow-functions
-    let content = function () {
-      dscr.instance.entry = entry;
-      return dscr.location.nativeElement;
-    };
-    let drop = new Drop({
-      target: el,
-      content,
-      classes: `${UIConstants.dropClassPrefix}dict`,
-      constrainToScrollParent: false,
-      remove: true,
-      openOn: 'click', // click,hover,always
-      tetherOptions: {
-        attachment: 'top center',
-        constraints: [
-          {
-            to: 'window',
-            attachment: 'together',
-            pin: true
-          }
-        ]
-      }
-    });
-    drop.open();
-    drop.once('close', () => {
-      if (this.lastWordDrop === drop) {
-        this.lastWordDrop = null;
-      }
-    });
-    this.lastWordDrop = drop;
   }
 }

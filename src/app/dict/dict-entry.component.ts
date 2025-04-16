@@ -22,6 +22,7 @@ import { AnnotationsService } from '../services/annotations.service';
 import { PopupDictSupportComponent } from './popup-dict-support.component';
 import { UserVocabularyService } from '../services/user-vocabulary.service';
 import { SelectedItem, UserWordChange } from '../content-types/dict-request';
+import { DictZhService } from '../services/dict-zh.service';
 
 @Component({
   selector: 'dict-entry',
@@ -40,6 +41,7 @@ export class DictEntryComponent extends PopupDictSupportComponent implements OnI
 
   showTrans = false;
   leftRight = false;
+  lookupDict = true;
 
   viewReadyEntry = null;
 
@@ -60,8 +62,9 @@ export class DictEntryComponent extends PopupDictSupportComponent implements OnI
               private paraService: ParaService,
               protected annotationsService: AnnotationsService,
               protected vocabularyService: UserVocabularyService,
+              protected dictZhService: DictZhService,
               protected resolver: ComponentFactoryResolver) {
-    super(annotationsService, vocabularyService, resolver);
+    super(annotationsService, vocabularyService, dictZhService, resolver);
   }
 
   ngOnInit() {

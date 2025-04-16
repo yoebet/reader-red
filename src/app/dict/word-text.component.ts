@@ -15,6 +15,8 @@ export class WordTextComponent extends ParaContentComponent {
   @Input() entry: DictEntry;
   @Input() showTitle: boolean;
 
+  lookupDictSimple = true;
+
   constructor(protected dictService: DictService,
               protected dictZhService: DictZhService,
               protected resolver: ComponentFactoryResolver) {

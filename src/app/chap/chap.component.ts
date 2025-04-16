@@ -24,21 +24,17 @@ export class ChapComponent extends PopupDictSupportComponent implements OnInit {
 
   constructor(private bookService: BookService,
               private chapService: ChapService,
-              private dictZhService: DictZhService,
               private route: ActivatedRoute,
               private location: Location,
               protected annoService: AnnotationsService,
               protected vocabularyService: UserVocabularyService,
+              protected dictZhService: DictZhService,
               protected resolver: ComponentFactoryResolver) {
-    super(annoService, vocabularyService, resolver);
+    super(annoService, vocabularyService, dictZhService, resolver);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
-    if (this.loadZhPhrases) {
-      this.dictZhService.getPhrases()
-        .subscribe(ph => this.contentContext.zhPhrases = ph);
-    }
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
         this.chapService.getDetail(params.get('id')))

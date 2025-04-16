@@ -275,10 +275,18 @@ export class ParaContentComponent implements OnInit, OnChanges {
               dr.relatedWords.push(phrase);
             }
           }
-          if (triggerMethod === 'Ctrl_Click') {
-            dr.simplePopup = !this.lookupDictSimple;
-          } else {
+
+
+          let dictPopup = document.getElementById('dictPopup');
+          let contentEl = this.contentText.element.nativeElement;
+          if (dictPopup && dictPopup.contains(contentEl)) {
             dr.simplePopup = this.lookupDictSimple;
+          } else {
+            if (triggerMethod === 'Ctrl_Click') {
+              dr.simplePopup = !this.lookupDictSimple;
+            } else {
+              dr.simplePopup = this.lookupDictSimple;
+            }
           }
           dr.meaningItemCallback = meaningItemCallback;
           dr.userWordChangeCallback = (change: UserWordChange) => {
@@ -360,11 +368,6 @@ export class ParaContentComponent implements OnInit, OnChanges {
       return;
     }
     let triggerMethod = 'Click';
-    /*if ($event.altKey) {
-      triggerMethod = 'Alt_' + triggerMethod;
-      this.addANote(side, triggerMethod);
-      return;
-    }*/
 
     let ctrl = $event.ctrlKey || $event.metaKey;
     if (ctrl) {
