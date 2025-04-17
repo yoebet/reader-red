@@ -3,7 +3,7 @@ import { Component, ComponentFactoryResolver, Input, SimpleChanges } from '@angu
 import { UIConstants } from '../config';
 import { DictEntry } from '../models/dict-entry';
 import { DictService } from '../services/dict.service';
-import { ParaContentComponent } from '../content/para-content.component';
+import { ParaContentComponent } from './para-content.component';
 import { DictZhService } from '../services/dict-zh.service';
 
 @Component({

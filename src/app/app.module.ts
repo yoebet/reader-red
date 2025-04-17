@@ -36,7 +36,7 @@ import {ApproximateNumberPipe} from './pipes/approximate-number.pipe';
 import {WordTagsSettingComponent} from './preference/word-tags-setting.component';
 import {UserWordComponent} from './vocabulary/user-word.component';
 import {WordTagsComponent} from './dict/word-tags.component';
-import {WordTextComponent} from './dict/word-text.component';
+import {WordTextComponent} from './content/word-text.component';
 import { DictComponent } from './dict/dict.component';
 import { DictPhoneticsComponent } from './dict/dict-phonetics.component';
 import { DictSimpleComponent } from './dict/dict-simple.component';
