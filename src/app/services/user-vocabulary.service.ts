@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-
+import { SuiModalService } from 'ng2-semantic-ui';
 import { combineLatest, Observable, of as ObservableOf } from 'rxjs/';
 import { map, share } from 'rxjs/operators';
 import { groupBy } from 'lodash';
@@ -8,12 +8,10 @@ import { UserWordService } from './user-word.service';
 import { WordCategoryService } from './word-category.service';
 import { UserPreferenceService } from './user-preference.service';
 import { WordCategory } from '../models/word-category';
-
 import { UserWord } from '../models/user-word';
 import { CombinedWordsMap } from '../en/combined-words-map';
 import { DictService } from './dict.service';
 import { SessionService } from './session.service';
-import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class UserVocabularyService {

@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-
+import { SuiModalService } from 'ng2-semantic-ui';
 import { combineLatest, Observable, of as ObservableOf } from 'rxjs/';
 import { map, share } from 'rxjs/operators';
 
+import { environment } from '../../environments/environment';
 import { Book } from '../models/book';
 import { BaseService } from './base.service';
 import { ChapService } from './chap.service';
 import { UserBookService } from './user-book.service';
 import { SessionService } from './session.service';
-import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class BookService extends BaseService<Book> {
 
   allBooks: Book[];
   booksDetailMap = new Map<string, Book>();
+
+  // chapContentPacksMap: Map<string, ChapContentPack> = new Map<string, ChapContentPack>();
 
   constructor(protected http: HttpClient,
               private chapService: ChapService,
@@ -35,6 +36,11 @@ export class BookService extends BaseService<Book> {
 
   clearBookList() {
     this.allBooks = null;
+  }
+
+  listByCat(cat: string): Observable<Book[]> {
+    let url = `${this.baseUrl}?cat=${cat}`;
+    return super.list(url);
   }
 
   getDetail(id: string): Observable<Book> {

@@ -11,20 +11,21 @@ import { BaseService } from './base.service';
 import { SessionService } from './session.service';
 import { SuiModalService } from 'ng2-semantic-ui';
 import { ParaIdCount } from '../models/para';
+import { StaticResource } from '../config';
 
 @Injectable()
 export class ChapService extends BaseService<Chap> {
 
   chapsMap = new Map<string, Chap>();
 
-  protected bookBaseUrl: string;
+  ChapPacksBase = StaticResource.ChapPacksBase;
 
   constructor(protected http: HttpClient,
+              // protected bookService: BookService,
               protected sessionService: SessionService,
               protected modalService: SuiModalService) {
     super(http, sessionService, modalService);
     let apiBase = environment.apiBase || '';
-    this.bookBaseUrl = `${apiBase}/books`;
     this.baseUrl = `${apiBase}/chaps`;
   }
 
@@ -54,6 +55,12 @@ export class ChapService extends BaseService<Chap> {
   }
 
   getDetail(id: string): Observable<Chap> {
+    // let pack: ChapContentPack = this.bookService.chapContentPacksMap.get(id);
+    // if (pack) {
+    //   const url = `${ChapPacksBase}/${pack.bookId}/${pack.srcFile}`;
+    //   return this.http.get<Chap>(url, this.getHttpOptions())
+    //     .pipe(catchError(e => super.getDetail(id)));
+    // }
     let obs = super.getDetail(id).pipe(share());
     obs.subscribe((chap: Chap) => {
       this.cacheChap(chap);

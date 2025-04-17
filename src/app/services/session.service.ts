@@ -1,15 +1,13 @@
-import {Injectable, EventEmitter} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-
-import {Observable, EMPTY, of} from 'rxjs/';
-import {map} from 'rxjs/operators';
+import { EventEmitter, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs/';
+import { map } from 'rxjs/operators';
 
 // import md5 from 'md5';
-
-import {environment} from '../../environments/environment';
-import {DefaultHttpHeaders, HeaderNames} from '../config';
-import {User} from '../models/user';
-import {OpResult} from '../models/op-result';
+import { environment } from '../../environments/environment';
+import { DefaultHttpHeaders, HeaderNames } from '../config';
+import { User } from '../models/user';
+import { OpResult } from '../models/op-result';
 
 @Injectable()
 export class SessionService {
@@ -56,11 +54,11 @@ export class SessionService {
 
 
   loginByTempToken(tempToken: string): Observable<OpResult> {
-    return this.doLogin({tempToken});
+    return this.doLogin({ tempToken });
   }
 
   login(name, pass): Observable<OpResult> {
-    return this.doLogin({name, pass});
+    return this.doLogin({ name, pass });
   }
 
   onLoginSuccess(ui) {

@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-
 import { EMPTY, Observable, throwError } from 'rxjs/';
 import { catchError } from 'rxjs/operators';
-
 import { SuiModalService } from 'ng2-semantic-ui';
 import { ActiveModal } from 'ng2-semantic-ui/dist/modules/modal/classes/active-modal';
+
 import { Model } from '../models/model';
 import { OpResult } from '../models/op-result';
 import { LoginModal } from '../account/login-popup.component';

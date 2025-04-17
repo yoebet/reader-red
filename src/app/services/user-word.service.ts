@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-
+import { SuiModalService } from 'ng2-semantic-ui';
 import { Observable, of as ObservableOf } from 'rxjs/';
 import { catchError, map, share, tap } from 'rxjs/operators';
-
 import { sortedIndexBy } from 'lodash';
 
+import { environment } from '../../environments/environment';
 import { UserWord } from '../models/user-word';
 import { OpResult } from '../models/op-result';
 import { BaseService } from './base.service';
 import { SessionService } from './session.service';
-import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class UserWordService extends BaseService<UserWord> {

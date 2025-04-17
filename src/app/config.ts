@@ -63,7 +63,7 @@ const AppPackagesBase = `${staticBase}/apks`;
 const ChapPacksBase = `${staticBase}/book-chaps`;
 const AppHomePage = `${staticBase}/`;
 const AppManualPage = `${staticBase}/app-man`;
-const WxQrCodeUrl = `${staticBase}/wxmp/qrcode_344.jpg`;
+// const WxQrCodeUrl = `${staticBase}/wxmp/qrcode_344.jpg`;
 
 
 const StaticResource = {
@@ -74,7 +74,7 @@ const StaticResource = {
   ChapPacksBase,
   AppHomePage,
   AppManualPage,
-  WxQrCodeUrl
+  // WxQrCodeUrl
 };
 
 const HeaderPrefix = 'X-';

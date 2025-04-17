@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { SuiModalService } from 'ng2-semantic-ui';
 import { Observable, of } from 'rxjs/';
 import { map, share } from 'rxjs/operators';
 
@@ -10,7 +10,6 @@ import { ZhPhrases } from '../anno/zh-phrases';
 
 import { BaseService } from './base.service';
 import { SessionService } from './session.service';
-import { SuiModalService } from 'ng2-semantic-ui';
 
 @Injectable()
 export class DictZhService extends BaseService<DictZh> {

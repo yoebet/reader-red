@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-
+import { SuiModalService } from 'ng2-semantic-ui';
 import { combineLatest, Observable } from 'rxjs/';
 import { catchError, map } from 'rxjs/operators';
 import { uniq } from 'lodash';
 
+import { environment } from '../../environments/environment';
 import { Chap } from '../models/chap';
 import { Para } from '../models/para';
 import { BaseService } from './base.service';
 import { ChapService } from './chap.service';
 import { BookService } from './book.service';
 import { SessionService } from './session.service';
-import { SuiModalService } from 'ng2-semantic-ui';
 import { ParaComment } from '../models/para-comment';
 
 @Injectable()
