@@ -158,7 +158,7 @@ export class UserVocabularyService {
     return Observable.create(observer => {
       combineLatest(
         this.getBaseVocabularyMap(),
-        this.userWordService.list())
+        this.userWordService.loadAll())
         .subscribe(([baseVocabularyMap, userWords]) => {
           let bvm = baseVocabularyMap as Map<string, string>;
           let uws = userWords as UserWord[];

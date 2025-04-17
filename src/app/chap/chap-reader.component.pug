@@ -1,0 +1,167 @@
+.ui.small.top.fixed.inverted.main.menu
+  .item.chap-name(*ngIf='chap') {{chap.name}}
+  .right.menu
+    .item((click)='toggleSidebar(sidebar,"chap-list")')
+      i.content.icon
+
+sui-sidebar-container.fit-bottom-menu.reader.fit-top-menu([ngClass]='readerBgCssClass')
+  sui-sidebar.inverted.vertical.small(transition='overlay', #sidebar="")
+    .chap-list(*ngIf='sidebarContent==="chap-list" && allowSwitchChap')
+      a.item(*ngFor='let c of book&&book.chaps; index as idx',
+      (click)='switchChap(c,false);sidebar.close()',
+      [ngClass]='{active: c._id===chap._id}',
+      class='chap_title{{idx}}')
+        .pre-wrap {{c.name}}
+        .zhname.pre-wrap(*ngIf="c.zhName") {{c.zhName}}
+
+    .vocabulary(*ngIf='sidebarContent==="vocabulary"')
+      sui-accordion.inverted([closeOthers]='false')
+        sui-accordion-panel.item([isOpen]='true')
+          .column-header(title='')
+            i.dropdown.icon
+            | 最新加入
+          .ui.relaxed.list.word-list(content='')
+            a.item(*ngFor='let uw of latestAdded', (click)='lookupUserWord($event,uw)')
+              | {{uw.word}}
+        sui-accordion-panel.item([isOpen]='true')
+          .column-header(title='')
+            i.dropdown.icon
+            | 查词历史
+          .ui.relaxed.list.word-list(content='')
+            a.item(*ngFor='let entry of entryHistory', (click)='showEntryPopup($event,entry)')
+              | {{entry.word}}
+            .item
+              a.operation(*ngIf='entryHistory.length>0', (click)='clearDictLookupHistory()') ^^ 清空
+
+    p &nbsp;
+    p &nbsp;
+
+  sui-sidebar-sibling([isDimmedWhenVisible]='true')
+    .ui.chap-content
+      .ui.list.items(*ngIf='chap')
+        .item.paragraph(*ngFor='let para of chap.paras; index as idx; trackBy: paraTracker', class='chap_p{{idx+1}}')
+          .para-no((click)='selectPara2(para)', [ngClass]='{"selected": para===selectedPara}')
+            .value {{idx+1}}
+          .para
+            para-content.para-content(
+            [para]='para',
+            [contentContext]='contentContext',
+            [showTrans]='showTrans',
+            [gotFocus]='para===selectedPara',
+            [activeAlways]='true',
+            [lookupDict]='lookupDict',
+            [highlightSentence]='highlightSentence',
+            [markNewWords]='markNewWords',
+            [annotationHover]='annotationHover',
+            [ngClass]='{"selected": para===selectedPara, "left-right": leftRight, "up-down": !leftRight}',
+            (mouseover)='selectPara(para)',
+            (dictRequest)="onDictRequest($event)")
+            .ui.right.floated.selection.horizontal.list.para-op(*ngIf='showCommentsCount&&para.commentsCount>0')
+              .item((click)='showComments(para)')
+                i.comment.icon
+                | 评论({{para.commentsCount}})
+
+      p &nbsp;
+
+      .ui.list.prev-next-nav(*ngIf='book&&allowSwitchChap')
+        a.item.prev-nav([ngClass]='{disabled: !prevChap}', (click)='switchChap(prevChap)')
+          i.left.arrow.icon
+          span.pre-wrap {{prevChap? prevChap.name:'（无）'}}
+        a.item.next-nav([ngClass]='{disabled: !nextChap}', (click)='switchChap(nextChap)')
+          i.right.arrow.icon
+          span.pre-wrap {{nextChap? nextChap.name:'（无）'}}
+
+    p &nbsp;
+    p &nbsp;
+
+.ui.small.bottom.fixed.inverted.menu
+  .item((click)='toggleSidebar(sidebar,"vocabulary")')
+    | &nbsp;
+    i.ul.list.icon
+    | &nbsp;
+  .item([ngClass]='{active: lookupDict}', (click)='lookupDict=!lookupDict')
+    i.search.icon
+    | 查词
+  .item([ngClass]='{active: markNewWords}', (click)='toggleMarkNewWords()')
+    i.pointing.up.icon
+    | 生词
+  .item([ngClass]='{active: annotationHover}', (click)='toggleAnnotationHover()')
+    i.underline.icon
+    | 标注
+  .item([ngClass]='{active: showTrans}', (click)='showTrans=!showTrans')
+    i.translate.icon
+    | 中文
+  .item.ui.right.bottom.pointing.dropdown(suiDropdown='')
+    | &nbsp;
+    i.ellipsis.vertical.icon
+    | &nbsp;
+    .menu(suiDropdownMenu='')
+      .item([ngClass]='{active: leftRight, disabled: !showTrans}', (click)='leftRight=showTrans? !leftRight:leftRight')
+        i.columns.icon
+        | 左右对照
+      ng-template([ngIf]='chap&&chap.paras.length>1')
+        .divider
+        .item((click)='gotoPercent(0)')
+          i.angle.double.up.icon
+          | 开头
+        .item((click)='gotoPercent(100)')
+          i.angle.double.down.icon
+          | 末尾
+        .item.right.pointing(suiDropdown='', *ngIf='chap.paras.length>9')
+          i.map.marker.alternate.icon
+          span.text 转到
+          i.up.dropdown.icon
+          .left.menu(suiDropdownMenu='')
+            .item((click)='gotoPercent(10)') 10%
+            .item((click)='gotoPercent(20)') 20%
+            .item((click)='gotoPercent(30)') 30%
+            .item((click)='gotoPercent(40)') 40%
+            .item((click)='gotoPercent(50)') 正中
+            .item((click)='gotoPercent(60)') 60%
+            .item((click)='gotoPercent(70)') 70%
+            .item((click)='gotoPercent(80)') 80%
+            .item((click)='gotoPercent(90)') 90%
+      .divider
+      .item.right.pointing(suiDropdown='')
+        i.adjust.icon
+        span.text 背景
+        i.up.dropdown.icon
+        .left.menu(suiDropdownMenu='')
+          .item.reader-bg(*ngFor='let bg of readerBgCandidates',
+          class='{{bg.clazz}}',
+          [ngClass]='{active: readerBgCssClass===bg.clazz}',
+          (click)='setBackground(bg.clazz)') {{bg.label}}
+      .divider
+      .item((click)='showHelper()')
+        i.help.icon
+        | 帮助
+      .divider
+      ng-template([ngIf]='currentUser')
+        .item
+          //img.ui.avatar.image(*ngIf='currentUser.avatarSetting&&currentUser.avatarSetting.imgUrl',
+          //[src]='avatarsBase+"/"+currentUser.avatarSetting.imgUrl')
+          | {{currentUser.nickName}}
+      ng-template([ngIf]='!currentUser')
+        a.item(*ngIf='!currentUser', (click)='openLoginDialog()', href='javascript:')
+          i.circle.user.icon
+          | （未登录）
+
+
+#dictPopup.ui.basic.popup(*ngIf='dictRequest')
+  dict-entry(*ngIf='dictRequest.dictLang==="En"',
+  [entry]='dictRequest.dictEntry',
+  [initialSelectedItem]='dictRequest.initialSelected',
+  [relatedWords]='dictRequest.relatedWords',
+  [context]='dictRequest.context',
+  (viewReady)='onDictPopupReady()',
+  (userWordChanged)='onUserWordChange($event)',
+  (dictItemSelected)='onDictItemSelect($event)')
+  dict-zh-entry-smi(*ngIf='dictRequest.dictLang==="Zh"',
+  [entry]='dictRequest.dictEntry',
+  [initialSelectedItem]='dictRequest.initialSelected',
+  [relatedWords]='dictRequest.relatedWords',
+  [context]='dictRequest.context',
+  (viewReady)='onDictPopupReady()',
+  (dictItemSelected)='onDictItemSelect($event)')
+ng-template(#dictSimple='')
+

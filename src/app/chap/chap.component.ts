@@ -25,12 +25,13 @@ export class ChapComponent extends PopupDictSupportComponent {
   chap: Chap;
   selectedPara: Para;
   showCommentsCount = true;
+  loadBookDetail = false;
 
-  constructor(private bookService: BookService,
-              private chapService: ChapService,
-              private paraService: ParaService,
-              private route: ActivatedRoute,
-              private location: Location,
+  constructor(protected bookService: BookService,
+              protected chapService: ChapService,
+              protected paraService: ParaService,
+              protected route: ActivatedRoute,
+              protected location: Location,
               protected annoService: AnnotationsService,
               protected vocabularyService: UserVocabularyService,
               protected dictZhService: DictZhService,
@@ -56,7 +57,9 @@ export class ChapComponent extends PopupDictSupportComponent {
         }
       }
       this.chap = chap;
-      this.bookService.getOne(chap.bookId)
+      this.onChapChanged(chap);
+      (this.loadBookDetail ? this.bookService.getDetail(chap.bookId)
+        : this.bookService.getOne(chap.bookId))
         .subscribe(book => {
           chap.book = book;
           this.book = book;
@@ -64,6 +67,9 @@ export class ChapComponent extends PopupDictSupportComponent {
         });
       this.checkCommentsCount();
     });
+  }
+
+  protected onChapChanged(chap) {
   }
 
   selectPara(para): void {
@@ -90,7 +96,7 @@ export class ChapComponent extends PopupDictSupportComponent {
   }
 
 
-  private checkCommentsCount() {
+  protected checkCommentsCount() {
     if (!this.showCommentsCount) {
       return;
     }
@@ -100,7 +106,7 @@ export class ChapComponent extends PopupDictSupportComponent {
     }
   }
 
-  private doShowComments(para) {
+  protected doShowComments(para) {
     this.selectPara(para);
     this.modalService
       .open(new ParaCommentsExtModal(para));

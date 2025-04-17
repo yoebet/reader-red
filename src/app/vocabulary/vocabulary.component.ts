@@ -158,7 +158,7 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
   }
 
   refreshWordList() {
-    this.userWordService.list().subscribe(allWords => {
+    this.userWordService.loadAll().subscribe(allWords => {
       for (let userWord of allWords) {
         const chapId = userWord.chapId;
         if (chapId === '' || chapId === null || chapId === undefined) {
@@ -181,7 +181,7 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
   }
 
   generateCardWords() {
-    this.userWordService.list().subscribe(allWords => {
+    this.userWordService.loadAll().subscribe(allWords => {
       this.userWords = allWords;
       this.filterUserWords();
       this.userWordsForCards = this.filteredUserWords;

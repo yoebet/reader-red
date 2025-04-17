@@ -130,7 +130,7 @@ export abstract class PopupDictSupportComponent implements OnInit {
       });
   }
 
-  private getStorageBoolean(storage, key, defaultValue: boolean): boolean {
+  protected getStorageBoolean(storage, key, defaultValue: boolean): boolean {
     let value = storage.getItem(key);
     if (value == null) {
       return defaultValue;
@@ -158,7 +158,7 @@ export abstract class PopupDictSupportComponent implements OnInit {
   }
 
 
-  private removeTetherClass(el) {
+  protected removeTetherClass(el) {
     el.className = el.className.split(' ')
       .filter(n => !n.startsWith(UIConstants.tetherClassPrefixNoHyphen + '-')).join(' ');
     if (el.className === '') {
@@ -166,7 +166,7 @@ export abstract class PopupDictSupportComponent implements OnInit {
     }
   }
 
-  private closeDictPopup() {
+  protected closeDictPopup() {
     if (this.dictRequest) {
       if (this.dictTether) {
         this.dictTether.destroy();
@@ -239,7 +239,7 @@ export abstract class PopupDictSupportComponent implements OnInit {
     }
   }
 
-  private getSimpleDictComponentRef() {
+  protected getSimpleDictComponentRef() {
     if (!this.simpleDictComponentRef) {
       let factory: ComponentFactory<DictSimpleComponent> = this.resolver.resolveComponentFactory(DictSimpleComponent);
       this.dictSimple.clear();
@@ -248,7 +248,7 @@ export abstract class PopupDictSupportComponent implements OnInit {
     return this.simpleDictComponentRef;
   }
 
-  private showDictSimple(dictRequest: DictRequest) {
+  protected showDictSimple(dictRequest: DictRequest) {
     if (!dictRequest) {
       return;
     }

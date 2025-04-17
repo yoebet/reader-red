@@ -9,8 +9,8 @@ export class DictRequest {
   initialSelected?: SelectedItem;
   relatedWords?: string[];
   context?: any;
-  meaningItemCallback: (selected: SelectedItem) => void;
-  userWordChangeCallback: (change: UserWordChange) => void;
+  meaningItemCallback?: (selected: SelectedItem) => void;
+  userWordChangeCallback?: (change: UserWordChange) => void;
 
   simplePopup = false;
 }

@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import {OpResult} from './models/op-result';
-import {BookService} from './services/book.service';
-import {DictService} from './services/dict.service';
-import {UserWordService} from './services/user-word.service';
+import { OpResult } from './models/op-result';
+import { BookService } from './services/book.service';
+import { DictService } from './services/dict.service';
+import { UserWordService } from './services/user-word.service';
 import { SessionService } from './services/session.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,8 @@ export class AppComponent implements OnInit {
   loginForm = false;
   loginMessage: string;
 
+  inReader = true;
+
   get currentUser() {
     return this.sessionService.currentUser;
   }
@@ -23,7 +26,13 @@ export class AppComponent implements OnInit {
   constructor(private sessionService: SessionService,
               private bookService: BookService,
               private dictService: DictService,
-              private userWordService: UserWordService) {
+              private userWordService: UserWordService,
+              protected route: ActivatedRoute) {
+    route.url.subscribe((urlsegs) => {
+      console.log(urlsegs);
+      console.log(urlsegs[0]);
+      console.log(urlsegs[0].path);
+    });
   }
 
   ngOnInit() {

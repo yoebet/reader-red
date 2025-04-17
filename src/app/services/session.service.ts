@@ -130,10 +130,4 @@ export class SessionService {
           return this.currentUser;
         }));
   }
-
-  handleError401(error: any): Observable<any> {
-    console.log(error);
-    this.sessionEventEmitter.emit('RequestLogin');
-    return EMPTY;
-  }
 }

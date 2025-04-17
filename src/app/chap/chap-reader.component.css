@@ -1,0 +1,148 @@
+.pushable.reader {
+  height: 100vh;
+  box-sizing: border-box !important;
+  overflow: hidden;
+}
+
+.pushable.reader > .pusher.dimmed:after {
+  position: fixed;
+}
+
+.pushable.reader > .sidebar, .pushable.reader > .pusher {
+  height: 100% !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ui.left.sidebar {
+  top: 39px;
+  width: 260px;
+  padding-top: 1em;
+  padding-bottom: 2em;
+}
+
+.fit-top-menu {
+  padding-top: 39px !important;
+}
+
+.fit-bottom-menu {
+  padding-bottom: 39px !important;
+}
+
+@media only screen and (max-width: 767px) {
+  .ui.small.bottom.fixed.menu {
+    font-size: 0.8rem;
+  }
+
+  .fit-bottom-menu {
+    padding-bottom: 34px !important;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1199px) {
+  .ui.left.sidebar {
+    width: 360px;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .ui.left.sidebar {
+    width: 460px;
+  }
+}
+
+.chap-list .item {
+  line-height: 1.3;
+}
+
+.chap-list .item .zhname {
+  margin-top: 0.3em;
+}
+
+.vocabulary .ui.menu {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.ui.top.fixed.menu .item.chap-name {
+  display: initial;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+
+.ui.menu .item.chap-name:before {
+  visibility: hidden;
+}
+
+.ui.chap-content {
+  margin-left: .5em !important;
+  margin-right: .5em !important;
+}
+
+.ui.bottom.fixed.menu .item {
+  font-weight: bold;
+  padding: 0.36em 0.57em;
+}
+
+.ui.bottom.fixed.menu .item.active {
+  color: rgb(9, 187, 7) !important;
+}
+
+.ui.bottom.fixed.menu .item.active.disabled {
+  color: rgba(9, 187, 7, 0.5) !important;
+}
+
+.item.paragraph {
+  margin: 1em 0 !important;
+  flex-direction: row !important;
+}
+
+.para-no {
+  padding-top: 0.6em;
+  margin-right: 0.6em;
+  align-self: center;
+}
+
+.para-no .value {
+  text-align: right;
+  font-size: 1.1rem !important;
+}
+
+.paragraph .para-no {
+  cursor: pointer;
+}
+
+.prev-next-nav .item > i.icon {
+  display: initial;
+}
+
+#dictPopup {
+  min-width: 200px;
+  max-width: 360px;
+}
+
+#notePopup.ui.form .field {
+  margin-bottom: 0.5em;
+}
+
+#notePopup textarea.note-textarea {
+  height: 150px;
+  width: 250px;
+  padding: 0.3em 0.5em
+}
+
+.item.paragraph > .para {
+  width: 100%;
+}
+
+.para-op {
+  font-size: 0.9em !important;
+  padding-top: 0.3em !important;
+  margin-bottom: 0.3em !important;
+}
+
+.para-op .item {
+  font-size: 0.9em !important;
+}
