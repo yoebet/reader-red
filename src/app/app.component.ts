@@ -67,6 +67,6 @@ export class AppComponent implements OnInit {
   }
 
   logout() {
-    this.sessionService.logout();
+    this.sessionService.logout().subscribe();
   }
 }
