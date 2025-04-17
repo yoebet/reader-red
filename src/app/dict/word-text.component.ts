@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, Input } from '@angular/core';
+import { Component, ComponentFactoryResolver, Input, SimpleChanges } from '@angular/core';
 
 import { UIConstants } from '../config';
 import { DictEntry } from '../models/dict-entry';
@@ -24,19 +24,28 @@ export class WordTextComponent extends ParaContentComponent {
   }
 
 
-  // ngOnChanges(changes: SimpleChanges) {
-  //   if (changes.entry || changes.para) {
-  //     this.trySetup();
-  //   }
-  // }
-
-  trySetup() {
-    if (!this.para || !this.entry) {
-      return;
+  ngOnChanges(changes: SimpleChanges) {
+    let textChanged = false;
+    if (changes.para) {
+      let { content, trans } = this.highlightTheWord(this.para);
+      this.getContentEl().innerHTML = content;
+      this.getTransEl().innerHTML = trans;
+      textChanged = true;
+      this.transRendered = true;
     }
-    let { content, trans } = this.highlightTheWord(this.para);
-  }
 
+    if (this.highlightedSentences && (!this.gotFocus || !this.sentenceHoverSetup || !this.highlightSentence)) {
+      this.clearSentenceHighlights();
+    }
+    if (this.highlightedWords && (!this.gotFocus || changes.content || changes.trans)) {
+      this.clearWordHighlights();
+    }
+
+    if (textChanged) {
+      this.clearHovers();
+      this.setupHovers();
+    }
+  }
 
   private commonPrefix(strings: string[]): string {
     let first = strings[0];

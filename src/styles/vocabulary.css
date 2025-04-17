@@ -13,19 +13,19 @@
 }
 
 .ui.label.uwf-1, .para-text [data-uwf='1'] {
-  color: rgba(205, 92, 92, 1);
+  color: rgba(255, 80, 80, 1);
 }
 
 .ui.label.uwf-2, .para-text [data-uwf='2'] {
-  color: rgba(0, 0, 139, 0.8);
+  color: rgba(80, 80, 255, 1);
 }
 
 .ui.label.uwf-3, .para-text [data-uwf='3'] {
-  color: rgba(0, 128, 0, 0.7);
+  color: rgba(0, 128, 0, 1);
 }
 
 .para-text [data-uwf='0'] {
-  color: rgba(64, 0, 0, 0.7);
+  color: rgba(128, 0, 0, 1);
 }
 
 body.uwf-disabled .para-text [data-uwf] {

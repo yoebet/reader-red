@@ -98,17 +98,17 @@ export class ParaContentComponent extends ContentHelperComponent implements OnIn
     return annt;
   }
 
-  private getTransEl() {
+  protected getTransEl() {
     return this.transText.element.nativeElement;
   }
 
-  private getTextEl(side: Side) {
+  protected getTextEl(side: Side) {
     return side === SideContent ?
       this.getContentEl() :
       this.getTransEl();
   }
 
-  private getTheOtherSideText(textEl) {
+  protected getTheOtherSideText(textEl) {
     return textEl === this.getTransEl() ?
       this.getContentEl() :
       this.getTransEl();
@@ -125,7 +125,7 @@ export class ParaContentComponent extends ContentHelperComponent implements OnIn
     return this.requestDict(ar, textEl, lang, triggerMethod);
   }
 
-  private doAnnotate(side: Side, $event, triggerMethod = null) {
+  protected doAnnotate(side: Side, $event, triggerMethod = null) {
     if (this.annotation.nameEn === SpecialAnnotations.SelectMeaning.nameEn) {
       this.selectWordMeaning(side, $event, triggerMethod);
       return;
@@ -198,7 +198,7 @@ export class ParaContentComponent extends ContentHelperComponent implements OnIn
     $event.preventDefault();
   }
 
-  private setupSentenceIdMap() {
+  protected setupSentenceIdMap() {
     if (this.contentSentenceMap != null) {
       return;
     }
@@ -220,7 +220,7 @@ export class ParaContentComponent extends ContentHelperComponent implements OnIn
     }
   }
 
-  private setupSentenceHover() {
+  protected setupSentenceHover() {
 
     if (this.sentenceHoverSetup || !this.highlightSentence) {
       return;
@@ -268,7 +268,7 @@ export class ParaContentComponent extends ContentHelperComponent implements OnIn
     this.sentenceHoverSetup = true;
   }
 
-  private highlightAssociatedWords(wordEl, textEl, theOtherTextEl) {
+  protected highlightAssociatedWords(wordEl, textEl, theOtherTextEl) {
 
     let theOtherSentenceMap = (textEl === this.getContentEl()) ?
       this.transSentenceMap : this.contentSentenceMap;
@@ -322,7 +322,7 @@ export class ParaContentComponent extends ContentHelperComponent implements OnIn
     wordEl.addEventListener('mouseleave', wordsMouseleave);
   }
 
-  private setupAssociationHover() {
+  protected setupAssociationHover() {
 
     if (this.associationsHoverSetup || !this.active) {
       return;
@@ -348,7 +348,7 @@ export class ParaContentComponent extends ContentHelperComponent implements OnIn
     this.associationsHoverSetup = true;
   }
 
-  private setupAnnotationsPopup() {
+  protected setupAnnotationsPopup() {
 
     if (this.annotationHoverSetup || !this.annotationHover || !this.active) {
       return;
@@ -371,7 +371,7 @@ export class ParaContentComponent extends ContentHelperComponent implements OnIn
     this.annotationHoverSetup = true;
   }
 
-  private setupHovers() {
+  protected setupHovers() {
     this.setupSentenceHover();
     this.setupAssociationHover();
     this.setupAnnotationsPopup();
