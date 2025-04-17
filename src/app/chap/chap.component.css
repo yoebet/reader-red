@@ -68,8 +68,9 @@
 
 .ui.statistic.para-no {
   min-width: 1.8em;
-  padding-top: 0.6em;
+  /*padding-top: 0.6em;*/
   cursor: pointer;
+  align-self: center;
 }
 
 .ui.statistic.para-no .value {

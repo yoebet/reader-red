@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { SuiSidebar } from 'ng2-semantic-ui/dist';
@@ -30,7 +30,7 @@ import { LoginModal } from '../account/login-popup.component';
   templateUrl: './chap-reader.component.html',
   styleUrls: ['./chap-reader.component.css']
 })
-export class ChapReaderComponent extends ChapComponent implements OnDestroy {
+export class ChapReaderComponent extends ChapComponent implements OnInit, OnDestroy {
   @ViewChild('sidebar', { read: SuiSidebar }) sidebar: SuiSidebar;
 
   allowSwitchChap = true;
@@ -77,6 +77,17 @@ export class ChapReaderComponent extends ChapComponent implements OnDestroy {
     this.annotationHover = this.getStorageBoolean(storage, LSK.readerAnnotationHover, this.annotationHover);
     this.showTrans = this.getStorageBoolean(storage, LSK.readerShowTrans, this.showTrans);
     this.leftRight = this.getStorageBoolean(storage, LSK.readerLeftRight, this.leftRight);
+  }
+
+  ngOnInit(): void {
+    this.sessionService.checkLogin().subscribe(cu => {
+      if (cu) {
+        super.ngOnInit();
+        return;
+      } else {
+        this.openLoginDialog();
+      }
+    });
   }
 
   get entryHistory(): DictEntry[] {
@@ -277,7 +288,9 @@ export class ChapReaderComponent extends ChapComponent implements OnDestroy {
   }
 
   openLoginDialog() {
-    this.modalService.open(new LoginModal('请登录'));
+    this.modalService.open(new LoginModal('请登录')).onApprove(r => {
+      window.location = window.location;
+    });
   }
 
 }

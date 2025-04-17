@@ -100,7 +100,7 @@
 }
 
 .para-no {
-  padding-top: 0.6em;
+  /*padding-top: 0.6em;*/
   margin-right: 0.6em;
   align-self: center;
 }
@@ -145,4 +145,12 @@
 
 .para-op .item {
   font-size: 0.9em !important;
+}
+
+.paragraph .selected.para-no {
+  color: rgba(9, 187, 7, 1);
+}
+
+.ui.menu .item {
+  cursor: pointer;
 }

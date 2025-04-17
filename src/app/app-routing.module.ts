@@ -9,16 +9,21 @@ import { BaseVocabularyComponent } from './preference/base-vocabulary.component'
 import { WordTagsSettingComponent } from './preference/word-tags-setting.component';
 import { DictComponent } from './dict/dict.component';
 import { ChapReaderComponent } from './chap/chap-reader.component';
+import { AppAComponent } from './app-a.component';
 
 const routes: Routes = [
-  { path: 'books', component: BookListComponent },
-  { path: 'books/:id', component: BookComponent },
-  { path: 'chaps/:id', component: ChapComponent },
   { path: 'read/:id', component: ChapReaderComponent },
-  { path: 'dict', component: DictComponent },
-  { path: 'vocabulary', component: VocabularyComponent },
-  { path: 'base-vocabulary', component: BaseVocabularyComponent },
-  { path: 'word-tags', component: WordTagsSettingComponent }
+  {
+    path: '', component: AppAComponent, children: [
+      { path: 'books', component: BookListComponent },
+      { path: 'books/:id', component: BookComponent },
+      { path: 'chaps/:id', component: ChapComponent },
+      { path: 'dict', component: DictComponent },
+      { path: 'vocabulary', component: VocabularyComponent },
+      { path: 'base-vocabulary', component: BaseVocabularyComponent },
+      { path: 'word-tags', component: WordTagsSettingComponent }
+    ]
+  },
 ];
 
 @NgModule({

@@ -8,9 +8,9 @@ sui-sidebar-container.fit-bottom-menu.reader.fit-top-menu([ngClass]='readerBgCss
   sui-sidebar.inverted.vertical.small(transition='overlay', #sidebar="")
     .chap-list(*ngIf='sidebarContent==="chap-list" && allowSwitchChap')
       a.item(*ngFor='let c of book&&book.chaps; index as idx',
-      (click)='switchChap(c,false);sidebar.close()',
-      [ngClass]='{active: c._id===chap._id}',
-      class='chap_title{{idx}}')
+        (click)='switchChap(c,false);sidebar.close()',
+        [ngClass]='{active: c._id===chap._id}',
+        class='chap_title{{idx}}')
         .pre-wrap {{c.name}}
         .zhname.pre-wrap(*ngIf="c.zhName") {{c.zhName}}
 
@@ -44,18 +44,19 @@ sui-sidebar-container.fit-bottom-menu.reader.fit-top-menu([ngClass]='readerBgCss
             .value {{idx+1}}
           .para
             para-content.para-content(
-            [para]='para',
-            [contentContext]='contentContext',
-            [showTrans]='showTrans',
-            [gotFocus]='para===selectedPara',
-            [activeAlways]='true',
-            [lookupDict]='lookupDict',
-            [highlightSentence]='highlightSentence',
-            [markNewWords]='markNewWords',
-            [annotationHover]='annotationHover',
-            [ngClass]='{"selected": para===selectedPara, "left-right": leftRight, "up-down": !leftRight}',
-            (mouseover)='selectPara(para)',
-            (dictRequest)="onDictRequest($event)")
+              [para]='para',
+              [contentContext]='contentContext',
+              [showTrans]='showTrans',
+              [gotFocus]='para===selectedPara',
+              [activeAlways]='true',
+              [lookupDict]='lookupDict',
+              [highlightSentence]='highlightSentence',
+              [markNewWords]='markNewWords',
+              [annotationHover]='annotationHover',
+              [ngClass]='{"selected": para===selectedPara, "left-right": leftRight, "up-down": !leftRight}',
+              (mouseover)='selectPara(para)',
+              (click)='selectPara(para)',
+              (dictRequest)="onDictRequest($event)")
             .ui.right.floated.selection.horizontal.list.para-op(*ngIf='showCommentsCount&&para.commentsCount>0')
               .item((click)='showComments(para)')
                 i.comment.icon
@@ -91,6 +92,7 @@ sui-sidebar-container.fit-bottom-menu.reader.fit-top-menu([ngClass]='readerBgCss
   .item([ngClass]='{active: showTrans}', (click)='showTrans=!showTrans')
     i.translate.icon
     | 中文
+
   .item.ui.right.bottom.pointing.dropdown(suiDropdown='')
     | &nbsp;
     i.ellipsis.vertical.icon
@@ -99,7 +101,7 @@ sui-sidebar-container.fit-bottom-menu.reader.fit-top-menu([ngClass]='readerBgCss
       .item([ngClass]='{active: leftRight, disabled: !showTrans}', (click)='leftRight=showTrans? !leftRight:leftRight')
         i.columns.icon
         | 左右对照
-      ng-template([ngIf]='chap&&chap.paras.length>1')
+      ng-template([ngIf]='chap&&chap.paras.length>3')
         .divider
         .item((click)='gotoPercent(0)')
           i.angle.double.up.icon
@@ -107,7 +109,7 @@ sui-sidebar-container.fit-bottom-menu.reader.fit-top-menu([ngClass]='readerBgCss
         .item((click)='gotoPercent(100)')
           i.angle.double.down.icon
           | 末尾
-        .item.right.pointing(suiDropdown='', *ngIf='chap.paras.length>9')
+        //.item.right.pointing(suiDropdown='', *ngIf='chap.paras.length>9')
           i.map.marker.alternate.icon
           span.text 转到
           i.up.dropdown.icon
@@ -128,9 +130,9 @@ sui-sidebar-container.fit-bottom-menu.reader.fit-top-menu([ngClass]='readerBgCss
         i.up.dropdown.icon
         .left.menu(suiDropdownMenu='')
           .item.reader-bg(*ngFor='let bg of readerBgCandidates',
-          class='{{bg.clazz}}',
-          [ngClass]='{active: readerBgCssClass===bg.clazz}',
-          (click)='setBackground(bg.clazz)') {{bg.label}}
+            class='{{bg.clazz}}',
+            [ngClass]='{active: readerBgCssClass===bg.clazz}',
+            (click)='setBackground(bg.clazz)') {{bg.label}}
       .divider
       .item((click)='showHelper()')
         i.help.icon
@@ -149,19 +151,19 @@ sui-sidebar-container.fit-bottom-menu.reader.fit-top-menu([ngClass]='readerBgCss
 
 #dictPopup.ui.basic.popup(*ngIf='dictRequest')
   dict-entry(*ngIf='dictRequest.dictLang==="En"',
-  [entry]='dictRequest.dictEntry',
-  [initialSelectedItem]='dictRequest.initialSelected',
-  [relatedWords]='dictRequest.relatedWords',
-  [context]='dictRequest.context',
-  (viewReady)='onDictPopupReady()',
-  (userWordChanged)='onUserWordChange($event)',
-  (dictItemSelected)='onDictItemSelect($event)')
+    [entry]='dictRequest.dictEntry',
+    [initialSelectedItem]='dictRequest.initialSelected',
+    [relatedWords]='dictRequest.relatedWords',
+    [context]='dictRequest.context',
+    (viewReady)='onDictPopupReady()',
+    (userWordChanged)='onUserWordChange($event)',
+    (dictItemSelected)='onDictItemSelect($event)')
   dict-zh-entry-smi(*ngIf='dictRequest.dictLang==="Zh"',
-  [entry]='dictRequest.dictEntry',
-  [initialSelectedItem]='dictRequest.initialSelected',
-  [relatedWords]='dictRequest.relatedWords',
-  [context]='dictRequest.context',
-  (viewReady)='onDictPopupReady()',
-  (dictItemSelected)='onDictItemSelect($event)')
+    [entry]='dictRequest.dictEntry',
+    [initialSelectedItem]='dictRequest.initialSelected',
+    [relatedWords]='dictRequest.relatedWords',
+    [context]='dictRequest.context',
+    (viewReady)='onDictPopupReady()',
+    (dictItemSelected)='onDictItemSelect($event)')
 ng-template(#dictSimple='')
 

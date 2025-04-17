@@ -50,6 +50,7 @@ import { ParaCommentsExtComponent } from './content/para-comments-ext.component'
 import { SoleContentComponent } from './content/sole-content.component';
 import { ChapReaderComponent } from './chap/chap-reader.component';
 import { ReaderHelperComponent } from './chap/reader-helper.component';
+import { AppAComponent } from './app-a.component';
 
 @NgModule({
   imports: [
@@ -87,7 +88,8 @@ import { ReaderHelperComponent } from './chap/reader-helper.component';
     ParaCommentsExtComponent,
     SoleContentComponent,
     ChapReaderComponent,
-    ReaderHelperComponent
+    ReaderHelperComponent,
+    AppAComponent
   ],
   providers: [
     AppService,
