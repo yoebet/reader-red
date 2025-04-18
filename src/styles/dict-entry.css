@@ -5,7 +5,7 @@
 
 .entry-word, .phonetics {
   display: inline;
-  vertical-align: text-bottom;
+  /*vertical-align: text-bottom;*/
 }
 
 .phonetics .pron-play {

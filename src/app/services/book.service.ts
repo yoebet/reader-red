@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SuiModalService } from 'ng2-semantic-ui';
 import { combineLatest, Observable, of as ObservableOf } from 'rxjs/';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Book } from '../models/book';
@@ -14,8 +14,13 @@ import { SessionService } from './session.service';
 @Injectable()
 export class BookService extends BaseService<Book> {
 
-  allBooks: Book[];
+  booksMap = new Map<string, Book>();
   booksDetailMap = new Map<string, Book>();
+
+  allBooks: {
+    publicBooks: Book[],
+    personalBooks: Book[],
+  } = null;
 
   // chapContentPacksMap: Map<string, ChapContentPack> = new Map<string, ChapContentPack>();
 
@@ -60,19 +65,23 @@ export class BookService extends BaseService<Book> {
     if (book0) {
       return ObservableOf(book0);
     }
-    if (this.allBooks) {
-      let book = this.allBooks.find(b => b._id === id);
+    if (this.booksMap) {
+      let book = this.booksMap.get(id);
       if (book) {
         return ObservableOf(book);
       }
     }
-    return super.getOne(id);
+    return super.getOne(id)
+      .pipe(tap(book => this.booksMap.set(book._id, book)));
   }
 
   loadAll(): Observable<{
     publicBooks: Book[];
     personalBooks: Book[]
   }> {
+    if (this.allBooks) {
+      return ObservableOf(this.allBooks);
+    }
     return combineLatest(
       super.list() as Observable<Book[]>,
       super.list(`${this.baseUrl}/personal`) as Observable<Book[]>,
@@ -87,16 +96,19 @@ export class BookService extends BaseService<Book> {
           }
         }
         personalBooks = personalBooks.filter(b => {
-          if (b.userBook.role) {
-            return true;
-          }
+          // if (b.userBook.role) {
+          //   return true;
+          // }
           return !publicBooks.find(pb => pb._id === b._id);
         });
-        this.allBooks = publicBooks.concat(personalBooks);
-        return {
+        for (const book of publicBooks.concat(personalBooks)) {
+          this.booksMap.set(book._id, book);
+        }
+        this.allBooks = {
           publicBooks,
           personalBooks,
         };
+        return this.allBooks;
       }));
   }
 

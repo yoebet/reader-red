@@ -1,0 +1,53 @@
+.ui.small.blue.header
+  | 文本搜索范围
+
+  .ui.small.right.floated.header
+    .ui.mini.button(*ngIf="!edit", (click)='enterEdit()') 设置
+    ng-template([ngIf]='edit')
+      .ui.mini.button((click)='exitEdit()') 取消
+      | &nbsp;&nbsp;
+      .ui.mini.primary.button((click)='save()') 保存
+  //.ui.right.floated.mini.button((click)='close()') 关闭
+
+.ui.content
+
+  table.ui.mini.selectable.table.edit(*ngIf="edit" )
+    thead
+      tr
+        th 书名
+        th 范围
+        th.center.aligned
+          i.checkmark.icon
+    tbody
+      tr(*ngFor='let c of candidates', [ngClass]='{selected:c.textSearch}')
+        td.pre-wrap
+          | ({{c.book.code}}) {{c.book.name}}
+          ng-template([ngIf]="c.textSearch!=c.textSearchOri") &nbsp; *
+        td {{c.book.isPrivate? "个人":"公开"}}
+        td.center.aligned.selectable((click)='c.textSearch=!c.textSearch')
+          //i.green.checkmark.icon(*ngIf='c.textSearch')
+          .ui.mini.teal.circular.label(*ngIf="c.textSearch" ) 搜
+      tr(*ngIf='candidates.length===0')
+        td(colspan='3') No More.
+
+  table.ui.mini.selectable.table(*ngIf="!edit" )
+    thead
+      tr
+        th 书名
+        th 范围
+        th.center.aligned
+          i.checkmark.icon
+    tbody
+      tr(*ngFor='let b of tsBooks')
+        td.pre-wrap
+          | ({{b.code}}) {{b.name}}
+        td {{b.isPrivate? "个人":"公开"}}
+        td
+          //i.green.checkmark.icon(*ngIf='c.textSearch')
+          .ui.mini.teal.circular.label(*ngIf="b.userBook&&b.userBook.textSearch" ) 搜
+      tr(*ngIf='tsBooks.length===0')
+        td(colspan='3') 未设置
+
+//.actions
+  .ui.tiny.button((click)='close()') 关闭
+

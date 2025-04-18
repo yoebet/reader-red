@@ -5,6 +5,8 @@ import { BookService } from './services/book.service';
 import { DictService } from './services/dict.service';
 import { UserWordService } from './services/user-word.service';
 import { SessionService } from './services/session.service';
+import { TextSearchBooksModal } from './book/text-search-books.component';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 @Component({
   selector: 'app-a',
@@ -23,8 +25,9 @@ export class AppAComponent implements OnInit {
   }
 
   constructor(private sessionService: SessionService,
-              private bookService: BookService,
+              // private bookService: BookService,
               private dictService: DictService,
+              private modalService: SuiModalService,
               private userWordService: UserWordService) {
   }
 
@@ -61,5 +64,9 @@ export class AppAComponent implements OnInit {
 
   logout() {
     this.sessionService.logout().subscribe();
+  }
+
+  showTextSearchScope() {
+    this.modalService.open(new TextSearchBooksModal({ edit: false }));
   }
 }

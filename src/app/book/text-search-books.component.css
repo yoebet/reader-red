@@ -1,0 +1,11 @@
+td.selectable {
+  cursor: pointer;
+}
+
+table.edit {
+  color: rgba(0,0,0,0.5);
+}
+
+table.edit tr.selected {
+  color: rgba(0,0,0,1);
+}

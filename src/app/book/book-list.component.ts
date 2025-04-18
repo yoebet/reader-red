@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 
 import { Book } from '../models/book';
 import { BookService } from '../services/book.service';
+import { TextSearchBooksModal } from './text-search-books.component';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 @Component({
   selector: 'book-list',
@@ -18,6 +20,7 @@ export class BookListComponent implements OnInit {
   showZh = true;
 
   constructor(private bookService: BookService,
+              protected modalService: SuiModalService,
               private router: Router) {
   }
 
@@ -41,6 +44,10 @@ export class BookListComponent implements OnInit {
 
   bookTracker(index, book) {
     return book._id;
+  }
+
+  configTextSearchScope() {
+    this.modalService.open(new TextSearchBooksModal({ edit: true }));
   }
 
 }

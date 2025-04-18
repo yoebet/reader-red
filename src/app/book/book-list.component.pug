@@ -1,14 +1,15 @@
 .ui.header
   .ui.right.floated.header
+    .ui.mini.button((click)='configTextSearchScope()') 文本搜索范围
+    | &nbsp;&nbsp;
     sui-checkbox([(ngModel)]='showZh') 中文
-    //sui-checkbox([(ngModel)]='listAllBooks', (click)='changeList()') 全部
   | 图书 &nbsp;&nbsp;
   .ui.small.compact.horizontal.list.cat-list
     a.item((click)='setList("public")', [ngClass]='{disabled:listName=="public"}') 公开
     a.item((click)='setList("personal")', [ngClass]='{disabled:listName=="personal"}') 个人
 .ui.celled.list
   .item(*ngFor='let book of books; trackBy: bookTracker')
-    .ui.right.floated.mini.teal.circular.label 搜
+    .ui.right.floated.mini.teal.circular.label(*ngIf="book.userBook&&book.userBook.textSearch" ) 搜
     a([routerLink]="['/books', book._id]")
       .enname ({{book.code}}) {{book.name}}
       .zhname(*ngIf='showZh && book.zhName') {{book.zhName}}
