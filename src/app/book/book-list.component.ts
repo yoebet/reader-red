@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { SuiModalService } from 'ng2-semantic-ui';
 
 import { Book } from '../models/book';
 import { BookService } from '../services/book.service';
-import { TextSearchBooksModal } from './text-search-books.component';
-import { SuiModalService } from 'ng2-semantic-ui';
+import { TextSearchBooksModal } from '../preference/text-search-books.component';
 
 @Component({
   selector: 'book-list',

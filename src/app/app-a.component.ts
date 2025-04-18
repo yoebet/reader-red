@@ -5,7 +5,7 @@ import { BookService } from './services/book.service';
 import { DictService } from './services/dict.service';
 import { UserWordService } from './services/user-word.service';
 import { SessionService } from './services/session.service';
-import { TextSearchBooksModal } from './book/text-search-books.component';
+import { TextSearchBooksModal } from './preference/text-search-books.component';
 import { SuiModalService } from 'ng2-semantic-ui';
 
 @Component({

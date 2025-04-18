@@ -51,7 +51,7 @@ import { SoleContentComponent } from './content/sole-content.component';
 import { ChapReaderComponent } from './chap/chap-reader.component';
 import { ReaderHelperComponent } from './chap/reader-helper.component';
 import { AppAComponent } from './app-a.component';
-import { TextSearchBooksComponent } from './book/text-search-books.component';
+import { TextSearchBooksComponent } from './preference/text-search-books.component';
 
 @NgModule({
   imports: [
