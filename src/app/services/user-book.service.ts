@@ -7,6 +7,8 @@ import { environment } from '../../environments/environment';
 import { UserBook } from '../models/user-book';
 import { BaseService } from './base.service';
 import { SessionService } from './session.service';
+import { OpResult } from '../models/op-result';
+import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class UserBookService extends BaseService<UserBook> {
@@ -21,6 +23,22 @@ export class UserBookService extends BaseService<UserBook> {
 
   getOne(bookId: string): Observable<UserBook> {
     return super.getOne(bookId);
+  }
+
+  resetTextSearch(bookIds: string[]) {
+    const url = `${this.baseUrl}/textSearch/all`;
+    return super.postForOpResult(url, bookIds);
+  }
+
+  addToTextSearch(bookId: string) {
+    const url = `${this.baseUrl}/${bookId}/textSearch`;
+    return super.postForOpResult(url);
+  }
+
+  removeFromTextSearch(bookId: string) {
+    const url = `${this.baseUrl}/${bookId}/textSearch`;
+    return this.http.delete<OpResult>(url, this.httpOptions).pipe(
+      catchError(this.handleError));
   }
 
 }

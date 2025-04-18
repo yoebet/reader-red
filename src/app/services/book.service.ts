@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SuiModalService } from 'ng2-semantic-ui';
 import { combineLatest, Observable, of as ObservableOf } from 'rxjs/';
-import { map, share } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Book } from '../models/book';
@@ -29,16 +29,7 @@ export class BookService extends BaseService<Book> {
     this.baseUrl = `${apiBase}/books`;
   }
 
-  clearCache() {
-    this.allBooks = null;
-    this.booksDetailMap.clear();
-  }
-
-  clearBookList() {
-    this.allBooks = null;
-  }
-
-  listByCat(cat: string): Observable<Book[]> {
+  listPublicByCat(cat: string): Observable<Book[]> {
     let url = `${this.baseUrl}?cat=${cat}`;
     return super.list(url);
   }
@@ -49,21 +40,18 @@ export class BookService extends BaseService<Book> {
       return ObservableOf(book0);
     }
 
-    let obs = combineLatest(
+    return combineLatest(
       super.getDetail(id) as Observable<Book>,
-      this.userBookService.getOne(id))
-      .pipe(map(([book, userBook]) => {
+      this.userBookService.getOne(id)
+    ).pipe(map(([book, userBook]) => {
         if (book) {
           book.userBook = userBook;
+          this.booksDetailMap.set(book._id, book);
+          this.chapService.cacheBookChaps(book);
         }
         return book;
-      }), share()) as Observable<Book>;
-
-    obs.subscribe((book: Book) => {
-      this.booksDetailMap.set(book._id, book);
-      this.chapService.cacheBookChaps(book);
-    });
-    return obs;
+      })
+    );
   }
 
 
@@ -81,23 +69,35 @@ export class BookService extends BaseService<Book> {
     return super.getOne(id);
   }
 
-  list(): Observable<Book[]> {
-    let obs = combineLatest(
+  loadAll(): Observable<{
+    publicBooks: Book[];
+    personalBooks: Book[]
+  }> {
+    return combineLatest(
       super.list() as Observable<Book[]>,
+      super.list(`${this.baseUrl}/personal`) as Observable<Book[]>,
       this.userBookService.list())
-      .pipe(map(([books, userBooks]) => {
+      .pipe(map(([publicBooks, personalBooks, userBooks]) => {
         if (userBooks && userBooks.length > 0) {
-          for (let book of books) {
+          for (let book of publicBooks) {
+            book.userBook = userBooks.find(ub => ub.bookId === book._id);
+          }
+          for (let book of personalBooks) {
             book.userBook = userBooks.find(ub => ub.bookId === book._id);
           }
         }
-        return books;
-      }), share()) as Observable<Book[]>;
-
-    obs.subscribe((books: Book[]) => {
-      this.allBooks = books;
-    });
-    return obs;
+        personalBooks = personalBooks.filter(b => {
+          if (b.userBook.role) {
+            return true;
+          }
+          return !publicBooks.find(pb => pb._id === b._id);
+        });
+        this.allBooks = publicBooks.concat(personalBooks);
+        return {
+          publicBooks,
+          personalBooks,
+        };
+      }));
   }
 
 

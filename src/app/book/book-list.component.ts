@@ -10,25 +10,33 @@ import { BookService } from '../services/book.service';
   styleUrls: ['./book-list.component.css']
 })
 export class BookListComponent implements OnInit {
+  publicBooks: Book[];
+  personalBooks: Book[];
+
   books: Book[];
+  listName = 'public';
   showZh = true;
 
   constructor(private bookService: BookService,
               private router: Router) {
   }
 
-  getBooks(): void {
-    this.bookService.list().subscribe(books => {
-      this.books = books;
-    });
-  }
-
   ngOnInit(): void {
-    this.getBooks();
+    this.bookService.loadAll()
+      .subscribe(({ publicBooks, personalBooks }) => {
+        this.publicBooks = publicBooks;
+        this.personalBooks = personalBooks;
+        this.setList();
+      });
   }
 
-  gotoDetail(book: Book): void {
-    this.router.navigate(['/books', book._id]);
+  setList(name?: string): void {
+    if (name) {
+      this.listName = name;
+    } else {
+      name = this.listName;
+    }
+    this.books = name === 'personal' ? this.personalBooks : this.publicBooks;
   }
 
   bookTracker(index, book) {

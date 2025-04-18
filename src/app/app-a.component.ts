@@ -30,7 +30,7 @@ export class AppAComponent implements OnInit {
 
   ngOnInit() {
     this.sessionService.sessionEventEmitter.subscribe(change => {
-      this.bookService.clearBookList();
+      // this.bookService.clearBookList();
       // this.chapService.clearCache();
       this.dictService.clearHistory();
       this.userWordService.clearCache();

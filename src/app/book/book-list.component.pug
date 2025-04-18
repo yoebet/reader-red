@@ -2,10 +2,13 @@
   .ui.right.floated.header
     sui-checkbox([(ngModel)]='showZh') 中文
     //sui-checkbox([(ngModel)]='listAllBooks', (click)='changeList()') 全部
-  | 图书
+  | 图书 &nbsp;&nbsp;
+  .ui.small.compact.horizontal.list.cat-list
+    a.item((click)='setList("public")', [ngClass]='{disabled:listName=="public"}') 公开
+    a.item((click)='setList("personal")', [ngClass]='{disabled:listName=="personal"}') 个人
 .ui.celled.list
   .item(*ngFor='let book of books; trackBy: bookTracker')
-    //i.ui.right.floated.checkmark.icon(*ngIf='book.userBook')
-    a((click)='gotoDetail(book)', [routerLink]="['/books', book._id]")
+    .ui.right.floated.mini.teal.circular.label 搜
+    a([routerLink]="['/books', book._id]")
       .enname ({{book.code}}) {{book.name}}
       .zhname(*ngIf='showZh && book.zhName') {{book.zhName}}
