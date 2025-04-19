@@ -12,6 +12,10 @@ ng-template([ngIf]='loginMethod==="pass"')
     .field
       input(type="password", #pass="", placeholder="密码", (keyup)='onPassKeyup(name.value, pass.value, $event)')
 
+    .register-link
+      | 没有账号？
+      a((click)='gotoRegister()') 注册
+
   .actions
     .ui.tiny.button((click)='cancel()') 取消
     .ui.tiny.primary.button((click)='login(name.value, pass.value)') 登录

@@ -1,3 +1,11 @@
 .list.login-methods {
   font-weight: normal;
 }
+
+.register-link {
+  margin-top: 2em;
+}
+
+.register-link a {
+  cursor: pointer;
+}

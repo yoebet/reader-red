@@ -10,11 +10,13 @@ import { WordTagsSettingComponent } from './preference/word-tags-setting.compone
 import { DictComponent } from './dict/dict.component';
 import { ChapReaderComponent } from './chap/chap-reader.component';
 import { AppAComponent } from './app-a.component';
+import { RegisterComponent } from './account/register.component';
 
 const routes: Routes = [
   { path: 'read/:id', component: ChapReaderComponent },
   {
     path: '', component: AppAComponent, children: [
+      { path: 'register', component: RegisterComponent },
       { path: 'books', component: BookListComponent },
       { path: 'books/:id', component: BookComponent },
       { path: 'chaps/:id', component: ChapComponent },

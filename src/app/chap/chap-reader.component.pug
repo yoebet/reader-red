@@ -144,7 +144,7 @@ sui-sidebar-container.fit-bottom-menu.reader.fit-top-menu([ngClass]='readerBgCss
           //[src]='avatarsBase+"/"+currentUser.avatarSetting.imgUrl')
           | {{currentUser.nickName}}
       ng-template([ngIf]='!currentUser')
-        a.item(*ngIf='!currentUser', (click)='openLoginDialog()', href='javascript:')
+        a.item(*ngIf='!currentUser', (click)='openLoginDialog()')
           i.circle.user.icon
           | （未登录）
 

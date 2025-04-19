@@ -1,4 +1,4 @@
-import {Model} from './model';
+import { Model } from './model';
 
 export class User extends Model {
   name: string;
@@ -17,4 +17,12 @@ export class UserIdName {
   _id: string;
   name: string;
   nickName: string;
+}
+
+
+export class RegisterForm {
+  name = '';
+  nickName = '';
+  pass = '';
+  frc?: string;
 }

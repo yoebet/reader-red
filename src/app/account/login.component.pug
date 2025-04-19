@@ -8,13 +8,17 @@
   .ui.small.form(*ngIf='loginMethod==="pass"')
     .ui.small.message(*ngIf='loginMessage') {{loginMessage}}
     .field
-      input(type="text", #name="", placeholder="账号")
+      input(type="text", #name="", placeholder="用户名")
     .field
       input(type="password", #pass="", placeholder="密码", (keyup)='onPassKeyup(name.value, pass.value, $event)')
     .field
-      .ui.small.button((click)='cancel()') 取消
+      //.ui.small.button((click)='cancel()') 取消
       .ui.small.primary.button((click)='login(name.value, pass.value)')
         i.icon.keyboard.outline
         | 登录
+
+    .register-link
+      | 没有账号？
+      a(routerLink="/register") 注册
 
   #login_container([hidden]='loginMethod!=="wx"')

@@ -55,7 +55,7 @@ export abstract class LoginBaseComponent implements OnInit {
 
   onPassKeyup(name, pass, $event) {
     $event.stopPropagation();
-    if ($event.keyCode === 13 && name && pass) {
+    if ($event.key === 'Enter' && name && pass) {
       this.login(name, pass);
     }
   }

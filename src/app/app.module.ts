@@ -52,6 +52,7 @@ import { ChapReaderComponent } from './chap/chap-reader.component';
 import { ReaderHelperComponent } from './chap/reader-helper.component';
 import { AppAComponent } from './app-a.component';
 import { TextSearchBooksComponent } from './preference/text-search-books.component';
+import { RegisterComponent } from './account/register.component';
 
 @NgModule({
   imports: [
@@ -91,7 +92,8 @@ import { TextSearchBooksComponent } from './preference/text-search-books.compone
     ChapReaderComponent,
     ReaderHelperComponent,
     AppAComponent,
-    TextSearchBooksComponent
+    TextSearchBooksComponent,
+    RegisterComponent
   ],
   providers: [
     AppService,

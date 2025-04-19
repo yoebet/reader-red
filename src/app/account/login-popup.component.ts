@@ -1,11 +1,12 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
-import {ModalSize} from 'ng2-semantic-ui/dist/modules/modal/classes/modal-config';
-import {ComponentModalConfig, SuiModal} from 'ng2-semantic-ui';
+import { ModalSize } from 'ng2-semantic-ui/dist/modules/modal/classes/modal-config';
+import { ComponentModalConfig, SuiModal } from 'ng2-semantic-ui';
 
-import {SessionService} from '../services/session.service';
-import {OpResult} from '../models/op-result';
-import {LoginBaseComponent} from './login-base-component';
+import { SessionService } from '../services/session.service';
+import { OpResult } from '../models/op-result';
+import { LoginBaseComponent } from './login-base-component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class LoginPopupComponent extends LoginBaseComponent {
 
 
   constructor(protected sessionService: SessionService,
+              protected router: Router,
               private modal: SuiModal<string, string, string>) {
     super();
     this.loginMessage = modal.context;
@@ -60,6 +62,11 @@ export class LoginPopupComponent extends LoginBaseComponent {
       }, (err) => {
         this.loginMessage = '发生错误了';
       });
+  }
+
+  gotoRegister(): void {
+    this.modal.approve('');
+    this.router.navigate(['/register']);
   }
 
 }

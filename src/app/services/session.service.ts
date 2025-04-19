@@ -6,13 +6,14 @@ import { map } from 'rxjs/operators';
 // import md5 from 'md5';
 import { environment } from '../../environments/environment';
 import { DefaultHttpHeaders, HeaderNames } from '../config';
-import { User } from '../models/user';
+import { RegisterForm, User } from '../models/user';
 import { OpResult } from '../models/op-result';
 
 @Injectable()
 export class SessionService {
 
   private baseUrl: string;
+  private registerUrl: string;
 
   currentUser: User;
 
@@ -21,6 +22,7 @@ export class SessionService {
   constructor(private http: HttpClient) {
     let apiBase = environment.apiBase || '';
     this.baseUrl = `${apiBase}/login`;
+    this.registerUrl = `${apiBase}/register`;
   }
 
   getHttpOptions() {
@@ -52,22 +54,8 @@ export class SessionService {
     };
   }
 
-
-  loginByTempToken(tempToken: string): Observable<OpResult> {
-    return this.doLogin({ tempToken });
-  }
-
   login(name, pass): Observable<OpResult> {
-    return this.doLogin({ name, pass });
-  }
-
-  onLoginSuccess(ui) {
-    this.updateCurrentUser(ui);
-    this.sessionEventEmitter.emit('Login');
-  }
-
-  private doLogin(form): Observable<OpResult> {
-    return this.http.post(this.baseUrl, form, this.getHttpOptions())
+    return this.http.post(this.baseUrl, { name, pass }, this.getHttpOptions())
       .pipe(
         map((opr: OpResult) => {
           if (opr && opr.ok === 1) {
@@ -78,15 +66,22 @@ export class SessionService {
         }));
   }
 
+  onLoginSuccess(ui) {
+    this.updateCurrentUser(ui);
+    this.sessionEventEmitter.emit('Login');
+  }
+
   logout(): Observable<OpResult> {
     return this.http.delete(this.baseUrl, this.getHttpOptions())
       .pipe(
         map((opr: OpResult) => {
+          console.log(opr);
           if (opr && opr.ok === 1) {
             this.logoutLocally();
           }
           return opr;
-        }));
+        })
+      );
   }
 
 
@@ -127,5 +122,9 @@ export class SessionService {
           }
           return this.currentUser;
         }));
+  }
+
+  register(form: RegisterForm): Observable<OpResult> {
+    return this.http.post<OpResult>(this.registerUrl, form, this.getHttpOptions());
   }
 }

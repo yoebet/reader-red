@@ -15,21 +15,11 @@
             a.item(routerLink='/base-vocabulary', routerLinkActive='active') 基础词汇
             a.item(routerLink='/word-tags', routerLinkActive='active') 词频标签
             a.item((click)='showTextSearchScope()') 文本搜索
-        a.item(*ngIf='currentUser', (click)='logout()', href='#') 退出
-      a.item(*ngIf='!currentUser', href='javascript:', (click)='gotoLogin()') 登录
+        a.item(*ngIf='currentUser', (click)='logout()') 退出
+      a.item(*ngIf='!currentUser', (click)='gotoLogin()') 登录
 
-  .ui.small.form.login(*ngIf='loginForm')
-    h3 登录
-    p(*ngIf='loginMessage')
-      | {{loginMessage}}
-    .field
-      input(type="text", #name="", placeholder="Username")
-    .field
-      input(type="password", #pass="", placeholder="Password")
-    .field
-      .ui.small.button((click)='cancelLogin()') 取消
-      .ui.small.primary.button((click)='login(name.value, pass.value)') 登录
-    .ui.hidden.clearing.divider
+  //login-form(*ngIf='loginForm')
+  //.ui.hidden.clearing.divider
 
   router-outlet
 

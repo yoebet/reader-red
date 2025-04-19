@@ -1,0 +1,21 @@
+.form.register
+  h3.header
+    | 注册
+
+  .ui.small.form
+    .ui.small.message(*ngIf='message') {{message}}
+    .field
+      input(type="text", placeholder="用户名", [(ngModel)]='form.name', (blur)='checkName()')
+    .field
+      input(type="text", placeholder="昵称", [(ngModel)]='form.nickName', (blur)='checkNickName()')
+    .field
+      input(type="text", placeholder="推荐码", [(ngModel)]='form.frc', (blur)='checkFrc()', autocomplete="off")
+    .field
+      input(type="password", placeholder="密码", [(ngModel)]='form.pass', (blur)='checkPass()', autocomplete="new-password")
+    .field
+      input(type="password", placeholder="确认密码", [(ngModel)]='confirmedPass', (blur)='checkConfirmedPass()', autocomplete="off")
+    .field
+      .ui.small.primary.button((click)='register()')
+        i.icon.registered.outline
+        | 注册
+

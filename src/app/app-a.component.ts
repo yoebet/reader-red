@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
-import { OpResult } from './models/op-result';
-import { BookService } from './services/book.service';
 import { DictService } from './services/dict.service';
 import { UserWordService } from './services/user-word.service';
 import { SessionService } from './services/session.service';
 import { TextSearchBooksModal } from './preference/text-search-books.component';
 import { SuiModalService } from 'ng2-semantic-ui';
+import { LoginModal } from './account/login-popup.component';
 
 @Component({
   selector: 'app-a',
@@ -15,17 +14,13 @@ import { SuiModalService } from 'ng2-semantic-ui';
 })
 export class AppAComponent implements OnInit {
 
-  loginForm = false;
-  loginMessage: string;
-
-  inReader = true;
+  // loginForm = false;
 
   get currentUser() {
     return this.sessionService.currentUser;
   }
 
   constructor(private sessionService: SessionService,
-              // private bookService: BookService,
               private dictService: DictService,
               private modalService: SuiModalService,
               private userWordService: UserWordService) {
@@ -42,24 +37,8 @@ export class AppAComponent implements OnInit {
   }
 
   gotoLogin() {
-    this.loginMessage = null;
-    this.loginForm = true;
-  }
-
-  cancelLogin() {
-    this.loginMessage = null;
-    this.loginForm = false;
-  }
-
-  login(name, pass) {
-    this.sessionService.login(name, pass).subscribe((opr: OpResult) => {
-      if (opr && opr.ok === 1) {
-        this.loginMessage = null;
-        this.loginForm = false;
-      } else {
-        this.loginMessage = '用户名/密码错误';
-      }
-    });
+    // this.loginForm = true;
+    this.modalService.open<string, string, string>(new LoginModal(null));
   }
 
   logout() {
