@@ -1,6 +1,5 @@
 import {Component, Input} from '@angular/core';
 import {DictEntry} from '../models/dict-entry';
-import {DictService} from '../services/dict.service';
 
 @Component({
   selector: 'dict-phonetics',
@@ -8,7 +7,4 @@ import {DictService} from '../services/dict.service';
 })
 export class DictPhoneticsComponent {
   @Input() entry: DictEntry;
-
-  constructor(private dictService: DictService) {
-  }
 }

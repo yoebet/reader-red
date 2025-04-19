@@ -1,8 +1,8 @@
 import * as moment from 'moment';
 
 export class Model {
-  // tslint:disable-next-line:variable-name
   _id: string;
+  id?: string;
   createdAt?: string;
   updatedAt?: string;
   version: number;

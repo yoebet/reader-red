@@ -1,17 +1,16 @@
 div(*ngIf='book')
   h4.ui.header
     | ({{book.code}}) {{book.name}}
-    //i.checkmark.icon(*ngIf='userBook')
   .ui.header
-    //.ui.right.floated.header
-      sui-checkbox([(ngModel)]='listAllChaps', (click)='changeList()') 全部
+    .ui.right.floated.header
+      sui-checkbox([(ngModel)]='showZh') 中文
     | 章节
   .ui.celled.list
     .item(*ngFor='let chap of chaps; trackBy: chapTracker; first as first; last as last')
       //i.ui.right.floated.checkmark.icon(*ngIf='chap.isMyChap')
-      a([routerLink]="['/chaps', chap._id]")
+      a([routerLink]="['/chaps', chap.id]")
         .pre-wrap {{chap.name}}
-        .zhname.pre-wrap(*ngIf="chap.zhName") {{chap.zhName}}
+        .zhname.pre-wrap(*ngIf="showZh && chap.zhName") {{chap.zhName}}
 
 .ui.hidden.clearing.divider
 button.ui.tiny.button((click)='goBack()') 返回

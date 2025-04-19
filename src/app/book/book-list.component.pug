@@ -10,6 +10,6 @@
 .ui.celled.list
   .item(*ngFor='let book of books; trackBy: bookTracker')
     .ui.right.floated.mini.teal.circular.label(*ngIf="book.userBook&&book.userBook.textSearch" ) 搜
-    a([routerLink]="['/books', book._id]")
+    a([routerLink]="['/books', book.id]")
       .enname ({{book.code}}) {{book.name}}
       .zhname(*ngIf='showZh && book.zhName') {{book.zhName}}

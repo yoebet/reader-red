@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router, ParamMap} from '@angular/router';
-import {Location} from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
 
-import {Book} from '../models/book';
-import {Chap} from '../models/chap';
-import {UserBook} from '../models/user-book';
-import {BookService} from '../services/book.service';
+import { Book } from '../models/book';
+import { Chap } from '../models/chap';
+import { UserBook } from '../models/user-book';
+import { BookService } from '../services/book.service';
 
 @Component({
   selector: 'book-detail',
@@ -18,9 +18,10 @@ export class BookComponent implements OnInit {
   userBook: UserBook;
   chaps: Chap[];
 
+  showZh = true;
+
   constructor(private bookService: BookService,
               private route: ActivatedRoute,
-              private router: Router,
               private location: Location) {
   }
 
