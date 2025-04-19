@@ -1,5 +1,6 @@
-import {Component, Input} from '@angular/core';
-import {DictEntry} from '../models/dict-entry';
+import { Component, Input } from '@angular/core';
+import { DictEntry } from '../models/dict-entry';
+import { DictService } from '../services/dict.service';
 
 @Component({
   selector: 'dict-phonetics',
@@ -7,4 +8,10 @@ import {DictEntry} from '../models/dict-entry';
 })
 export class DictPhoneticsComponent {
   @Input() entry: DictEntry;
+
+  pronsBase: string;
+
+  constructor(private dictService: DictService) {
+    this.pronsBase = dictService.pronsBase;
+  }
 }

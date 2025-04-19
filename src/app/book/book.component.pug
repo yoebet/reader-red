@@ -7,7 +7,9 @@ div(*ngIf='book')
     | 章节
   .ui.celled.list
     .item(*ngFor='let chap of chaps; trackBy: chapTracker; first as first; last as last')
-      //i.ui.right.floated.checkmark.icon(*ngIf='chap.isMyChap')
+      a.ui.right.floated.mobile-link([routerLink]="['/read', chap.id]", target="_blank")
+        i.mobile.alternate.icon
+        | 阅读
       a([routerLink]="['/chaps', chap.id]")
         .pre-wrap {{chap.name}}
         .zhname.pre-wrap(*ngIf="showZh && chap.zhName") {{chap.zhName}}
