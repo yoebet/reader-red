@@ -14,6 +14,7 @@
           .menu(suiDropdownMenu='')
             a.item(routerLink='/base-vocabulary', routerLinkActive='active') 基础词汇
             a.item(routerLink='/word-tags', routerLinkActive='active') 词频标签
+            a.item(routerLink='/imp-exp', routerLinkActive='active') 词表导入
             a.item((click)='showTextSearchScope()') 文本搜索
         a.item(*ngIf='currentUser', (click)='logout()') 退出
       a.item(*ngIf='!currentUser', (click)='gotoLogin()') 登录

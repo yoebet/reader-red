@@ -14,10 +14,10 @@ import { SessionService } from './session.service';
 @Injectable()
 export class UserWordService extends BaseService<UserWord> {
 
-  allWords: UserWord[];
-  userWordsMap: Map<string, UserWord>;
+  private allWords: UserWord[];
+  private userWordsMap: Map<string, UserWord>;
   private latestAdded0: UserWord[] = [];
-  latestAddedCapacity = 10;
+  private latestAddedCapacity = 10;
 
   private allWords$: Observable<UserWord[]>;
 
@@ -33,7 +33,7 @@ export class UserWordService extends BaseService<UserWord> {
   clearCache() {
     this.allWords = null;
     this.allWords$ = null;
-    this.userWordsMap = null;
+    this.userWordsMap.clear();
     this.latestAdded0 = [];
   }
 
@@ -115,6 +115,12 @@ export class UserWordService extends BaseService<UserWord> {
       }));
   }
 
+  reloadAll(): Observable<UserWord[]> {
+    this.allWords = null;
+    this.allWords$ = null;
+    return this.loadAll();
+  }
+
   loadAll(): Observable<UserWord[]> {
     if (this.allWords) {
       return ObservableOf(this.allWords);
@@ -154,82 +160,74 @@ export class UserWordService extends BaseService<UserWord> {
   }
 
   create(userWord: UserWord): Observable<UserWord> {
-    let obs = this.http.post<UserWord>(this.baseUrl, userWord, this.httpOptions)
+    return this.http.post<UserWord>(this.baseUrl, userWord, this.httpOptions)
       .pipe(
+        tap((result: UserWord) => {
+          if (!result) {
+            return;
+          }
+          // userWord._id = result._id;
+          UserWord.ensureCreatedDate(userWord);
+          if (this.userWordsMap) {
+            this.userWordsMap.set(userWord.word, userWord);
+          }
+          if (this.allWords) {
+            this.allWords.push(userWord);
+          }
+          this.pushLatest(userWord);
+        }),
         catchError(this.handleError));
-    return obs.pipe(
-      tap((result: UserWord) => {
-        if (!result || !result._id) {
-          return;
-        }
-        userWord._id = result._id;
-        UserWord.ensureCreatedDate(userWord);
-        if (this.userWordsMap) {
-          this.userWordsMap.set(userWord.word, userWord);
-        }
-        if (this.allWords) {
-          this.allWords.push(userWord);
-        }
-        this.pushLatest(userWord);
-      }));
   }
 
   update(userWord: UserWord): Observable<OpResult> {
     const url = `${this.baseUrl}/${userWord.word}`;
     let up = { familiarity: userWord.familiarity };
-    let obs = this.http.put<OpResult>(url, up, this.httpOptions)
+    return this.http.put<OpResult>(url, up, this.httpOptions)
       .pipe(
+        tap((opr: OpResult) => {
+          if (opr.ok === 1) {
+            this.updateLatest(userWord);
+          }
+        }),
         catchError(this.handleError));
-    return obs.pipe(
-      tap((opr: OpResult) => {
-        if (opr.ok === 1) {
-          this.updateLatest(userWord);
-        }
-      }));
   }
 
   remove(word: string): Observable<OpResult> {
     const url = `${this.baseUrl}/${word}`;
-    let obs = this.http.delete<OpResult>(url, this.httpOptions)
+    return this.http.delete<OpResult>(url, this.httpOptions)
       .pipe(
-        catchError(this.handleError));
-    return obs.pipe(
-      tap((opr: OpResult) => {
-        if (opr.ok === 1) {
-          let userWord;
-          if (this.userWordsMap) {
-            userWord = this.userWordsMap.get(word);
-            if (!userWord) {
-              return;
+        tap((opr: OpResult) => {
+          if (opr.ok === 1) {
+            let userWord: UserWord;
+            if (this.userWordsMap) {
+              userWord = this.userWordsMap.get(word);
+              if (!userWord) {
+                return;
+              }
+              this.userWordsMap.delete(word);
             }
-            this.userWordsMap.delete(word);
+            if (this.allWords) {
+              const index = this.allWords.findIndex((uw => uw.word === word));
+              if (index >= 0) {
+                this.allWords.splice(index, 1);
+              }
+            }
+            if (userWord) {
+              this.removeFromLatest(userWord);
+            }
           }
-          if (this.allWords) {
-            this.allWords = this.allWords.filter(uw => uw.word !== word);
-          }
-          if (userWord) {
-            this.removeFromLatest(userWord);
-          }
-        }
-      }));
+        }),
+        catchError(this.handleError));
   }
 
-  /*sync(userWords: UserWord[]): Observable<OpResult> {
-    const url = `${this.baseUrl}/sync`;
-    userWords = userWords.map(userWord => {
-      let {word, familiarity} = userWord;
-      let uw: any = {word, familiarity};
-      if (!userWord._id) {
-        for (let attr of ['bookId', 'chapId', 'paraId']) {
-          if (userWord[attr]) {
-            uw[attr] = userWord[attr];
-          }
-        }
-      }
-      return uw;
-    });
+
+  resetAll(userWords: {
+    word: string;
+    familiarity?: number;
+  }[]): Observable<OpResult> {
+    const url = `${this.baseUrl}/resetAll`;
     return this.http.post<OpResult>(url, userWords, this.httpOptions)
-      .catch(this.handleError);
-  }*/
+      .pipe(catchError(this.handleError));
+  }
 
 }

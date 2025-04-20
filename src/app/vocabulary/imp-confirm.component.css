@@ -1,0 +1,8 @@
+.ignored .item.word {
+  color: gray;
+  text-decoration: underline dashed;
+}
+
+.ignored .list {
+  margin-left: 2em;
+}

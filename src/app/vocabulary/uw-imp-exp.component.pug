@@ -1,0 +1,28 @@
+.imp
+  .ui.small.blue.header 导入
+
+  .ui.small.form
+    .field
+      | 请把你的
+      b 全部
+      | 生词粘贴到以下输入框，用逗号或换行分隔：
+    .field
+      textarea.words(rows="20", [(ngModel)]="wordsText")
+    .field
+      .ui.right.floated.small.primary.button((click)="importCheck()") 导入
+
+.ui.hidden.clearing.divider
+.ui.hidden.clearing.divider
+
+.exp
+  .ui.small.blue.header 导出
+  .ui.small.form
+    .field
+      .ui.right.floated.small.button((click)="exportWords()") 导出
+      .ui.horizontal.list
+        .item
+          | 词表大小 &nbsp;
+          b {{stat.all}}
+        .item.uwf-1 {{1 | wordFamiliarity}} {{stat.f1}}
+        .item.uwf-2 {{2 | wordFamiliarity}} {{stat.f2}}
+        .item.uwf-3 {{3 | wordFamiliarity}} {{stat.f3}}

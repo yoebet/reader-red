@@ -53,6 +53,8 @@ import { ReaderHelperComponent } from './chap/reader-helper.component';
 import { AppAComponent } from './app-a.component';
 import { TextSearchBooksComponent } from './preference/text-search-books.component';
 import { RegisterComponent } from './account/register.component';
+import { UwImpExpComponent } from './vocabulary/uw-imp-exp.component';
+import { ImpConfirmComponent } from './vocabulary/imp-confirm.component';
 
 @NgModule({
   imports: [
@@ -93,7 +95,9 @@ import { RegisterComponent } from './account/register.component';
     ReaderHelperComponent,
     AppAComponent,
     TextSearchBooksComponent,
-    RegisterComponent
+    RegisterComponent,
+    UwImpExpComponent,
+    ImpConfirmComponent
   ],
   providers: [
     AppService,
@@ -118,7 +122,8 @@ import { RegisterComponent } from './account/register.component';
     ParaCommentsComponent,
     ParaCommentsExtComponent,
     ReaderHelperComponent,
-    TextSearchBooksComponent
+    TextSearchBooksComponent,
+    ImpConfirmComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -12,15 +12,15 @@
   color: rgba(0, 0, 0, 0.7);
 }
 
-.ui.label.uwf-1, .para-text [data-uwf='1'] {
+.uwf-1, .ui.label.uwf-1, .para-text [data-uwf='1'] {
   color: rgba(255, 80, 80, 1);
 }
 
-.ui.label.uwf-2, .para-text [data-uwf='2'] {
+.uwf-2, .ui.label.uwf-2, .para-text [data-uwf='2'] {
   color: rgba(80, 80, 255, 1);
 }
 
-.ui.label.uwf-3, .para-text [data-uwf='3'] {
+.uwf-3, .ui.label.uwf-3, .para-text [data-uwf='3'] {
   color: rgba(0, 128, 0, 1);
 }
 

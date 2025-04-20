@@ -1,0 +1,24 @@
+.ui.small.blue.header 确定要导入码？
+
+.ui.content
+  .ui.horizontal.list
+    .item
+      | 词表大小 &nbsp;
+      b {{stat.all}}
+    .item.uwf-1 {{1 | wordFamiliarity}} {{stat.f1}}
+    .item.uwf-2 {{2 | wordFamiliarity}} {{stat.f2}}
+    .item.uwf-3 {{3 | wordFamiliarity}} {{stat.f3}}
+
+  .ui.hidden.clearing.divider
+
+  .ignored(*ngIf='ignored')
+    | 忽略 &nbsp;&nbsp;
+    b {{ignored.length}}
+    br
+    .ui.horizontal.list(*ngIf='ignored.length>0')
+      .item.word(*ngFor='let iw of ignored') {{iw}}
+
+.actions
+  .ui.tiny.button((click)='cancel()') 取消
+  .ui.tiny.primary.button((click)='confirm()') 导入
+

@@ -11,7 +11,7 @@ import { WordCategory } from '../models/word-category';
 @Component({
   selector: 'user-word',
   templateUrl: './user-word.component.html',
-  styleUrls: ['./user-word.component.css']
+  // styleUrls: ['./user-word.component.css']
 })
 export class UserWordComponent implements OnInit {
   private _word: string;

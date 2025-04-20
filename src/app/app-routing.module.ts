@@ -11,6 +11,7 @@ import { DictComponent } from './dict/dict.component';
 import { ChapReaderComponent } from './chap/chap-reader.component';
 import { AppAComponent } from './app-a.component';
 import { RegisterComponent } from './account/register.component';
+import { UwImpExpComponent } from './vocabulary/uw-imp-exp.component';
 
 const routes: Routes = [
   { path: 'read/:id', component: ChapReaderComponent },
@@ -22,7 +23,8 @@ const routes: Routes = [
       { path: 'chaps/:id', component: ChapComponent },
       { path: 'dict', component: DictComponent },
       { path: 'vocabulary', component: VocabularyComponent },
-      { path: 'base-vocabulary', component: BaseVocabularyComponent },
+      { path: 'imp-exp', component: UwImpExpComponent },
+      { path: 'register', component: RegisterComponent },
       { path: 'word-tags', component: WordTagsSettingComponent }
     ]
   },

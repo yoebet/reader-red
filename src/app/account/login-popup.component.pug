@@ -8,7 +8,7 @@ ng-template([ngIf]='loginMethod==="pass"')
   .ui.content.tiny.form.login
     .ui.small.message(*ngIf='loginMessage') {{loginMessage}}
     .field
-      input(type="text", #name="", placeholder="账号")
+      input(type="text", #name="", placeholder="用户名")
     .field
       input(type="password", #pass="", placeholder="密码", (keyup)='onPassKeyup(name.value, pass.value, $event)')
 

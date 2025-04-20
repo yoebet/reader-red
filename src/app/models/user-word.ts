@@ -1,4 +1,4 @@
-import {Model} from './model';
+import { Model } from './model';
 
 import * as moment from 'moment';
 
@@ -15,9 +15,9 @@ export class UserWord extends Model {
   markRemoved = false;
 
   static Familiarities = [
-    {value: 1, label: '在学'},
-    {value: 2, label: '熟悉'},
-    {value: 3, label: '掌握'}
+    { value: 1, label: '在学' },
+    { value: 2, label: '熟悉' },
+    { value: 3, label: '掌握' }
   ];
 
   static FamiliarityLowest = 1;
@@ -36,6 +36,13 @@ export class UserWord extends Model {
     let month = date.month(); // 0-11
     let year = date.year();
     let dateString = `${year}-${month + 1}-${dayOfMonth}`;
-    userWord.createdDateParts = {year, month, dayOfMonth, weekOfYear, dayOfWeek, dateString};
+    userWord.createdDateParts = { year, month, dayOfMonth, weekOfYear, dayOfWeek, dateString };
   }
+}
+
+export interface UserWordStat {
+  all: number;
+  f1: number;
+  f2: number;
+  f3: number;
 }

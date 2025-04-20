@@ -96,7 +96,7 @@ const LocalStorageKey = {
   readerLeftRight: 'RLR'
 };
 
-const DefaultHttpHeaders = Object.assign({'X-CL': 'E'}, environment.httpHeaders);
+const DefaultHttpHeaders = Object.assign({'X-CL': 'B'}, environment.httpHeaders);
 
 export {
   UIConstants,
