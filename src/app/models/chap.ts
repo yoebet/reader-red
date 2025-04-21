@@ -1,6 +1,7 @@
 import {Model} from './model';
 import {Book} from './book';
 import {Para} from './para';
+import { WordStat } from './word-stat';
 
 export class Chap extends Model {
   name: string;
@@ -23,6 +24,8 @@ export class Chap extends Model {
   isMyChap = false;
 
   paraCommentsCountLoaded = false;
+
+  stat?: WordStat;
 }
 
 export class ChapContentPack {

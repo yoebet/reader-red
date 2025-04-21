@@ -5,6 +5,8 @@ import { SuiModalService } from 'ng2-semantic-ui';
 import { Book } from '../models/book';
 import { BookService } from '../services/book.service';
 import { TextSearchBooksModal } from '../preference/text-search-books.component';
+import { WordStatService } from '../services/word-stat.service';
+import { WordStatModal } from './word-stat.component';
 
 @Component({
   selector: 'book-list',
@@ -20,6 +22,7 @@ export class BookListComponent implements OnInit {
   showZh = true;
 
   constructor(private bookService: BookService,
+              private wordStatService: WordStatService,
               protected modalService: SuiModalService,
               private router: Router) {
   }
@@ -48,6 +51,16 @@ export class BookListComponent implements OnInit {
 
   configTextSearchScope() {
     this.modalService.open(new TextSearchBooksModal({ edit: true }));
+  }
+
+  async showBookStat(book: Book) {
+    let stat = book.stat;
+    if (!stat) {
+      stat = await this.wordStatService.getBookStat(book._id).toPromise();
+    }
+    if (stat) {
+      this.modalService.open(new WordStatModal({ stat, title: book.name }));
+    }
   }
 
 }

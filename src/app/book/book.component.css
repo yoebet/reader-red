@@ -24,3 +24,7 @@
 a.mobile-link {
   color: rgba(9, 107, 7, 1);
 }
+
+a.book-stat {
+  cursor: pointer;
+}

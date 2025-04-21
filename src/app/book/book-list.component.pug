@@ -9,7 +9,10 @@
     a.item((click)='setList("personal")', [ngClass]='{disabled:listName=="personal"}') 个人
 .ui.celled.list
   .item(*ngFor='let book of books; trackBy: bookTracker')
-    .ui.right.floated.mini.teal.circular.label(*ngIf="book.userBook&&book.userBook.textSearch" ) 搜
+    .ui.right.floated.mini.content
+      a(*ngIf='book.stat', (click)='showBookStat(book)') {{book.stat.total}} 词
+      | &nbsp;&nbsp;
+      .ui.mini.teal.circular.label(*ngIf="book.userBook&&book.userBook.textSearch" ) 搜
     a([routerLink]="['/books', book.id]")
       .enname ({{book.code}}) {{book.name}}
       .zhname(*ngIf='showZh && book.zhName') {{book.zhName}}

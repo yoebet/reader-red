@@ -1,6 +1,7 @@
 import { Model } from './model';
 import { Chap } from './chap';
 import { UserBook } from './user-book';
+import { WordStat } from './word-stat';
 
 export type LangCode = 'En'|'Zh'|'Zc';
 
@@ -78,6 +79,8 @@ export class Book extends Model {
   chaps: Chap[];
 
   userBook: UserBook;
+
+  stat?: WordStat;
 
   static isChineseText(lang) {
     return lang === Book.LangCodeZh || lang === Book.LangCodeZc;
