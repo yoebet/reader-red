@@ -7,6 +7,8 @@ export const environment = {
   production: false,
   apiBase: 'http://localhost:3000/api-b',
   staticBase: 'http://localhost:3000',
+  // apiBase: 'http://18.139.41.36:3000/api-b',
+  // staticBase: 'http://18.139.41.36:2025',
   httpHeaders: {
     'X-XS': 'grMmqX5wDJsQKDs2oF7KxK'
   }
