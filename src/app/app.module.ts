@@ -53,6 +53,7 @@ import { UwImpExpComponent } from './vocabulary/uw-imp-exp.component';
 import { ImpConfirmComponent } from './vocabulary/imp-confirm.component';
 import { WordStatComponent } from './book/word-stat.component';
 import { WordStatService } from './services/word-stat.service';
+import { WanUnitNumPipe } from './pipes/wan-unit-num.pipe';
 
 @NgModule({
   imports: [
@@ -96,7 +97,8 @@ import { WordStatService } from './services/word-stat.service';
     RegisterComponent,
     UwImpExpComponent,
     ImpConfirmComponent,
-    WordStatComponent
+    WordStatComponent,
+    WanUnitNumPipe
   ],
   providers: [
     AppService,

@@ -40,17 +40,6 @@ export class WordStatService extends BaseService<WordStat> {
     return super.getOneByUrl(url);
   }
 
-  getMultiBookStats(bookIds: string[]): Observable<WordStat[]> {
-    const url = `${this.chapStatBaseUrl}/stats/multiBooks`;
-    return this.http.post<WordStat[]>(url, bookIds, this.httpOptions).pipe(
-      catchError(this.handleError));
-  }
-
-  getChapsStats(bookId: string): Observable<WordStat[]> {
-    const url = `${this.chapStatBaseUrl}/${bookId}/chapsStats`;
-    return super.list(url);
-  }
-
   getChapWordsForCat(chapId: string, cat: string): Observable<string[]> {
     const url = `${this.chapStatBaseUrl}/${chapId}/words/${cat}`;
     return this.http.get<string[]>(url, this.httpOptions).pipe(

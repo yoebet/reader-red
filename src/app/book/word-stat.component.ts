@@ -21,11 +21,11 @@ export class WordStatComponent {
   words: string[];
   catNames = {
     cet4: 'CET4',
-    cet6: 'CET6',
-    ielts: '雅思',
-    gre: 'GRE',
-    pro: '英专',
-    beyond: '(Beyond)',
+    cet6: 'CET6 (CET4+)',
+    ielts: '雅思 (CET6+)',
+    gre: 'GRE (CET6+)',
+    pro: '英专 (CET6+)',
+    // beyond: '(Beyond)',
   };
 
   constructor(private modal: SuiModal<WordStatContext, string, string>) {

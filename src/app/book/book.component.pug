@@ -1,7 +1,7 @@
 div(*ngIf='book')
   h4.ui.header
     | ({{book.code}}) {{book.name}} &nbsp;&nbsp;
-    a.ui.right.floated.mini.book-stat(*ngIf='book.stat', (click)='showBookStat(book)') {{book.stat.total}} 词
+    a.ui.right.floated.mini.book-stat(*ngIf='book.stat', (click)='showBookStat(book)') {{book.stat.total | wanUnit}} 词
   .ui.header
     .ui.right.floated.header
       sui-checkbox([(ngModel)]='showZh') 中文
@@ -9,7 +9,7 @@ div(*ngIf='book')
   .ui.celled.list
     .item(*ngFor='let chap of chaps; trackBy: chapTracker; first as first; last as last')
       .ui.right.floated.mini.content
-        a(*ngIf='chap.stat', (click)='showChapStat(chap)') {{chap.stat.total}} 词
+        a(*ngIf='chap.stat', (click)='showChapStat(chap)') {{chap.stat.total | wanUnit}} 词
         | &nbsp;&nbsp;
         a.ui.mobile-link([routerLink]="['/read', chap.id]", target="_blank")
           i.mobile.alternate.icon
