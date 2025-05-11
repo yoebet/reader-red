@@ -1,6 +1,7 @@
 h4.ui.gray.header(*ngIf='book')
-  .book-name ({{book.code}}) {{book.name}}
-  .book-zhname(*ngIf='book.zhName') {{book.zhName}}
+  a([routerLink]="['/books', book.id]")
+    .book-name ({{book.code}}) {{book.name}}
+    .book-zhname(*ngIf='book.zhName') {{book.zhName}}
 div(*ngIf='chap')
   h5.ui.blue.header
     .chap-name.pre-wrap {{chap.name}}
@@ -41,6 +42,17 @@ div(*ngIf='chap')
             i.comment.icon
             | 评论({{para.commentsCount}})
 
+  p &nbsp;
+
+  .ui.list.prev-next-nav(*ngIf='book&&allowSwitchChap')
+    a.item.prev-nav([ngClass]='{disabled: !prevChap}', [routerLink]="['/chaps', prevChap&&prevChap.id]")
+      i.left.arrow.icon
+      span.pre-wrap {{prevChap? prevChap.name:'（无）'}}
+    .spacer &nbsp;
+    a.item.next-nav([ngClass]='{disabled: !nextChap}', [routerLink]="['/chaps', nextChap&&nextChap.id]")
+      i.right.arrow.icon
+      span.pre-wrap {{nextChap? nextChap.name:'（无）'}}
+
   #dictPopup.ui.basic.popup(*ngIf='dictRequest')
     dict-entry(*ngIf='dictRequest.dictLang==="En"',
       [entry]='dictRequest.dictEntry',
@@ -59,5 +71,9 @@ div(*ngIf='chap')
       (dictItemSelected)='onDictItemSelect($event)')
   ng-template(#dictSimple='')
 
+p &nbsp;
+
 .ui.hidden.clearing.divider
 button.ui.tiny.button((click)='goBack()') 返回
+
+p &nbsp;

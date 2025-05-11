@@ -1,14 +1,15 @@
 {
-  "name": "rr",
+  "name": "read",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
     "puggy": "pug src -P -w",
     "ng": "ng",
     "serve": "set NODE_OPTIONS=--openssl-legacy-provider & ng serve --port 4000",
-    "serve-proxy": "set NODE_OPTIONS=--openssl-legacy-provider & ng serve --port 4000 --proxy-config proxy-conf.json",
+    "serve-proxy-local": "set NODE_OPTIONS=--openssl-legacy-provider & ng serve --port 4000 --proxy-config proxy-conf.local.json",
+    "serve-proxy-remote": "set NODE_OPTIONS=--openssl-legacy-provider & ng serve --port 4000 --proxy-config proxy-conf.remote.json",
     "start": "npm run puggy & ng serve --port 4000",
-    "build": "set NODE_OPTIONS=--openssl-legacy-provider & ng build --prod --base-href /rr/",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider & ng build --prod --base-href /read/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

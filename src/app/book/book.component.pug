@@ -11,7 +11,7 @@ div(*ngIf='book')
       .ui.right.floated.mini.content
         a(*ngIf='chap.stat', (click)='showChapStat(chap)') {{chap.stat.total | wanUnit}} 词
         | &nbsp;&nbsp;
-        a.ui.mobile-link([routerLink]="['/read', chap.id]", target="_blank")
+        a.ui.mobile-link([routerLink]="['/m', chap.id]", target="_blank")
           i.mobile.alternate.icon
           | 阅读
       a([routerLink]="['/chaps', chap.id]")

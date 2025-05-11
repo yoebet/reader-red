@@ -54,6 +54,7 @@ import { ImpConfirmComponent } from './vocabulary/imp-confirm.component';
 import { WordStatComponent } from './book/word-stat.component';
 import { WordStatService } from './services/word-stat.service';
 import { WanUnitNumPipe } from './pipes/wan-unit-num.pipe';
+import { HomeComponent } from './home.component';
 
 @NgModule({
   imports: [
@@ -65,6 +66,7 @@ import { WanUnitNumPipe } from './pipes/wan-unit-num.pipe';
   ],
   declarations: [
     AppComponent,
+    HomeComponent,
     LoginComponent,
     LoginPopupComponent,
     BookListComponent,

@@ -1,5 +1,5 @@
 import { Component, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { SuiSidebar } from 'ng2-semantic-ui/dist';
 import { SuiModalService } from 'ng2-semantic-ui';
@@ -32,8 +32,6 @@ import { LoginModal } from '../account/login-popup.component';
 })
 export class ChapReaderComponent extends ChapComponent implements OnInit, OnDestroy {
   @ViewChild('sidebar', { read: SuiSidebar }) sidebar: SuiSidebar;
-
-  allowSwitchChap = true;
   chapListScrolled = false;
 
   sidebarContent: 'vocabulary'|'chap-list' = 'vocabulary';
@@ -53,6 +51,7 @@ export class ChapReaderComponent extends ChapComponent implements OnInit, OnDest
               protected chapService: ChapService,
               protected paraService: ParaService,
               protected route: ActivatedRoute,
+              protected router: Router,
               protected location: Location,
               protected annoService: AnnotationsService,
               protected vocabularyService: UserVocabularyService,
@@ -63,7 +62,7 @@ export class ChapReaderComponent extends ChapComponent implements OnInit, OnDest
               protected userWordService: UserWordService,
               protected sessionService: SessionService,
   ) {
-    super(bookService, chapService, paraService, route, location, annoService,
+    super(bookService, chapService, paraService, route, router, location, annoService,
       vocabularyService, dictZhService, resolver, modalService);
 
     const LSK = LocalStorageKey;
@@ -151,7 +150,7 @@ export class ChapReaderComponent extends ChapComponent implements OnInit, OnDest
     // }
   }
 
-  private doScrollChapList(chapIndex) {
+  protected doScrollChapList(chapIndex) {
     let selector = `.chap-list a.item.chap_title${chapIndex}`;
     let chapTitleEl = document.querySelector(selector);
     if (!chapTitleEl) {
@@ -168,32 +167,7 @@ export class ChapReaderComponent extends ChapComponent implements OnInit, OnDest
     this.chapListScrolled = true;
   }
 
-  private setupNavigation(scrollChapList = true) {
-    this.prevChap = null;
-    this.nextChap = null;
-    if (!this.book) {
-      return;
-    }
-    let chaps = this.book.chaps;
-    if (!chaps || chaps.length === 0) {
-      return;
-    }
-    let ci = chaps.findIndex(c => c._id === this.chap._id);
-    if (ci === -1) {
-      return;
-    }
-    if (ci > 0) {
-      this.prevChap = chaps[ci - 1];
-    }
-    if (ci < chaps.length - 1) {
-      this.nextChap = chaps[ci + 1];
-    }
-    if (scrollChapList) {
-      this.doScrollChapList(ci);
-    }
-  }
-
-  switchChap(chap, scrollChapList = true) {
+  switchChap(chap: Chap, scrollChapList = true) {
     if (!chap) {
       return;
     }
@@ -207,21 +181,13 @@ export class ChapReaderComponent extends ChapComponent implements OnInit, OnDest
       .subscribe(chapDetail => {
         this.chap = chapDetail;
         this.onChapChanged(chapDetail);
-
-        window.history.pushState({}, '', `read/${chap._id}`);
+        window.history.pushState({}, '', `m/${chap.id}`);
         if (scrollChapList) {
           this.chapListScrolled = false;
         }
         this.setupNavigation(scrollChapList);
         this.checkCommentsCount();
       });
-  }
-
-  protected onBookChanged(book: Book) {
-    super.onBookChanged(book);
-    if (this.allowSwitchChap) {
-      this.setupNavigation();
-    }
   }
 
   toggleSidebar(sidebar: SuiSidebar, which) {

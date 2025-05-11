@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
 
@@ -27,6 +27,7 @@ export class BookComponent implements OnInit {
               private wordStatService: WordStatService,
               private modalService: SuiModalService,
               private route: ActivatedRoute,
+              protected router: Router,
               private location: Location) {
   }
 
@@ -72,6 +73,7 @@ export class BookComponent implements OnInit {
   }
 
   goBack(): void {
-    this.location.back();
+    // this.location.back();
+    this.router.navigate(['books']);
   }
 }

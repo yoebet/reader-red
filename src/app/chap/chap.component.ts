@@ -1,7 +1,8 @@
 import { Component, ComponentFactoryResolver } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
+import { SuiModalService } from 'ng2-semantic-ui';
 import { Book } from '../models/book';
 import { Chap } from '../models/chap';
 import { Para } from '../models/para';
@@ -11,7 +12,6 @@ import { AnnotationsService } from '../services/annotations.service';
 import { PopupDictSupportComponent } from '../dict/popup-dict-support.component';
 import { UserVocabularyService } from '../services/user-vocabulary.service';
 import { DictZhService } from '../services/dict-zh.service';
-import { SuiModalService } from 'ng2-semantic-ui';
 import { ParaCommentsExtModal } from '../content/para-comments-ext.component';
 import { ParaService } from '../services/para.service';
 
@@ -25,12 +25,17 @@ export class ChapComponent extends PopupDictSupportComponent {
   chap: Chap;
   selectedPara: Para;
   showCommentsCount = true;
-  loadBookDetail = false;
+
+  allowSwitchChap = true;
+  loadBookDetail = true;
+  prevChap: Chap;
+  nextChap: Chap;
 
   constructor(protected bookService: BookService,
               protected chapService: ChapService,
               protected paraService: ParaService,
               protected route: ActivatedRoute,
+              protected router: Router,
               protected location: Location,
               protected annoService: AnnotationsService,
               protected vocabularyService: UserVocabularyService,
@@ -69,7 +74,43 @@ export class ChapComponent extends PopupDictSupportComponent {
     });
   }
 
-  protected onChapChanged(chap) {
+  protected setupNavigation(scrollChapList = true) {
+    this.prevChap = null;
+    this.nextChap = null;
+    if (!this.book) {
+      return;
+    }
+    let chaps = this.book.chaps;
+    if (!chaps || chaps.length === 0) {
+      return;
+    }
+    let ci = chaps.findIndex(c => c._id === this.chap._id);
+    if (ci === -1) {
+      return;
+    }
+    if (ci > 0) {
+      this.prevChap = chaps[ci - 1];
+    }
+    if (ci < chaps.length - 1) {
+      this.nextChap = chaps[ci + 1];
+    }
+    if (scrollChapList) {
+      this.doScrollChapList(ci);
+    }
+  }
+
+  protected doScrollChapList(chapIndex) {
+  }
+
+  protected onBookChanged(book: Book) {
+    super.onBookChanged(book);
+    if (this.allowSwitchChap) {
+      this.setupNavigation();
+    }
+  }
+
+  protected onChapChanged(chap: Chap) {
+    window.history.pushState({}, '', `chaps/${chap.id}`);
   }
 
   selectPara(para): void {
@@ -92,7 +133,8 @@ export class ChapComponent extends PopupDictSupportComponent {
   }
 
   goBack(): void {
-    this.location.back();
+    // this.location.back();
+    this.router.navigate(['books', this.book.id]);
   }
 
 

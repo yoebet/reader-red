@@ -1,0 +1,11 @@
+{
+  "/api-b": {
+    "target": "http://18.139.41.36",
+    "changeOrigin": true,
+    "secure": false
+  },
+  "/res": {
+    "target": "http://18.139.41.36",
+    "changeOrigin": true
+  }
+}

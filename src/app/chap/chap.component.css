@@ -107,3 +107,17 @@
 .para-op .item {
   font-size: 0.9em !important;
 }
+
+.prev-next-nav {
+  display: flex;
+  flex: 1 0 auto;
+}
+
+
+.prev-next-nav a * {
+  display: inline-block;
+}
+
+.prev-next-nav .spacer {
+  flex-grow: 1;
+}

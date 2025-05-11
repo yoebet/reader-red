@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiBase: 'http://localhost:3000/api-b',
-  staticBase: 'http://localhost:3000',
+  apiBase: 'http://18.139.41.36/api-b',
+  staticBase: 'http://18.139.41.36/res',
   httpHeaders: {
   }
 };

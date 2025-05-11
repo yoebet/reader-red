@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "rr": {
+    "read": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/rr",
+            "outputPath": "dist/read",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -59,18 +59,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "rr:build"
+            "browserTarget": "read:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "rr:build:production"
+              "browserTarget": "read:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "rr:build"
+            "browserTarget": "read:build"
           }
         },
         "test": {
@@ -104,7 +104,7 @@
         }
       }
     },
-    "rr-e2e": {
+    "read-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -113,11 +113,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "rr:serve"
+            "devServerTarget": "read:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "rr:serve:production"
+              "devServerTarget": "read:serve:production"
             }
           }
         },
@@ -133,5 +133,5 @@
       }
     }
   },
-  "defaultProject": "rr"
+  "defaultProject": "read"
 }
