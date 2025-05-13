@@ -1,9 +1,18 @@
-.header.book-name, .header.book-zhname {
-  margin-top: 1em;
+.book-meta {
+  display: inline-block;
 }
 
-.header.book-name {
+.zh-name-author, .props {
+  margin-top: 0.5em;
+}
 
+.book-name, .author {
+  display: inline-block;
+}
+
+.book-name {
+  font-weight: bold;
+  font-size: 1.1em;
 }
 
 .author-by {
@@ -12,9 +21,20 @@
   padding-right: 0.3em;
 }
 
-.header.book-name .author, .header.book-zhname .zhauthor {
+.author {
   margin-left: 0.6em;
   display: inline-block;
+}
+
+.prop {
+  margin-right: 0.8em;
+  display: inline-block;
+}
+
+.prop-name {
+  font-size: 0.9em;
+  color: rgba(128, 128, 128, 0.9);
+  margin-right: 0.3em;
 }
 
 .zhname.pre-wrap {

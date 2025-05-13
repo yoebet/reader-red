@@ -1,15 +1,35 @@
 div(*ngIf='book')
-  h4.ui.header
-    | ({{book.code}}) {{book.name}} &nbsp;&nbsp;
-    a.ui.right.floated.mini.book-stat(*ngIf='book.stat', (click)='showBookStat(book)') {{book.stat.total | wanUnit}} 词
+  .ui.content
+    .ui.right.floated.mini.header
+      a.ui.mini.button.book-stat(*ngIf='book.stat', (click)='showBookStat(book)') {{book.stat.total | wanUnit}}词
+    img.ui.tiny.left.floated.image(*ngIf='book.image',
+      [src]='book.image? bookImagesBase+"/"+book.image.file: bookImageNotSet',
+      [ngClass]='{disabled: !book.image}', (click)='showImage(book)')
+    .book-meta
+      .name-author
+        .book-name {{book.name}}
+        .author(*ngIf='book.author')
+          span.author-by by
+          | {{book.author}}
+      .zh-name-author(*ngIf='book.zhName')
+        .book-name {{book.zhName}}
+        .author(*ngIf='book.zhAuthor')
+          span.author-by by
+          | {{book.zhAuthor}}
+      .props
+        .prop
+          span.prop-name 代号
+          | {{book.code}}
+
+  .ui.hidden.clearing.divider
   .ui.header
-    .ui.right.floated.header
+    .ui.right.floated.mini.header
       sui-checkbox([(ngModel)]='showZh') 中文
     | 章节
   .ui.celled.list
     .item(*ngFor='let chap of chaps; trackBy: chapTracker; first as first; last as last')
       .ui.right.floated.mini.content
-        a(*ngIf='chap.stat', (click)='showChapStat(chap)') {{chap.stat.total | wanUnit}} 词
+        a(*ngIf='chap.stat', (click)='showChapStat(chap)') {{chap.stat.total | wanUnit}}词
         | &nbsp;&nbsp;
         a.ui.mobile-link([routerLink]="['/m', chap.id]", target="_blank")
           i.mobile.alternate.icon

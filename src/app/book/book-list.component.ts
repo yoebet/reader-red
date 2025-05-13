@@ -7,6 +7,8 @@ import { BookService } from '../services/book.service';
 import { TextSearchBooksModal } from '../preference/text-search-books.component';
 import { WordStatService } from '../services/word-stat.service';
 import { WordStatModal } from './word-stat.component';
+import { StaticResource } from '../config';
+import { BookImageModal } from './book-image.component';
 
 @Component({
   selector: 'book-list',
@@ -20,6 +22,8 @@ export class BookListComponent implements OnInit {
   books: Book[];
   listName = 'public';
   showZh = true;
+  bookImagesBase = StaticResource.BookImagesBase;
+  bookImageNotSet = StaticResource.BookImageNotSet;
 
   constructor(private bookService: BookService,
               private wordStatService: WordStatService,
@@ -61,6 +65,10 @@ export class BookListComponent implements OnInit {
     if (stat) {
       this.modalService.open(new WordStatModal({ stat, title: book.name }));
     }
+  }
+
+  showImage(book: Book) {
+    this.modalService.open(new BookImageModal(book));
   }
 
 }

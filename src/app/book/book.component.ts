@@ -10,6 +10,8 @@ import { BookService } from '../services/book.service';
 import { WordStatService } from '../services/word-stat.service';
 import { WordStatModal } from './word-stat.component';
 import { SuiModalService } from 'ng2-semantic-ui';
+import { StaticResource } from '../config';
+import { BookImageModal } from './book-image.component';
 
 @Component({
   selector: 'book-detail',
@@ -20,6 +22,8 @@ export class BookComponent implements OnInit {
   book: Book;
   userBook: UserBook;
   chaps: Chap[];
+  bookImagesBase = StaticResource.BookImagesBase;
+  bookImageNotSet = StaticResource.BookImageNotSet;
 
   showZh = true;
 
@@ -66,6 +70,10 @@ export class BookComponent implements OnInit {
     if (stat) {
       this.modalService.open(new WordStatModal({ stat, title: chap.name }));
     }
+  }
+
+  showImage(book: Book) {
+    this.modalService.open(new BookImageModal(book));
   }
 
   chapTracker(index, chap) {

@@ -7,12 +7,28 @@
   .ui.small.compact.horizontal.list.cat-list
     a.item((click)='setList("public")', [ngClass]='{disabled:listName=="public"}') 公开
     a.item((click)='setList("personal")', [ngClass]='{disabled:listName=="personal"}') 个人
-.ui.celled.list
-  .item(*ngFor='let book of books; trackBy: bookTracker')
-    .ui.right.floated.mini.content
-      a(*ngIf='book.stat', (click)='showBookStat(book)') {{book.stat.total | wanUnit}} 词
-      | &nbsp;&nbsp;
-      .ui.mini.teal.circular.label(*ngIf="book.userBook&&book.userBook.textSearch" ) 搜
-    a([routerLink]="['/books', book.id]")
-      .enname ({{book.code}}) {{book.name}}
-      .zhname(*ngIf='showZh && book.zhName') {{book.zhName}}
+
+table.ui.striped.table
+  thead
+    tr
+      th
+      th 代号
+      th 书名
+      th 统计
+      th
+  tbody
+    tr(*ngFor='let book of books; trackBy: bookTracker')
+      td
+        a((click)='showImage(book)')
+          img.ui.tiny.image(*ngIf='book.image', [src]='bookImagesBase+"/"+book.image.file')
+        img.ui.tiny.image.disabled(*ngIf='!book.image', [src]='bookImageNotSet')
+      td {{book.code}}
+      td
+        a([routerLink]="['/books', book.id]")
+          .enname {{book.name}}
+          .zhname(*ngIf='showZh && book.zhName') {{book.zhName}}
+      td
+        a(*ngIf='book.stat', (click)='showBookStat(book)', href='javascript:') {{book.stat.total | wanUnit}}词
+      td
+        .ui.mini.teal.circular.label(*ngIf="book.userBook&&book.userBook.textSearch" ) 搜
+

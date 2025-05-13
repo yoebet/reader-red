@@ -55,6 +55,7 @@ import { WordStatComponent } from './book/word-stat.component';
 import { WordStatService } from './services/word-stat.service';
 import { WanUnitNumPipe } from './pipes/wan-unit-num.pipe';
 import { HomeComponent } from './home.component';
+import { BookImageComponent } from './book/book-image.component';
 
 @NgModule({
   imports: [
@@ -100,7 +101,8 @@ import { HomeComponent } from './home.component';
     UwImpExpComponent,
     ImpConfirmComponent,
     WordStatComponent,
-    WanUnitNumPipe
+    WanUnitNumPipe,
+    BookImageComponent
   ],
   providers: [
     AppService,
@@ -128,7 +130,8 @@ import { HomeComponent } from './home.component';
     ReaderHelperComponent,
     TextSearchBooksComponent,
     ImpConfirmComponent,
-    WordStatComponent
+    WordStatComponent,
+    BookImageComponent
   ],
   bootstrap: [AppComponent]
 })
