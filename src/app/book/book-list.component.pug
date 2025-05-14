@@ -35,7 +35,7 @@ table.ui.striped.table
     tr
       th.ui.small.form(colspan='5')
         .pager
-          input.ui.mini.input.page-input(type="number", min='1', #pi='', (change)='gotoPage(pi.value);pi.value=""')
+          //input.ui.mini.input.page-input(type="number", min='1', #pi='', (change)='gotoPage(pi.value);pi.value=""')
           .ui.right.floated.mini.pagination.menu
             a.icon.item([ngClass]='{disabled:page===1}', (click)='previousPage()')
               i.left.chevron.icon

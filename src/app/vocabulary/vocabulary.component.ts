@@ -96,17 +96,14 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
     }
     if (gb === 'Source') {
       let grouped = groupBy(this.filteredUserWords, 'chapId');
-      for (let chapId in grouped) {
-        if (!grouped.hasOwnProperty(chapId)) {
-          continue;
-        }
+      let groups = await Promise.all(Object.keys(grouped).map(async (chapId) => {
         let userWords = grouped[chapId];
         let group: any = { key: chapId, userWords };
         if (chapId && chapId !== 'null' && chapId !== 'undefined') {
           const chap = await this.chapService.getOne(chapId).toPromise();
           if (!chap) {
             group.title = '-';
-            return;
+            return undefined;
           }
           group.chap = chap;
           group.bookId = chap.bookId;
@@ -132,7 +129,12 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
         } else {
           group.title = '- Other';
         }
-        this.groupedUserWords.push(group);
+        return group;
+      }));
+      for (let group of groups) {
+        if (group) {
+          this.groupedUserWords.push(group);
+        }
       }
       this.groupedUserWords = sortBy(this.groupedUserWords, ['bookId', 'chap.no']);
       return;
