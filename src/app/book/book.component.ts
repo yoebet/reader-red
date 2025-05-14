@@ -12,6 +12,7 @@ import { WordStatModal } from './word-stat.component';
 import { SuiModalService } from 'ng2-semantic-ui';
 import { StaticResource } from '../config';
 import { BookImageModal } from './book-image.component';
+import { BookCategoryService } from '../services/book-category.service';
 
 @Component({
   selector: 'book-detail',
@@ -24,10 +25,12 @@ export class BookComponent implements OnInit {
   chaps: Chap[];
   bookImagesBase = StaticResource.BookImagesBase;
   bookImageNotSet = StaticResource.BookImageNotSet;
+  categoryNames: Record<string, string> = {};
 
   showZh = true;
 
   constructor(private bookService: BookService,
+              private categoryService: BookCategoryService,
               private wordStatService: WordStatService,
               private modalService: SuiModalService,
               private route: ActivatedRoute,
@@ -50,6 +53,10 @@ export class BookComponent implements OnInit {
       this.book = book;
       this.chaps = this.book.chaps;
     });
+    this.categoryService.getCategoryNames()
+      .subscribe(cns => {
+        this.categoryNames = cns;
+      });
   }
 
   async showBookStat(book: Book) {

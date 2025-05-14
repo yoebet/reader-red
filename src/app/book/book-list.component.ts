@@ -20,6 +20,9 @@ export class BookListComponent implements OnInit {
   personalBooks: Book[];
 
   books: Book[];
+  page = 1; // 1 based
+  pageSize = 10;
+  paginatedBooks: Book[];
   listName = 'public';
   showZh = true;
   bookImagesBase = StaticResource.BookImagesBase;
@@ -47,6 +50,56 @@ export class BookListComponent implements OnInit {
       name = this.listName;
     }
     this.books = name === 'personal' ? this.personalBooks : this.publicBooks;
+    this.resetPage(1);
+  }
+
+  resetPage(page) {
+    this.page = page;
+    if (!this.books) {
+      this.paginatedBooks = [];
+      return;
+    }
+    let booksCount = this.books.length;
+    let from = (this.page - 1) * this.pageSize;
+    let to = from + this.pageSize;
+    if (from > booksCount) {
+      from = booksCount;
+    }
+    if (to > booksCount) {
+      to = booksCount;
+    }
+    this.paginatedBooks = this.books.slice(from, to);
+  }
+
+  gotoPage(page) {
+    page = parseInt(page);
+    if (isNaN(page)) {
+      return;
+    }
+    if (page < 1) {
+      page = 1;
+    }
+    this.resetPage(page);
+  }
+
+  nextPage() {
+    if (!this.paginatedBooks) {
+      return;
+    }
+    if (this.paginatedBooks.length < this.pageSize) {
+      return;
+    }
+    this.resetPage(this.page + 1);
+  }
+
+  previousPage() {
+    if (!this.paginatedBooks) {
+      return;
+    }
+    if (this.page === 1) {
+      return;
+    }
+    this.resetPage(this.page - 1);
   }
 
   bookTracker(index, book) {

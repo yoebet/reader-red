@@ -20,6 +20,9 @@ div(*ngIf='book')
         .prop
           span.prop-name 代号
           | {{book.code}}
+        .prop
+          span.prop-name 分类
+          | {{categoryNames[book.category]}}
 
   .ui.hidden.clearing.divider
   .ui.header

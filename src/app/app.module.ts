@@ -56,6 +56,7 @@ import { WordStatService } from './services/word-stat.service';
 import { WanUnitNumPipe } from './pipes/wan-unit-num.pipe';
 import { HomeComponent } from './home.component';
 import { BookImageComponent } from './book/book-image.component';
+import { BookCategoryService } from './services/book-category.service';
 
 @NgModule({
   imports: [
@@ -118,7 +119,8 @@ import { BookImageComponent } from './book/book-image.component';
     AnnotationsService,
     SessionService,
     DictZhService,
-    WordStatService
+    WordStatService,
+    BookCategoryService
   ],
   entryComponents: [
     LoginPopupComponent,

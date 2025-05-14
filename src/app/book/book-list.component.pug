@@ -17,7 +17,7 @@ table.ui.striped.table
       th 统计
       th
   tbody
-    tr(*ngFor='let book of books; trackBy: bookTracker')
+    tr(*ngFor='let book of paginatedBooks; trackBy: bookTracker')
       td
         a((click)='showImage(book)')
           img.ui.tiny.image(*ngIf='book.image', [src]='bookImagesBase+"/"+book.image.file')
@@ -31,4 +31,16 @@ table.ui.striped.table
         a(*ngIf='book.stat', (click)='showBookStat(book)', href='javascript:') {{book.stat.total | wanUnit}}词
       td
         .ui.mini.teal.circular.label(*ngIf="book.userBook&&book.userBook.textSearch" ) 搜
+  tfoot(*ngIf='books&&books.length>=pageSize')
+    tr
+      th.ui.small.form(colspan='5')
+        .pager
+          input.ui.mini.input.page-input(type="number", min='1', #pi='', (change)='gotoPage(pi.value);pi.value=""')
+          .ui.right.floated.mini.pagination.menu
+            a.icon.item([ngClass]='{disabled:page===1}', (click)='previousPage()')
+              i.left.chevron.icon
+            a.item.disabled {{page}}
+            a.icon.item([ngClass]='{disabled:!paginatedBooks||paginatedBooks.length<pageSize}', (click)='nextPage()')
+              i.right.chevron.icon
+        .clearing
 
