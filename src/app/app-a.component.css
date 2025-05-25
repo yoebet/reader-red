@@ -1,3 +1,12 @@
-.form.login {
-  max-width: 20em;
+#main {
+  min-height: calc(100% - 82px);
+}
+
+#header {
+  background-color: #FAFAFA;
+  margin-bottom: 2em;
+}
+
+#header > .pointing.menu {
+  border-bottom-color: transparent;
 }

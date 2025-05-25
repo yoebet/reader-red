@@ -1,30 +1,31 @@
-.ui.container
-  .ui.secondary.pointing.menu
-    a.item(routerLink='/') Home
-    ng-template([ngIf]='currentUser')
-      a.item(routerLink='/books', routerLinkActive='active') 阅读
-      a.item(routerLink='/dict', routerLinkActive='active') 查词
-      a.item(routerLink='/vocabulary', routerLinkActive='active') 词汇
-      .ui.dropdown.item(*ngIf='currentUser', suiDropdown='')
-        | 快捷设置
-        i.dropdown.icon
-        .menu(suiDropdownMenu='')
-          a.item((click)='showTextSearchScope()')
-            | 文本搜索范围
-            i.horizontal.ellipsis.icon
-          a.item((click)='showWordTagsSetting()')
-            | 词汇标签
-            i.horizontal.ellipsis.icon
-    .right.menu
+#main
+  #header
+    .ui.stackable.secondary.pointing.menu.container
+      a.item(routerLink='/') Home
       ng-template([ngIf]='currentUser')
-        .item {{currentUser.name}}
-        a.item(routerLink='/my', routerLinkActive='active') 账号&设置
-        a.item((click)='logout()') 退出
-      a.item(*ngIf='!currentUser', (click)='gotoLogin()') 登录
+        a.item(routerLink='/books', routerLinkActive='active') 阅读
+        a.item(routerLink='/dict', routerLinkActive='active') 查词
+        a.item(routerLink='/vocabulary', routerLinkActive='active') 词汇
+        .ui.dropdown.item(*ngIf='currentUser', suiDropdown='')
+          | 快捷查看
+          i.dropdown.icon
+          .menu(suiDropdownMenu='')
+            a.item((click)='showTextSearchScope()')
+              | 文本搜索范围
+              i.horizontal.ellipsis.icon
+            a.item((click)='showWordTagsSetting()')
+              | 词汇标签
+              i.horizontal.ellipsis.icon
+      .right.menu
+        ng-template([ngIf]='currentUser')
+          a.item(routerLink='/my', routerLinkActive='active') 账号&设置
+          .item
+            | {{currentUser.name}} &nbsp;&nbsp;&nbsp;&nbsp;
+            a((click)='logout()', href='javascript:') 退出
+        .item
+          a(*ngIf='!currentUser', (click)='gotoLogin()', href='javascript:') 登录
 
-  //login-form(*ngIf='loginForm')
-  //.ui.hidden.clearing.divider
+  .ui.container
+    router-outlet
 
-  router-outlet
-
-  p &nbsp;
+    p &nbsp;
