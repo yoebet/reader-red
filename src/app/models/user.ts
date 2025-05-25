@@ -8,6 +8,7 @@ export class User extends Model {
 
   accessToken?: string;
   avatarSetting?: any; // {type: 'img/char', imgUrl: 'xxx', ...}
+  vip?: string; // A/B/C
 
   // static Roles = ['', 'A', 'E'];
 }

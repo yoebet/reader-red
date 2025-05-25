@@ -57,6 +57,12 @@ import { WanUnitNumPipe } from './pipes/wan-unit-num.pipe';
 import { HomeComponent } from './home.component';
 import { BookImageComponent } from './book/book-image.component';
 import { BookCategoryService } from './services/book-category.service';
+import { VipCodeService } from './services/vip-code.service';
+import { VipTermService } from './services/vip-term.service';
+import { UserHomeComponent } from './user/user-home.component';
+import { VipCodesComponent } from './user/vip-codes.component';
+import { VipTermsComponent } from './user/vip-terms.component';
+import { UserAccountComponent } from './user/user-account.component';
 
 @NgModule({
   imports: [
@@ -103,7 +109,11 @@ import { BookCategoryService } from './services/book-category.service';
     ImpConfirmComponent,
     WordStatComponent,
     WanUnitNumPipe,
-    BookImageComponent
+    BookImageComponent,
+    UserHomeComponent,
+    VipCodesComponent,
+    VipTermsComponent,
+    UserAccountComponent
   ],
   providers: [
     AppService,
@@ -120,7 +130,9 @@ import { BookCategoryService } from './services/book-category.service';
     SessionService,
     DictZhService,
     WordStatService,
-    BookCategoryService
+    BookCategoryService,
+    VipCodeService,
+    VipTermService
   ],
   entryComponents: [
     LoginPopupComponent,

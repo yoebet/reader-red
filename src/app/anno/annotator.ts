@@ -357,9 +357,7 @@ export class Annotator {
 
   private doAnnotate(selection: Selection | Range): AnnotateResult {
 
-    // tslint:disable-next-line:one-variable-per-declaration
     let node1, node2;
-    // tslint:disable-next-line:one-variable-per-declaration
     let offset1, offset2;
 
     if (selection instanceof Selection) {

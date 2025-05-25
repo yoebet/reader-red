@@ -13,7 +13,7 @@ export class Model {
     if (!id) {
       return null;
     }
-    let seconds = parseInt(id.substr(0, 8), 16);
+    let seconds = parseInt(id.substring(0, 8), 16);
     return new Date(seconds * 1000);
   }
 

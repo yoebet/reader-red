@@ -30,14 +30,14 @@
       tr(*ngIf='candidates.length===0')
         td(colspan='3') No More.
 
-  table.ui.mini.selectable.table(*ngIf="!edit" )
+  table.ui.mini.selectable.table(*ngIf="!edit")
     thead
       tr
         th 书名
         th 范围
         th.center.aligned
           i.checkmark.icon
-    tbody
+    tbody(*ngIf="tsBooks")
       tr(*ngFor='let b of tsBooks')
         td.pre-wrap
           | ({{b.code}}) {{b.name}}

@@ -9,3 +9,11 @@
   /*border: 1px solid darkgreen;*/
   box-shadow: 0 1px 3px 0 green, 0 0 0 1px green;
 }
+
+.ui.cards > .card, .ui.card {
+  width: 190px;
+}
+
+.ui.cards > .card > .content > .header:not(.ui), .ui.card > .content > .header:not(.ui) {
+  margin-bottom: 0.2em;
+}

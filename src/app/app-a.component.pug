@@ -5,18 +5,18 @@
       a.item(routerLink='/books', routerLinkActive='active') 阅读
       a.item(routerLink='/dict', routerLinkActive='active') 查词
       a.item(routerLink='/vocabulary', routerLinkActive='active') 词汇
+      .ui.dropdown.item(*ngIf='currentUser', suiDropdown='')
+        | 快捷设置
+        i.dropdown.icon
+        .menu(suiDropdownMenu='')
+          a.item((click)='showTextSearchScope()')
+            | 文本搜索范围
+            i.horizontal.ellipsis.icon
     .right.menu
       ng-template([ngIf]='currentUser')
-        .item(*ngIf='currentUser') {{currentUser.name}}
-        .ui.dropdown.item(*ngIf='currentUser', suiDropdown='')
-          | 设置
-          i.dropdown.icon
-          .menu(suiDropdownMenu='')
-            a.item(routerLink='/base-vocabulary', routerLinkActive='active') 基础词汇
-            a.item(routerLink='/word-tags', routerLinkActive='active') 词频标签
-            a.item(routerLink='/imp-exp', routerLinkActive='active') 词表导入
-            a.item((click)='showTextSearchScope()') 文本搜索
-        a.item(*ngIf='currentUser', (click)='logout()') 退出
+        .item {{currentUser.name}}
+        a.item(routerLink='/my', routerLinkActive='active') 账号&设置
+        a.item((click)='logout()') 退出
       a.item(*ngIf='!currentUser', (click)='gotoLogin()') 登录
 
   //login-form(*ngIf='loginForm')

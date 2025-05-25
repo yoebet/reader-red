@@ -33,6 +33,8 @@ export class DictEntry extends Model {
   forms?: any;
   baseForm?: string;
   phrases?: string[];
+  pronPathUk?: string;
+  pronPathUs?: string;
 
 
   static isId(idOrWord): boolean {

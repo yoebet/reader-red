@@ -1,7 +1,6 @@
 .ui.gray.header
   | 词频标签
 
-
 .ui.sub-header
   sui-checkbox([(ngModel)]='showSamples', (click)='processSamples()') 示例
   .ui.right.floated.small.button([ngClass]='{disabled: !changed}', (click)='save()') Save

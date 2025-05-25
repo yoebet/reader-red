@@ -33,7 +33,9 @@ export class UserWordService extends BaseService<UserWord> {
   clearCache() {
     this.allWords = null;
     this.allWords$ = null;
-    this.userWordsMap.clear();
+    if (this.userWordsMap) {
+      this.userWordsMap.clear();
+    }
     this.latestAdded0 = [];
   }
 
