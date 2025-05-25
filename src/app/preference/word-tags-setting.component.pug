@@ -1,30 +1,29 @@
 .ui.gray.header
   | 词频标签
 
-.ui.sub-header
-  sui-checkbox([(ngModel)]='showSamples', (click)='processSamples()') 示例
-  .ui.right.floated.small.button([ngClass]='{disabled: !changed}', (click)='save()') Save
-  .clearing
-.ui.list([hidden]='!showSamples')
-  .item(*ngFor='let entry of sampleWordEntries')
-    | {{entry.word}}
-    word-tags([categories]='entry.categories', [userWordTags]='selected')
+.ui.content
+  .ui.sub-header
+    sui-checkbox([(ngModel)]='showSamples', (click)='processSamples()') 示例
+    .ui.right.floated.small.button([ngClass]='{disabled: !changed}', (click)='save()') Save
+    .clearing
+  .ui.list([hidden]='!showSamples')
+    .item(*ngFor='let entry of sampleWordEntries')
+      | {{entry.word}}
+      word-tags([categories]='entry.categories', [userWordTags]='selected')
 
-.ui.clearing.hidden.divider
+  .ui.clearing.hidden.divider
 
-.ui.definition.table
-  tr(*ngFor='let group of groups')
-    td
-      .ui.sub-header {{group.title}}
-    td
-      .ui.cards
-        .card.word-category(*ngFor='let cat of group.categories', [ngClass]='{selected: selectedMap.get(cat.code)}', (click)='clickCategory(cat.code)')
-          .content
-            i.ui.right.floated.green.checkmark.icon(*ngIf='selectedMap.get(cat.code)')
-            .header {{cat.name}}
-            .meta
-              ng-template([ngIf]='cat.extend') {{cat.extend.name}} + {{cat.wordCount | approximate}} = &nbsp;
-              | {{cat.extendedWordCount | approximate}}
-            .description {{cat.description}}
-
-.ui.clearing.hidden.divider
+  .ui.definition.table
+    tr(*ngFor='let group of groups')
+      td
+        .ui.sub-header {{group.title}}
+      td
+        .ui.cards
+          .card.word-category(*ngFor='let cat of group.categories', [ngClass]='{selected: selectedMap.get(cat.code)}', (click)='clickCategory(cat.code)')
+            .content
+              i.ui.right.floated.green.checkmark.icon(*ngIf='selectedMap.get(cat.code)')
+              .header {{cat.name}}
+              .meta
+                ng-template([ngIf]='cat.extend') {{cat.extend.name}} + {{cat.wordCount | approximate}} = &nbsp;
+                | {{cat.extendedWordCount | approximate}}
+              .description {{cat.description}}

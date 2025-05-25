@@ -12,6 +12,9 @@
           a.item((click)='showTextSearchScope()')
             | 文本搜索范围
             i.horizontal.ellipsis.icon
+          a.item((click)='showWordTagsSetting()')
+            | 词汇标签
+            i.horizontal.ellipsis.icon
     .right.menu
       ng-template([ngIf]='currentUser')
         .item {{currentUser.name}}

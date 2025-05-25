@@ -143,6 +143,7 @@ import { UserAccountComponent } from './user/user-account.component';
     ParaCommentsExtComponent,
     ReaderHelperComponent,
     TextSearchBooksComponent,
+    WordTagsSettingComponent,
     ImpConfirmComponent,
     WordStatComponent,
     BookImageComponent

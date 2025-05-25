@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { isEqual, sortBy } from 'lodash';
+import { ComponentModalConfig, SuiModal } from 'ng2-semantic-ui';
+import { ModalSize } from 'ng2-semantic-ui/dist/modules/modal/classes/modal-config';
 
 import { WordCategoryService } from '../services/word-category.service';
 import { UserPreferenceService } from '../services/user-preference.service';
@@ -23,7 +25,7 @@ export class WordTagsSettingComponent implements OnInit {
   groups: any[];
   changed = false;
 
-  sampleWords = ['help', 'summon', 'waiter', 'prosperity', 'obsess', 'pottery', 'offish'];
+  sampleWords = ['help', 'summon', 'waiter', 'prosperity', 'obsess', 'pottery', 'hoodwink'];
   sampleWordEntries: DictEntry[];
   showSamples = false;
 
@@ -40,7 +42,7 @@ export class WordTagsSettingComponent implements OnInit {
 
         let group1 = {
           title: '普通',
-          codes: [/*'junior1', 'junior2', */'basic', 'cet4', 'cet6'/*, 'cet'*/],
+          codes: [/*'junior1', 'junior2', */'basic', 'ox3k', 'ox5k', 'cet4', 'cet6'/*, 'cet'*/],
           categories: null as WordCategory[]
         };
         let group2 = {
@@ -136,5 +138,17 @@ export class WordTagsSettingComponent implements OnInit {
     }
   }
 
+  /*close() {
+    this.modal.approve('');
+  }*/
 
+}
+
+export class WordTagsSettingModal extends ComponentModalConfig<string> {
+  constructor(context: string) {
+    super(WordTagsSettingComponent, context, false);
+    this.size = ModalSize.Tiny;
+    this.mustScroll = true;
+    this.isClosable = true;
+  }
 }

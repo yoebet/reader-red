@@ -18,7 +18,7 @@
         th 范围
         th.center.aligned
           i.checkmark.icon
-    tbody
+    tbody(*ngIf="candidates")
       tr(*ngFor='let c of candidates', [ngClass]='{selected:c.textSearch}')
         td.pre-wrap
           | ({{c.book.code}}) {{c.book.name}}

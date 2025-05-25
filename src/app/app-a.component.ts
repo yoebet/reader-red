@@ -6,6 +6,7 @@ import { SessionService } from './services/session.service';
 import { TextSearchBooksModal } from './preference/text-search-books.component';
 import { SuiModalService } from 'ng2-semantic-ui';
 import { LoginModal } from './account/login-popup.component';
+import { WordTagsSettingModal } from './preference/word-tags-setting.component';
 
 @Component({
   selector: 'app-a',
@@ -47,5 +48,9 @@ export class AppAComponent implements OnInit {
 
   showTextSearchScope() {
     this.modalService.open(new TextSearchBooksModal({ edit: false }));
+  }
+
+  showWordTagsSetting() {
+    this.modalService.open(new WordTagsSettingModal(''));
   }
 }
