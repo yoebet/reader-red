@@ -63,6 +63,7 @@ import { UserHomeComponent } from './user/user-home.component';
 import { VipCodesComponent } from './user/vip-codes.component';
 import { VipTermsComponent } from './user/vip-terms.component';
 import { UserAccountComponent } from './user/user-account.component';
+import { WordStatisticComponent } from './vocabulary/word-statistic.component';
 
 @NgModule({
   imports: [
@@ -113,7 +114,8 @@ import { UserAccountComponent } from './user/user-account.component';
     UserHomeComponent,
     VipCodesComponent,
     VipTermsComponent,
-    UserAccountComponent
+    UserAccountComponent,
+    WordStatisticComponent
   ],
   providers: [
     AppService,
@@ -146,7 +148,8 @@ import { UserAccountComponent } from './user/user-account.component';
     WordTagsSettingComponent,
     ImpConfirmComponent,
     WordStatComponent,
-    BookImageComponent
+    BookImageComponent,
+    WordStatisticComponent
   ],
   bootstrap: [AppComponent]
 })

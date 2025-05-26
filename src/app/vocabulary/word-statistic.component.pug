@@ -1,0 +1,42 @@
+
+.ui.content
+  .statistic(*ngIf='wordStatistic')
+    .ui.dividing.header 我的词表
+    .ui.mini.statistics
+      .grey.statistic
+        .value &nbsp;
+      .red.statistic
+        .value {{wordStatistic.familiarity1Count}}
+        .label 在学
+      .teal.statistic
+        .value {{wordStatistic.familiarity2Count}}
+        .label 熟悉
+      .green.statistic
+        .value {{wordStatistic.familiarity3Count}}
+        .label 掌握
+
+    .ui.dividing.header 词汇量
+    .ui.mini.statistics
+      .grey.statistic
+        .value &nbsp;
+      .blue.statistic
+        .value {{wordStatistic.baseVocabularyCount}}
+        .label 我的基础词汇
+      .red.statistic
+        .value -
+      .red.statistic
+        .value {{wordStatistic.unfamiliarCountInBV}}
+        .label 基础词汇中不掌握的
+      .red.statistic
+        .value +
+      .green.statistic
+        .value {{wordStatistic.familiarCountNotInBV}}
+        .label 已掌握且不在基础词汇中的
+
+    .ui.hidden.divider
+    .ui.tiny.statistics
+      .red.statistic
+        .value =
+      .green.statistic
+        .value {{wordStatistic.graspedCount}}
+        .label 已掌握

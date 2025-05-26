@@ -12,10 +12,10 @@
           .menu(suiDropdownMenu='')
             a.item((click)='showTextSearchScope()')
               | 文本搜索范围
-              i.horizontal.ellipsis.icon
             a.item((click)='showWordTagsSetting()')
               | 词汇标签
-              i.horizontal.ellipsis.icon
+            a.item((click)='showWordStatistic()')
+              | 词汇量
       .right.menu
         ng-template([ngIf]='currentUser')
           a.item(routerLink='/my', routerLinkActive='active') 账号&设置

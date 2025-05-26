@@ -17,6 +17,7 @@ import { VipCodesComponent } from './user/vip-codes.component';
 import { VipTermsComponent } from './user/vip-terms.component';
 import { UserAccountComponent } from './user/user-account.component';
 import { BaseVocabularyComponent } from './preference/base-vocabulary.component';
+import { WordStatisticComponent } from './vocabulary/word-statistic.component';
 
 
 const routes: Routes = [
@@ -41,6 +42,7 @@ const routes: Routes = [
           { path: 'base-vocabulary', component: BaseVocabularyComponent },
           { path: 'word-tags', component: WordTagsSettingComponent },
           { path: 'imp-exp', component: UwImpExpComponent },
+          { path: 'word-statistic', component: WordStatisticComponent },
         ]
       }
     ]

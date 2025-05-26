@@ -165,7 +165,6 @@ export class UserVocabularyService {
 
           let uwsByFamiliarity = groupBy<UserWord>(uws, 'familiarity');
 
-          let $word = (uw: UserWord) => uw.word;
           let groupWords = (key: string) => {
             const group = uwsByFamiliarity[key];
             if (!group) {

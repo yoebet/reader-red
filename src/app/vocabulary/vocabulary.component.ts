@@ -32,8 +32,6 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
   cardsCount = 6;
   cardsOffset = 0;
 
-  wordStatistic: Object;
-
   filter: any = {
     familiarityAll: true,
     addOn: 'All'
@@ -171,15 +169,6 @@ export class VocabularyComponent extends DictSearchComponent implements OnInit {
       this.filterUserWords();
       this.groupUserWords().catch();
     });
-  }
-
-  clickStatistic() {
-    this.mode = 'statistic';
-    this.entry = null;
-    this.userVocabularyService.statistic()
-      .subscribe(statistic => {
-        this.wordStatistic = statistic;
-      });
   }
 
   generateCardWords() {

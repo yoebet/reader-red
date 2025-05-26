@@ -27,7 +27,6 @@
     .ui.right.floated.small.compact.menu
       a.item((click)='mode="userWords"', [ngClass]='{active:mode==="userWords"}') 我的词表
       a.item((click)='mode="wordCards"', [ngClass]='{active:mode==="wordCards"}') 词汇卡片
-      a.item((click)='clickStatistic()', [ngClass]='{active:mode==="statistic"}') 统计
     .ui.clearing.hidden.divider
 
     div.user-vocabulary(*ngIf='mode==="userWords"')
@@ -112,50 +111,6 @@
                 .ui.list(*ngIf='cw.entry')
                   .ui.item(*ngFor='let item of cw.entry.simple')
                     | {{item.pos}} {{item.exp}}
-
-      .ui.clearing.hidden.divider
-
-    div.statistic(*ngIf='mode==="statistic"')
-      ng-template([ngIf]='wordStatistic')
-        h4.ui.dividing.header 我的词表：
-        .ui.tiny.statistics
-          .grey.statistic
-            .value &nbsp;
-          .red.statistic
-            .value {{wordStatistic.familiarity1Count}}
-            .label 很陌生
-          .teal.statistic
-            .value {{wordStatistic.familiarity2Count}}
-            .label 熟悉中
-          .green.statistic
-            .value {{wordStatistic.familiarity3Count}}
-            .label 已掌握
-
-        h4.ui.dividing.header 词汇量：
-        .ui.tiny.statistics
-          .grey.statistic
-            .value &nbsp;
-          .blue.statistic
-            .value {{wordStatistic.baseVocabularyCount}}
-            .label 我的基础词汇
-          .red.statistic
-            .value -
-          .red.statistic
-            .value {{wordStatistic.unfamiliarCountInBV}}
-            .label 基础词汇中不掌握的
-          .red.statistic
-            .value +
-          .green.statistic
-            .value {{wordStatistic.familiarCountNotInBV}}
-            .label 已掌握且不在基础词汇中的
-
-        .ui.hidden.divider
-        .ui.small.statistics
-          .red.statistic
-            .value =
-          .green.statistic
-            .value {{wordStatistic.graspedCount}}
-            .label 已掌握
 
     .ui.clearing.hidden.divider
     dict-entry(*ngIf='entry', [entry]='entry')
