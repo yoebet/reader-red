@@ -1,1 +1,24 @@
-| codes
+.ui.header
+  | 兑换码
+  .ui.sub.header 您获得的会员兑换码，可送给他人使用
+
+
+table.ui.striped.table
+  thead
+    tr
+      th 兑换码
+      th 期限
+      th 获得时间
+      th 兑换？
+      th 兑换人
+      th 兑换时间
+  tbody(*ngIf='vipCodes')
+    tr(*ngFor='let vc of vipCodes')
+      td {{vc.code}}
+      td {{[vc.term,vc.termNum]|termName}}
+      td {{vc.createdAt|date:'yyyy-MM-dd'}}
+      td {{vc.redeemed? '是':'否'}}
+      td {{vc.redeemerName}}
+      td {{vc.redeemedAt|date:'yyyy-MM-dd'}}
+    tr(*ngIf='vipCodes.length===0')
+      td(colspan="6") 无

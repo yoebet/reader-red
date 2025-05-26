@@ -11,7 +11,7 @@
         .ui.button([ngClass]='{disabled:userWord.familiarity===1}', (click)='familiarityDown()')
           i.double.angle.down.icon
     .item
-      .word-add-on 加入于 {{userWord | createdDateString}}
+      .word-add-on 加入于 {{userWord | createdDate}}
     a.item((click)='removeUserWord()') 移除
   .item(*ngIf='!userWord')
     .ui.mini.button((click)='addToVocabulary()') 加入我的词汇

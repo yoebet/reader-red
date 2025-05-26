@@ -22,8 +22,8 @@
           .item
             | {{currentUser.name}} &nbsp;&nbsp;&nbsp;&nbsp;
             a((click)='logout()', href='javascript:') 退出
-        .item
-          a(*ngIf='!currentUser', (click)='gotoLogin()', href='javascript:') 登录
+        .item(*ngIf='!currentUser')
+          a((click)='gotoLogin()', href='javascript:') 登录
 
   .ui.container
     router-outlet

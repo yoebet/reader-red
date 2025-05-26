@@ -19,8 +19,7 @@ export class VipCodeService extends BaseService<VipCode> {
   }
 
   listBoughtCodes(): Observable<VipCode[]> {
-    const url = `${this.baseUrl}/bought`;
-    return this.list(url);
+    return this.list();
   }
 
 }

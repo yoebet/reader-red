@@ -1,7 +1,8 @@
 import { Model } from './model';
 
 export class VipCode extends Model {
-  ownerId: string;
+  // ownerId: string;
+  // ownerName: string;
   code: string;
   term: 'M'|'Y'|'P'; // month/year/permanent
   termNum?: number;
@@ -9,11 +10,13 @@ export class VipCode extends Model {
   redeemed: boolean;
   vipTermId?: string;
   redeemerId?: string;
+  redeemerName?: string;
   redeemedAt?: Date;
 }
 
 export class VipTerm extends Model {
-  userId: string;
+  // userId: string;
+  // userName: string;
   orderId?: string;
   redeemCode?: string;
   term: 'Y'|'M'|'P';

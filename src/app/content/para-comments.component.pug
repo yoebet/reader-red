@@ -6,7 +6,7 @@
       .ui.content {{comment.content}}
       .ui.right.floated.horizontal.list.footer
         .item {{comment.userNickName}}
-        .item(*ngIf='comment.userName') {{comment | createdDateString:'minute'}}
+        .item(*ngIf='comment.userName') {{comment | createdDate:'minute'}}
 
 .actions
   button.ui.tiny.button((click)="close()") 关闭

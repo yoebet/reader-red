@@ -17,7 +17,6 @@ import { UserVocabularyService } from './services/user-vocabulary.service';
 import { UserPreferenceService } from './services/user-preference.service';
 import { AnnotationsService } from './services/annotations.service';
 import { CreatedDatePipe } from './pipes/created-date.pipe';
-import { CreatedDateStringPipe } from './pipes/created-date-string.pipe';
 import { WordFamiliarityPipe } from './pipes/word-familiarity.pipe';
 import { AppComponent } from './app.component';
 import { BookListComponent } from './book/book-list.component';
@@ -64,6 +63,7 @@ import { VipCodesComponent } from './user/vip-codes.component';
 import { VipTermsComponent } from './user/vip-terms.component';
 import { UserAccountComponent } from './user/user-account.component';
 import { WordStatisticComponent } from './vocabulary/word-statistic.component';
+import { TermNamePipe } from './pipes/term-name.pipe';
 
 @NgModule({
   imports: [
@@ -87,9 +87,9 @@ import { WordStatisticComponent } from './vocabulary/word-statistic.component';
     DictEntryComponent,
     DictPhoneticsComponent,
     CreatedDatePipe,
-    CreatedDateStringPipe,
     WordFamiliarityPipe,
     ApproximateNumberPipe,
+    TermNamePipe,
     VocabularyComponent,
     BaseVocabularyComponent,
     DictSimpleComponent,

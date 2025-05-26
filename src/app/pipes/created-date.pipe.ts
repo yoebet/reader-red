@@ -4,7 +4,7 @@ import {Model} from '../models/model';
 
 @Pipe({name: 'createdDate'})
 export class CreatedDatePipe implements PipeTransform {
-  transform(model: Model): Date {
-    return Model.timestampOfObjectId(model._id);
+  transform(model: Model|string, format?: string): string {
+    return Model.createdTimeString(model, format);
   }
 }

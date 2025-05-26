@@ -27,8 +27,8 @@ export class Model {
     return Model.timestampOfObjectId(model._id);
   }
 
-  static createdTimeString(model: Model, precise: string = 'date'): string {
-    let ct = Model.createdTime(model);
+  static createdTimeString(model: Model|string, precise: string = 'date'): string {
+    let ct = typeof model === 'string' ? new Date(model) : Model.createdTime(model);
     if (!ct) {
       return '';
     }
@@ -42,7 +42,7 @@ export class Model {
     return Model.timeString(model.updatedAt, precise);
   }
 
-  static timeString(date: Date | string, precise: string = 'date'): string {
+  static timeString(date: Date|string, precise: string = 'date'): string {
     if (!date) {
       return '';
     }
