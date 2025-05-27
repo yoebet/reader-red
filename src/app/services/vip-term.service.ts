@@ -14,7 +14,7 @@ export class VipTermService extends BaseService<VipTerm> {
               protected modalService: SuiModalService) {
     super(http, sessionService, modalService);
     let apiBase = environment.apiBase || '';
-    this.baseUrl = `${apiBase}/user_vip_codes`;
+    this.baseUrl = `${apiBase}/user_vip_terms`;
   }
 
 }

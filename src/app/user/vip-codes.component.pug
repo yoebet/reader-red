@@ -9,7 +9,7 @@ table.ui.striped.table
       th 兑换码
       th 期限
       th 获得时间
-      th 兑换？
+      th 状态
       th 兑换人
       th 兑换时间
   tbody(*ngIf='vipCodes')
@@ -17,7 +17,7 @@ table.ui.striped.table
       td {{vc.code}}
       td {{[vc.term,vc.termNum]|termName}}
       td {{vc.createdAt|date:'yyyy-MM-dd'}}
-      td {{vc.redeemed? '是':'否'}}
+      td {{vc.redeemed? '已兑换':'未兑换'}}
       td {{vc.redeemerName}}
       td {{vc.redeemedAt|date:'yyyy-MM-dd'}}
     tr(*ngIf='vipCodes.length===0')

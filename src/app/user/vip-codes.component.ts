@@ -3,7 +3,7 @@ import { VipCodeService } from '../services/vip-code.service';
 import { VipCode } from '../models/vip';
 
 @Component({
-  selector: 'user-home',
+  selector: 'vip-codes',
   templateUrl: './vip-codes.component.html',
 })
 export class VipCodesComponent implements OnInit {

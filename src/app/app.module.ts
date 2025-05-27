@@ -64,6 +64,7 @@ import { VipTermsComponent } from './user/vip-terms.component';
 import { UserAccountComponent } from './user/user-account.component';
 import { WordStatisticComponent } from './vocabulary/word-statistic.component';
 import { TermNamePipe } from './pipes/term-name.pipe';
+import { TermStatusNamePipe } from './pipes/term-status-name.pipe';
 
 @NgModule({
   imports: [
@@ -90,6 +91,7 @@ import { TermNamePipe } from './pipes/term-name.pipe';
     WordFamiliarityPipe,
     ApproximateNumberPipe,
     TermNamePipe,
+    TermStatusNamePipe,
     VocabularyComponent,
     BaseVocabularyComponent,
     DictSimpleComponent,
