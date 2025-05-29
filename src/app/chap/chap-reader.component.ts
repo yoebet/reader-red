@@ -22,7 +22,7 @@ import { DictService } from '../services/dict.service';
 import { UserWordService } from '../services/user-word.service';
 import { DictRequest } from '../content-types/dict-request';
 import { SessionService } from '../services/session.service';
-import { LoginModal } from '../account/login-popup.component';
+import { LoginModal } from '../user/account/login-popup.component';
 
 
 @Component({

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalSize } from 'ng2-semantic-ui/dist/modules/modal/classes/modal-config';
 import { ComponentModalConfig, SuiModal } from 'ng2-semantic-ui';
-import { SessionService } from '../services/session.service';
-import { OpResult } from '../models/op-result';
+import { SessionService } from '../../services/session.service';
+import { OpResult } from '../../models/op-result';
 import { LoginBaseComponent } from './login-base-component';
 
 

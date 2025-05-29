@@ -6,7 +6,7 @@ import { ActiveModal } from 'ng2-semantic-ui/dist/modules/modal/classes/active-m
 
 import { Model } from '../models/model';
 import { OpResult } from '../models/op-result';
-import { LoginModal } from '../account/login-popup.component';
+import { LoginModal } from '../user/account/login-popup.component';
 import { SessionService } from './session.service';
 
 

@@ -9,7 +9,7 @@ import { WordTagsSettingComponent } from './preference/word-tags-setting.compone
 import { DictComponent } from './dict/dict.component';
 import { ChapReaderComponent } from './chap/chap-reader.component';
 import { AppAComponent } from './app-a.component';
-import { RegisterComponent } from './account/register.component';
+import { RegisterComponent } from './user/account/register.component';
 import { UwImpExpComponent } from './vocabulary/uw-imp-exp.component';
 import { HomeComponent } from './home.component';
 import { UserHomeComponent } from './user/user-home.component';

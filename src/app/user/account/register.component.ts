@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { SessionService } from '../services/session.service';
-import { OpResult } from '../models/op-result';
-import { RegisterForm } from '../models/user';
+import { SessionService } from '../../services/session.service';
+import { OpResult } from '../../models/op-result';
+import { RegisterForm } from '../../models/user';
 
 @Component({
   selector: 'register-form',

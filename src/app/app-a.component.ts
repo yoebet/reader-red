@@ -5,7 +5,7 @@ import { UserWordService } from './services/user-word.service';
 import { SessionService } from './services/session.service';
 import { TextSearchBooksModal } from './preference/text-search-books.component';
 import { SuiModalService } from 'ng2-semantic-ui';
-import { LoginModal } from './account/login-popup.component';
+import { LoginModal } from './user/account/login-popup.component';
 import { WordTagsSettingModal } from './preference/word-tags-setting.component';
 import { WordStatisticModal } from './vocabulary/word-statistic.component';
 
