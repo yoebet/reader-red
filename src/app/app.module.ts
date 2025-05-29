@@ -65,6 +65,7 @@ import { UserAccountComponent } from './user/user-account.component';
 import { WordStatisticComponent } from './vocabulary/word-statistic.component';
 import { TermNamePipe } from './pipes/term-name.pipe';
 import { TermStatusNamePipe } from './pipes/term-status-name.pipe';
+import { UserProfileService } from './services/user-profile.service';
 
 @NgModule({
   imports: [
@@ -136,7 +137,8 @@ import { TermStatusNamePipe } from './pipes/term-status-name.pipe';
     WordStatService,
     BookCategoryService,
     VipCodeService,
-    VipTermService
+    VipTermService,
+    UserProfileService
   ],
   entryComponents: [
     LoginPopupComponent,

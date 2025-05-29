@@ -1,0 +1,12 @@
+.item.prop {
+  line-height: 1.5em;
+  /*color: #a5673f;*/
+}
+
+.prop-name {
+  /*font-size: 0.9em;*/
+  display: inline-block;
+  color: rgba(128, 128, 128, 1);
+  min-width: 4em;
+  margin-right: 0.8em;
+}

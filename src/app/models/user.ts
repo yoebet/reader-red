@@ -5,9 +5,18 @@ export class User extends Model {
   nickName: string;
   role: string;
   status: string;
+  passSet?: boolean;
 
   accessToken?: string;
-  avatarSetting?: any; // {type: 'img/char', imgUrl: 'xxx', ...}
+  avatarSetting?: {
+    type: 'img';
+    imgUrl: string,
+  }|{
+    type: 'char',
+    charText: string,
+    charBgColor: string,
+    charTextColor: string
+  };
   vip?: string; // A/B/C
 
   // static Roles = ['', 'A', 'E'];

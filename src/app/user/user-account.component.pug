@@ -1,1 +1,36 @@
-| account
+
+.content(*ngIf='user')
+  //img.ui.avatar.image(src='')
+  .ui.brown.list
+    .item.prop
+      span.prop-name 用户名
+      | {{user.name}}
+    .item.prop
+      span.prop-name 昵称
+      | {{user.nickName}}
+    .item.prop
+      span.prop-name 注册于
+      | {{user.createdAt|date:'yyyy-MM-dd'}}
+    .item.prop
+      span.prop-name 会员
+      span
+        i.smile.teal.icon(*ngIf='user.vip')
+        i.frown.orange.icon(*ngIf='!user.vip')
+        | {{user.vip? '是':'否'}}
+
+  .ui.hidden.divider
+
+  .ui.sub.header 登录方式
+  .ui.divided.selection.list
+    .item
+      .ui.right.floated.content
+        a(href='javascript:') 修改密码
+      | 密码
+    .item
+      .ui.right.floated.content
+        | 未绑定
+      | 微信
+    .item
+      .ui.right.floated.content
+        | 未绑定
+      | 手机号
